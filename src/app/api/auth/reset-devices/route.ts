@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const emailLower = email.toLowerCase();
 
-    // 1. Ищем код
+    // 1. Verify code
     const validCodes = await db
       .select()
       .from(activationCodes)
@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
         and(
           eq(activationCodes.email, emailLower),
           eq(activationCodes.code, code),
-          eq(activationCodes.isUsed, false)
+          eq(activationCodes.isUsed, false) // Note: it must be a valid unused code. 
+          // Wait, if they are resetting, the code they entered is fresh. 
+          // Or wait, they enter their old code? No, they request a new code to login!
+          // So the code is fresh and unused.
         )
       );
 
@@ -42,57 +45,38 @@ export async function POST(req: NextRequest) {
 
     const activationRecord = validCodes[0];
 
-    // 2. Ищем или создаем пользователя
-    let userList = await db
+    // 2. Find user
+    const userList = await db
       .select()
       .from(users)
       .where(eq(users.email, emailLower));
 
-    let user = userList[0];
+    const user = userList[0];
 
     if (!user) {
-      // Регистрируем нового пользователя (по умолчанию Free)
-      const inserted = await db
-        .insert(users)
-        .values({
-          email: emailLower,
-          isPro: false,
-        })
-        .returning();
-      user = inserted[0];
+       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 3. Проверка лимитов устройств
-    const userDevices = await db
-      .select()
-      .from(devices)
-      .where(eq(devices.userId, user.id));
-
-    const existingDevice = userDevices.find((d) => d.deviceId === deviceId);
-    
-    // Лимит: 3 для PRO, 1 для Free
-    const maxDevices = user.isPro ? 3 : 1;
-
-    if (!existingDevice) {
-      if (userDevices.length >= maxDevices) {
-        return NextResponse.json(
-          {
-            error: `Device limit reached. You can only link ${maxDevices} device(s) on your current plan.`,
-            canReset: user.deviceResetsCount < 1,
-            resetsLeft: Math.max(0, 1 - user.deviceResetsCount)
-          },
-          { status: 403 }
-        );
-      }
-      
-      // Регистрируем новое устройство
-      await db.insert(devices).values({
-        userId: user.id,
-        deviceId: deviceId,
-      });
+    // 3. Check reset limits
+    if (user.deviceResetsCount >= 1) {
+       return NextResponse.json({ error: "Reset limit reached. You can only reset your devices once." }, { status: 403 });
     }
 
-    // 4. Отмечаем код как использованный
+    // 4. Delete all old devices
+    await db.delete(devices).where(eq(devices.userId, user.id));
+
+    // 5. Insert new device
+    await db.insert(devices).values({
+      userId: user.id,
+      deviceId: deviceId,
+    });
+
+    // 6. Update user's reset count
+    await db.update(users).set({
+      deviceResetsCount: user.deviceResetsCount + 1
+    }).where(eq(users.id, user.id));
+
+    // 7. Mark code as used
     await db
       .update(activationCodes)
       .set({
@@ -102,7 +86,7 @@ export async function POST(req: NextRequest) {
       })
       .where(eq(activationCodes.id, activationRecord.id));
 
-    // 5. Генерируем JWT токен
+    // 8. Generate JWT
     const token = await new SignJWT({
       userId: user.id,
       email: user.email,
@@ -111,7 +95,7 @@ export async function POST(req: NextRequest) {
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime("365d") // Токен на год
+      .setExpirationTime("365d")
       .sign(JWT_SECRET);
 
     return NextResponse.json({
@@ -122,8 +106,9 @@ export async function POST(req: NextRequest) {
         isPro: user.isPro,
       },
     });
+
   } catch (error) {
-    console.error("Error verifying code:", error);
+    console.error("Error resetting devices:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

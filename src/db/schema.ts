@@ -14,6 +14,9 @@ export const users = pgTable("users", {
   // Поля для защиты (Rate Limiting)
   failedAttempts: integer("failed_attempts").default(0),
   lockedUntil: timestamp("locked_until"),
+
+  // Счетчик сбросов устройств
+  deviceResetsCount: integer("device_resets_count").default(0).notNull(),
 });
 
 // 2. ТАБЛИЦА УСТРОЙСТВ
