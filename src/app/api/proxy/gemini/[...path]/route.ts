@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
-// Максимальное время выполнения (Edge Functions)
 export const maxDuration = 60; 
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, { params }: { params: { path: string[] } }) {
   try {
-    // Читаем тело запроса, которое прислало мобильное приложение
     const body = await req.json();
     
     // Получаем API ключ Gemini из параметров URL
@@ -17,8 +15,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "API key is required" }, { status: 400 });
     }
 
+    // Собираем оригинальный путь, который запрашивало приложение
+    // params.path - это массив путей, например ['v1beta', 'models', 'gemini-3.5-flash:generateContent']
+    const pathString = params.path ? params.path.join('/') : 'v1beta/models/gemini-3.5-flash:generateContent';
+
     // Перенаправляем запрос на оригинальный сервер Google
-    const googleUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${key}`;
+    const googleUrl = `https://generativelanguage.googleapis.com/${pathString}?key=${key}`;
 
     const response = await fetch(googleUrl, {
       method: "POST",
@@ -28,7 +30,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    // Возвращаем ответ от Google обратно в приложение
     const data = await response.json();
     
     return NextResponse.json(data, { status: response.status });
