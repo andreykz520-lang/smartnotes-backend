@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; 
 
-export async function POST(req: NextRequest, { params }: { params: { path: string[] } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
     const body = await req.json();
+    const resolvedParams = await params;
     
     // Получаем API ключ Gemini из параметров URL
     const { searchParams } = new URL(req.url);
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest, { params }: { params: { path: strin
 
     // Собираем оригинальный путь, который запрашивало приложение
     // params.path - это массив путей, например ['v1beta', 'models', 'gemini-3.5-flash:generateContent']
-    const pathString = params.path ? params.path.join('/') : 'v1beta/models/gemini-3.5-flash:generateContent';
+    const pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models/gemini-3.5-flash:generateContent';
 
     // Перенаправляем запрос на оригинальный сервер Google
     const googleUrl = `https://generativelanguage.googleapis.com/${pathString}?key=${key}`;
