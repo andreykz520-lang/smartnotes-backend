@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
     // 4. Отправляем письмо с ПРАВИЛЬНЫМ FROM (без скобок!)
     const { error } = await resend.emails.send({
-      from: 'support@obd2scanai.online', // TODO: Update to real domain email 
+      from: 'support@smartnotes-ai.ru', 
       to: email,
       subject: t.subject,
       html: htmlContent,

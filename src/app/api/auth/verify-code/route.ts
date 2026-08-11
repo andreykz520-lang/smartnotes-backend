@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     let user = userList[0];
 
     if (!user) {
-      // Регистрируем нового пользователя (по умолчанию Free)
+      // Регистрируем нового пользователя (по умолчанию Free, но обновим ниже если это PRO код)
       const inserted = await db
         .insert(users)
         .values({
@@ -60,6 +60,16 @@ export async function POST(req: NextRequest) {
         })
         .returning();
       user = inserted[0];
+    }
+
+    const isProCode = code.length > 6;
+    if (isProCode && !user.isPro) {
+      const updatedUser = await db
+        .update(users)
+        .set({ isPro: true })
+        .where(eq(users.id, user.id))
+        .returning();
+      user = updatedUser[0];
     }
 
     // 3. Проверка лимитов устройств

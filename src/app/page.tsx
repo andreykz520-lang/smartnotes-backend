@@ -10,9 +10,7 @@ export default function Home() {
       <nav className="fixed w-full z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(168,85,247,0.4)]">
-              SN
-            </div>
+            <img src="/icon.png" alt="SmartNotes AI Icon" className="w-10 h-10 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] object-cover" />
             <span className="font-bold text-xl tracking-tight">SmartNotes AI</span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">

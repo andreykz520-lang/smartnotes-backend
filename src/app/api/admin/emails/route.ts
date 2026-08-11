@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../db";
-import { users } from "../../../db/schema";
+import { db } from "../../../../db";
+import { users } from "../../../../db/schema";
 import { desc } from "drizzle-orm";
 
 const isAdmin = (password: string | null) => {
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     const allUsers = await db
       .select({ email: users.email })
       .from(users)
-      .orderBy(desc(users.created_at));
+      .orderBy(desc(users.createdAt));
 
     const emails = allUsers.map(u => u.email).filter(Boolean);
 

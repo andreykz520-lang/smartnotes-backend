@@ -21,12 +21,12 @@ export async function GET(req: Request) {
     const proUsersCountResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
-      .where(eq(users.is_pro, true));
+      .where(eq(users.isPro, true));
     
     const freeUsersCountResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
-      .where(eq(users.is_pro, false));
+      .where(eq(users.isPro, false));
 
     const proCount = proUsersCountResult[0]?.count || 0;
     const freeCount = freeUsersCountResult[0]?.count || 0;
@@ -65,16 +65,16 @@ export async function POST(req: Request) {
       // Create a PRO user placeholder if they haven't registered yet
       await db.insert(users).values({
         email,
-        is_pro: true,
+        isPro: true,
       });
       return NextResponse.json({ success: true, message: `Created new user ${email} with PRO status!` });
     } else {
-      if (existingUser.is_pro) {
+      if (existingUser.isPro) {
         return NextResponse.json({ success: true, message: `User ${email} already has PRO status.` });
       }
       
       // Update existing user to PRO
-      await db.update(users).set({ is_pro: true }).where(eq(users.email, email));
+      await db.update(users).set({ isPro: true }).where(eq(users.email, email));
       return NextResponse.json({ success: true, message: `Granted PRO status to ${email}!` });
     }
   } catch (error) {

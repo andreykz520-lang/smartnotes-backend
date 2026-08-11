@@ -19,6 +19,8 @@ export async function POST(request: Request) {
     const authString = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
     const idempotenceKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
+    const origin = request.headers.get('origin') || 'https://smartnotes-backend-two.vercel.app';
+
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
       headers: {
@@ -34,7 +36,7 @@ export async function POST(request: Request) {
         capture: true,
         confirmation: {
           type: 'redirect',
-          return_url: 'https://smartnotes-ai.vercel.app', // TODO: Update to real domain
+          return_url: `${origin}/success`, 
         },
         description: 'SmartNotes AI - PRO Версия',
         metadata: {

@@ -12,13 +12,13 @@ export default function Navbar() {
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <img 
-            src="/app_icon.png" 
-            alt="OBD2SCANAI Native App Icon" 
-            className="w-10 h-10 rounded-xl shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform border border-cyan-500/40 object-cover"
+            src="/icon.png" 
+            alt="SmartNotes AI Icon" 
+            className="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform border border-purple-500/40 object-cover"
           />
           <div className="flex flex-col">
             <span className="text-lg font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-              OBD2<span className="text-cyan-400">SCAN</span><span className="text-blue-500">AI</span>
+              SmartNotes <span className="text-purple-500">AI</span>
             </span>
           </div>
         </Link>

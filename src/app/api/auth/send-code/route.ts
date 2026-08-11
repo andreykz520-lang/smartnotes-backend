@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     // Отправляем письмо через Resend
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: "SmartNotes AI <no-reply@smartnotes.online>", // TODO: Заменить на актуальный домен
+        from: "SmartNotes AI <no-reply@smartnotes-ai.ru>", 
         to: email,
         subject: "Код активации SmartNotes AI",
         html: `<p>Ваш код для входа в приложение:</p>
