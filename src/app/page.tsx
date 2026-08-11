@@ -225,8 +225,11 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/10 py-12 text-center text-gray-500">
+      <footer className="border-t border-white/10 py-12 text-center text-gray-500 flex flex-col items-center justify-center gap-2">
         <p>© 2026 SmartNotes AI. Все права защищены.</p>
+        <Link href="/admin" className="text-xs text-gray-700 hover:text-gray-400 transition-colors">
+          Управление сайтом (Admin)
+        </Link>
       </footer>
     </div>
   );
