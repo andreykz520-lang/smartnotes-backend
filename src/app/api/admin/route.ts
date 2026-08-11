@@ -46,7 +46,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const { email, password, action = 'grant_pro' } = await req.json();
 
     if (!isAdmin(password)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -61,24 +61,44 @@ export async function POST(req: Request) {
       where: eq(users.email, email),
     });
 
+    if (action === 'delete_user') {
+      if (!existingUser) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+      await db.delete(users).where(eq(users.email, email));
+      return NextResponse.json({ success: true, message: `Пользователь ${email} успешно удален.` });
+    }
+
+    if (action === 'revoke_pro') {
+      if (!existingUser) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+      if (!existingUser.isPro) {
+        return NextResponse.json({ success: true, message: `У ${email} и так нет PRO статуса.` });
+      }
+      await db.update(users).set({ isPro: false }).where(eq(users.email, email));
+      return NextResponse.json({ success: true, message: `PRO статус убран у ${email}.` });
+    }
+
+    // Default action: grant_pro
     if (!existingUser) {
       // Create a PRO user placeholder if they haven't registered yet
       await db.insert(users).values({
         email,
         isPro: true,
       });
-      return NextResponse.json({ success: true, message: `Created new user ${email} with PRO status!` });
+      return NextResponse.json({ success: true, message: `Создан новый пользователь ${email} и выдан PRO!` });
     } else {
       if (existingUser.isPro) {
-        return NextResponse.json({ success: true, message: `User ${email} already has PRO status.` });
+        return NextResponse.json({ success: true, message: `У ${email} уже есть PRO статус.` });
       }
       
       // Update existing user to PRO
       await db.update(users).set({ isPro: true }).where(eq(users.email, email));
-      return NextResponse.json({ success: true, message: `Granted PRO status to ${email}!` });
+      return NextResponse.json({ success: true, message: `Выдан PRO статус для ${email}!` });
     }
   } catch (error) {
-    console.error("Error granting PRO:", error);
+    console.error("Error modifying user:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

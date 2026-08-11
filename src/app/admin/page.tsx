@@ -50,9 +50,15 @@ export default function AdminPage() {
     fetchStats(password);
   };
 
-  const handleGrantPro = async (e: React.FormEvent) => {
+  const handleUserAction = async (e: React.FormEvent, action: 'grant_pro' | 'revoke_pro' | 'delete_user') => {
     e.preventDefault();
     if (!email) return;
+
+    if (action === 'delete_user') {
+      if (!window.confirm(`Вы уверены, что хотите полностью удалить пользователя ${email}? Это действие необратимо.`)) {
+        return;
+      }
+    }
     
     setLoading(true);
     setMessage("");
@@ -61,7 +67,7 @@ export default function AdminPage() {
       const res = await fetch("/api/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, action }),
       });
 
       const data = await res.json();
@@ -163,7 +169,7 @@ export default function AdminPage() {
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
             <div>
               <h2 className="text-xl font-semibold mb-4 text-gray-200">⭐ Выдать PRO статус</h2>
-              <form onSubmit={handleGrantPro} className="space-y-4">
+              <form className="space-y-4">
                 <div>
                   <label className="block text-gray-400 mb-2 text-sm">Email пользователя</label>
                   <input
@@ -175,13 +181,32 @@ export default function AdminPage() {
                     required
                   />
                 </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all disabled:opacity-50"
-                >
-                  {loading ? "Обработка..." : "Активировать PRO"}
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => handleUserAction(e, 'grant_pro')}
+                    disabled={loading || !email}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2 px-2 rounded-xl shadow-lg transition-all disabled:opacity-50 text-sm"
+                  >
+                    Выдать PRO
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleUserAction(e, 'revoke_pro')}
+                    disabled={loading || !email}
+                    className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-2 rounded-xl transition-all disabled:opacity-50 text-sm"
+                  >
+                    Забрать PRO
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleUserAction(e, 'delete_user')}
+                    disabled={loading || !email}
+                    className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-2 rounded-xl transition-all disabled:opacity-50 text-sm"
+                  >
+                    Удалить
+                  </button>
+                </div>
               </form>
             </div>
             
