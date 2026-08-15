@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { activationCodes, users, devices } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { SignJWT } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -10,53 +10,79 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, code, deviceId } = await req.json();
+    const { email: rawEmail, code: rawCode, deviceId } = await req.json();
 
-    if (!email || !code || !deviceId) {
+    if (!rawEmail || !rawCode || !deviceId) {
       return NextResponse.json(
-        { error: "Missing email, code or deviceId" },
+        { error: "Заполните все поля (email, код, устройство)" },
         { status: 400 }
       );
     }
 
-    const emailLower = email.toLowerCase();
+    const email = String(rawEmail).trim().toLowerCase();
+    const code = String(rawCode).trim().toUpperCase();
 
-    // 1. Ищем код
+    // 1. Ищем неиспользованный код
     const validCodes = await db
       .select()
       .from(activationCodes)
       .where(
         and(
-          eq(activationCodes.email, emailLower),
+          eq(activationCodes.email, email),
           eq(activationCodes.code, code),
           eq(activationCodes.isUsed, false)
         )
       );
 
-    if (validCodes.length === 0) {
+    let activationRecord = validCodes[0];
+
+    // Если код уже был использован (например, двойной клик или недавняя авторизация в пределах 15 мин)
+    if (!activationRecord) {
+      const recentCodes = await db
+        .select()
+        .from(activationCodes)
+        .where(
+          and(
+            eq(activationCodes.email, email),
+            eq(activationCodes.code, code),
+            eq(activationCodes.isUsed, true)
+          )
+        )
+        .orderBy(desc(activationCodes.activatedAt))
+        .limit(1);
+
+      if (
+        recentCodes.length > 0 &&
+        recentCodes[0].activatedAt &&
+        Date.now() - new Date(recentCodes[0].activatedAt).getTime() < 15 * 60 * 1000
+      ) {
+        activationRecord = recentCodes[0];
+      }
+    }
+
+    if (!activationRecord) {
       return NextResponse.json(
-        { error: "Invalid or expired code" },
+        { error: "Неверный или устаревший код. Пожалуйста, запросите новый код." },
         { status: 400 }
       );
     }
-
-    const activationRecord = validCodes[0];
 
     // 2. Ищем или создаем пользователя
     let userList = await db
       .select()
       .from(users)
-      .where(eq(users.email, emailLower));
+      .where(eq(users.email, email));
 
     let user = userList[0];
 
     if (!user) {
-      // Регистрируем нового пользователя (по умолчанию Free, но обновим ниже если это PRO код)
+      // Регистрируем нового пользователя
       const inserted = await db
         .insert(users)
         .values({
-          email: emailLower,
+          email: email,
           isPro: false,
+          isProPlus: false,
         })
         .returning();
       user = inserted[0];
@@ -80,14 +106,14 @@ export async function POST(req: NextRequest) {
 
     const existingDevice = userDevices.find((d) => d.deviceId === deviceId);
     
-    // Лимит: 3 для PRO, 1 для Free
-    const maxDevices = user.isPro ? 3 : 1;
+    // Лимит: 3 для PRO/PRO+, 1 для Free
+    const maxDevices = (user.isPro || user.isProPlus) ? 3 : 1;
 
     if (!existingDevice) {
       if (userDevices.length >= maxDevices) {
         return NextResponse.json(
           {
-            error: `Device limit reached. You can only link ${maxDevices} device(s) on your current plan.`,
+            error: `Превышен лимит устройств. На вашем тарифе можно привязать не более ${maxDevices} устройств(а).`,
             canReset: user.deviceResetsCount < 1,
             resetsLeft: Math.max(0, 1 - user.deviceResetsCount)
           },
@@ -102,15 +128,17 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 4. Отмечаем код как использованный
-    await db
-      .update(activationCodes)
-      .set({
-        isUsed: true,
-        usedByDeviceId: deviceId,
-        activatedAt: new Date(),
-      })
-      .where(eq(activationCodes.id, activationRecord.id));
+    // 4. Отмечаем код как использованный (если еще не был отмечен)
+    if (!activationRecord.isUsed) {
+      await db
+        .update(activationCodes)
+        .set({
+          isUsed: true,
+          usedByDeviceId: deviceId,
+          activatedAt: new Date(),
+        })
+        .where(eq(activationCodes.id, activationRecord.id));
+    }
 
     // 5. Генерируем JWT токен
     const token = await new SignJWT({
@@ -118,6 +146,7 @@ export async function POST(req: NextRequest) {
       email: user.email,
       deviceId: deviceId,
       isPro: user.isPro,
+      isProPlus: user.isProPlus,
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
@@ -130,12 +159,13 @@ export async function POST(req: NextRequest) {
       user: {
         email: user.email,
         isPro: user.isPro,
+        isProPlus: user.isProPlus,
       },
     });
   } catch (error) {
     console.error("Error verifying code:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Внутренняя ошибка сервера" },
       { status: 500 }
     );
   }

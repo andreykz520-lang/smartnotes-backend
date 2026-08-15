@@ -17,8 +17,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
     }
 
     // Собираем оригинальный путь, который запрашивало приложение
-    // params.path - это массив путей, например ['v1beta', 'models', 'gemini-3.5-flash:generateContent']
-    const pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models/gemini-3.5-flash:generateContent';
+    // params.path - это массив путей, например ['v1beta', 'models', 'gemini-3.7-flash:generateContent']
+    const pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models/gemini-3.7-flash:generateContent';
 
     // Перенаправляем запрос на оригинальный сервер Google
     const googleUrl = `https://generativelanguage.googleapis.com/${pathString}?key=${key}`;

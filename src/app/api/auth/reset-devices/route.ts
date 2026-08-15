@@ -10,16 +10,17 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, code, deviceId } = await req.json();
+    const { email: rawEmail, code: rawCode, deviceId } = await req.json();
 
-    if (!email || !code || !deviceId) {
+    if (!rawEmail || !rawCode || !deviceId) {
       return NextResponse.json(
-        { error: "Missing email, code or deviceId" },
+        { error: "Заполните все поля" },
         { status: 400 }
       );
     }
 
-    const emailLower = email.toLowerCase();
+    const email = String(rawEmail).trim().toLowerCase();
+    const code = String(rawCode).trim().toUpperCase();
 
     // 1. Verify code
     const validCodes = await db
@@ -27,18 +28,14 @@ export async function POST(req: NextRequest) {
       .from(activationCodes)
       .where(
         and(
-          eq(activationCodes.email, emailLower),
-          eq(activationCodes.code, code),
-          eq(activationCodes.isUsed, false) // Note: it must be a valid unused code. 
-          // Wait, if they are resetting, the code they entered is fresh. 
-          // Or wait, they enter their old code? No, they request a new code to login!
-          // So the code is fresh and unused.
+          eq(activationCodes.email, email),
+          eq(activationCodes.code, code)
         )
       );
 
     if (validCodes.length === 0) {
       return NextResponse.json(
-        { error: "Invalid or expired code" },
+        { error: "Неверный или устаревший код" },
         { status: 400 }
       );
     }
@@ -49,17 +46,17 @@ export async function POST(req: NextRequest) {
     const userList = await db
       .select()
       .from(users)
-      .where(eq(users.email, emailLower));
+      .where(eq(users.email, email));
 
     const user = userList[0];
 
     if (!user) {
-       return NextResponse.json({ error: "User not found" }, { status: 404 });
+       return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
     }
 
     // 3. Check reset limits
     if (user.deviceResetsCount >= 1) {
-       return NextResponse.json({ error: "Reset limit reached. You can only reset your devices once." }, { status: 403 });
+       return NextResponse.json({ error: "Вы уже использовали разовый сброс устройств. Обратитесь в поддержку." }, { status: 403 });
     }
 
     // 4. Delete all old devices
@@ -92,6 +89,7 @@ export async function POST(req: NextRequest) {
       email: user.email,
       deviceId: deviceId,
       isPro: user.isPro,
+      isProPlus: user.isProPlus,
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
@@ -104,13 +102,14 @@ export async function POST(req: NextRequest) {
       user: {
         email: user.email,
         isPro: user.isPro,
+        isProPlus: user.isProPlus,
       },
     });
 
   } catch (error) {
     console.error("Error resetting devices:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Внутренняя ошибка сервера" },
       { status: 500 }
     );
   }
