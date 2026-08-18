@@ -574,15 +574,37 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-gray-500 text-sm">
-          <p>{t('footer')}</p>
-          <div className="flex items-center gap-6">
-            <a href="#features" className="hover:text-gray-400 transition-colors">{t('features')}</a>
-            <a href="#screenshots" className="hover:text-gray-400 transition-colors">{t('screenshots_nav')}</a>
-            <a href="#pricing" className="hover:text-gray-400 transition-colors">{t('pricing')}</a>
-            <a href="#faq" className="hover:text-gray-400 transition-colors">{t('faq_nav')}</a>
-            <Link href="/admin" className="text-xs text-gray-700 hover:text-gray-400 transition-colors">Admin</Link>
+      <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/10 text-gray-400 text-xs sm:text-sm">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <img src="/icon.png" alt="SmartNotes AI" className="w-8 h-8 rounded-lg object-cover" />
+            <span className="font-bold text-white text-base">SmartNotes AI</span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-gray-400">
+            <a href="#features" className="hover:text-white transition-colors">{t('features')}</a>
+            <a href="#screenshots" className="hover:text-white transition-colors">{t('screenshots_nav')}</a>
+            <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
+            <a href="#faq" className="hover:text-white transition-colors">{t('faq_nav')}</a>
+            <Link href="/privacy" className="hover:text-purple-400 transition-colors">Политика конфиденциальности</Link>
+            <Link href="/terms" className="hover:text-purple-400 transition-colors">Оферта</Link>
+            <Link href="/refund" className="hover:text-purple-400 transition-colors">Оплата и возврат</Link>
+          </div>
+        </div>
+
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-gray-500 text-xs">
+          <div>
+            <p className="text-gray-400 font-medium mb-1">
+              Самозанятый: <span className="text-white">Чемарев Андрей Владимирович</span> • ИНН: <span className="text-white">540314274724</span>
+            </p>
+            <p>
+              Поддержка пользователей: <a href="mailto:autoneuro24@gmail.com" className="text-purple-400 hover:underline">autoneuro24@gmail.com</a>
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <p>{t('footer')}</p>
+            <Link href="/admin" className="text-gray-700 hover:text-gray-400 transition-colors text-[11px]">Admin</Link>
           </div>
         </div>
       </footer>
