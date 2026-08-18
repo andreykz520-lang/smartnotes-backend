@@ -1,10 +1,11 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { activationCodes, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 function generateCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();

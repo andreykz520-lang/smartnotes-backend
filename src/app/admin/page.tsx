@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
-  const [stats, setStats] = useState({ pro: 0, free: 0 });
+  const [stats, setStats] = useState({ proPlus: 0, pro: 0, free: 0 });
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,7 @@ export default function AdminPage() {
     fetchStats(password);
   };
 
-  const handleUserAction = async (e: React.FormEvent, action: 'grant_pro' | 'revoke_pro' | 'delete_user') => {
+  const handleUserAction = async (e: React.FormEvent, action: 'grant_pro' | 'grant_pro_plus' | 'revoke_pro' | 'delete_user') => {
     e.preventDefault();
     if (!email) return;
 
@@ -152,6 +152,10 @@ export default function AdminPage() {
             <h2 className="text-xl font-semibold mb-4 text-gray-200">📊 Статистика пользователей</h2>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-4 bg-gray-800 rounded-xl border border-gray-700">
+                <span className="text-gray-400 font-medium">PRO+ (Подписка)</span>
+                <span className="text-2xl font-bold text-yellow-400 bg-yellow-400/10 px-3 py-1 rounded-lg">{stats.proPlus}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-gray-800 rounded-xl border border-gray-700">
                 <span className="text-gray-400 font-medium">PRO версии</span>
                 <span className="text-2xl font-bold text-green-400 bg-green-400/10 px-3 py-1 rounded-lg">{stats.pro}</span>
               </div>
@@ -161,7 +165,7 @@ export default function AdminPage() {
               </div>
               <div className="flex justify-between items-center p-4 bg-indigo-900/30 border border-indigo-500/30 rounded-xl">
                 <span className="text-indigo-200 font-medium">Всего пользователей</span>
-                <span className="text-2xl font-bold text-white bg-indigo-500/20 px-3 py-1 rounded-lg">{stats.pro + stats.free}</span>
+                <span className="text-2xl font-bold text-white bg-indigo-500/20 px-3 py-1 rounded-lg">{stats.proPlus + stats.pro + stats.free}</span>
               </div>
             </div>
           </div>
@@ -181,14 +185,22 @@ export default function AdminPage() {
                     required
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={(e) => handleUserAction(e, 'grant_pro')}
                     disabled={loading || !email}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2 px-2 rounded-xl shadow-lg transition-all disabled:opacity-50 text-sm"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-2 rounded-xl shadow-lg transition-all disabled:opacity-50 text-sm"
                   >
                     Выдать PRO
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleUserAction(e, 'grant_pro_plus')}
+                    disabled={loading || !email}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2 px-2 rounded-xl shadow-lg transition-all disabled:opacity-50 text-sm"
+                  >
+                    Выдать PRO+ (С ИИ)
                   </button>
                   <button
                     type="button"
@@ -196,13 +208,13 @@ export default function AdminPage() {
                     disabled={loading || !email}
                     className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-2 rounded-xl transition-all disabled:opacity-50 text-sm"
                   >
-                    Забрать PRO
+                    Забрать все PRO
                   </button>
                   <button
                     type="button"
                     onClick={(e) => handleUserAction(e, 'delete_user')}
                     disabled={loading || !email}
-                    className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-2 rounded-xl transition-all disabled:opacity-50 text-sm"
+                    className="w-full bg-red-900/50 hover:bg-red-800 text-red-200 border border-red-800/50 font-bold py-2 px-2 rounded-xl transition-all disabled:opacity-50 text-sm"
                   >
                     Удалить
                   </button>

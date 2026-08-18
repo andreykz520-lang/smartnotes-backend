@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").unique().notNull(),
   isPro: boolean("is_pro").default(false).notNull(),
+  isProPlus: boolean("is_pro_plus").default(false).notNull(),
   proStartedAt: timestamp("pro_started_at"),
   proEndedAt: timestamp("pro_ended_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -1,0 +1,23 @@
+{
+  "Index": {
+    "title": "SmartNotes AI",
+    "subtitle": "Notas Inteligentes con Inteligencia Artificial",
+    "description": "Organiza tus pensamientos, analiza textos y chatea con la IA directamente en la aplicación.",
+    "download_android": "Descargar para Android",
+    "web_version": "Versión Web",
+    "features": "Características",
+    "feature_1_title": "Análisis Inteligente",
+    "feature_1_desc": "La IA te ayudará a resumir textos largos y destacar lo principal.",
+    "feature_2_title": "Sincronización en la Nube",
+    "feature_2_desc": "Tus notas están siempre a mano en cualquier dispositivo.",
+    "feature_3_title": "Privacidad",
+    "feature_3_desc": "No usamos tus datos para entrenar modelos.",
+    "pricing": "Precios",
+    "free_plan": "Gratis",
+    "free_plan_desc": "Funciones básicas para tareas cotidianas",
+    "pro_plan": "PRO+",
+    "pro_plan_desc": "IA integrada y sincronización en la nube",
+    "buy_pro": "Comprar PRO+",
+    "footer": "© 2026 SmartNotes AI. Todos los derechos reservados."
+  }
+}

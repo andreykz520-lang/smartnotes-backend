@@ -1,0 +1,23 @@
+{
+  "Index": {
+    "title": "SmartNotes AI",
+    "subtitle": "Intelligente Notizen mit künstlicher Intelligenz",
+    "description": "Organisieren Sie Ihre Gedanken, analysieren Sie Texte und chatten Sie direkt in der App mit der KI.",
+    "download_android": "Für Android herunterladen",
+    "web_version": "Web-Version",
+    "features": "Funktionen",
+    "feature_1_title": "Intelligente Analyse",
+    "feature_1_desc": "Die KI hilft Ihnen, lange Texte zusammenzufassen und das Wichtigste hervorzuheben.",
+    "feature_2_title": "Cloud-Synchronisierung",
+    "feature_2_desc": "Ihre Notizen sind auf jedem Gerät immer griffbereit.",
+    "feature_3_title": "Datenschutz",
+    "feature_3_desc": "Wir verwenden Ihre Daten nicht zum Trainieren von Modellen.",
+    "pricing": "Preise",
+    "free_plan": "Kostenlos",
+    "free_plan_desc": "Grundfunktionen für alltägliche Aufgaben",
+    "pro_plan": "PRO+",
+    "pro_plan_desc": "Integrierte KI und Cloud-Synchronisierung",
+    "buy_pro": "PRO+ Kaufen",
+    "footer": "© 2026 SmartNotes AI. Alle Rechte vorbehalten."
+  }
+}

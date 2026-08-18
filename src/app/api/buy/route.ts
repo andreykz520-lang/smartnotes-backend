@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const { email, plan } = await request.json();
     
     if (!email) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
@@ -15,6 +15,12 @@ export async function POST(request: Request) {
        console.error("YooKassa credentials not configured");
        return NextResponse.json({ error: 'Сервер оплат временно недоступен' }, { status: 500 });
     }
+
+    const isProPlus = plan === 'pro_plus';
+    const amountValue = isProPlus ? '150.00' : '500.00';
+    const description = isProPlus 
+      ? 'SmartNotes AI - Подписка PRO+ (ИИ, 1 месяц)' 
+      : 'SmartNotes AI - PRO Версия (Навсегда)';
 
     const authString = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
     const idempotenceKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -30,7 +36,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         amount: {
-          value: '1490.00',
+          value: amountValue,
           currency: 'RUB',
         },
         capture: true,
@@ -38,9 +44,10 @@ export async function POST(request: Request) {
           type: 'redirect',
           return_url: `${origin}/success`, 
         },
-        description: 'SmartNotes AI - PRO Версия',
+        description: description,
         metadata: {
-          email: email,
+          email: email.trim().toLowerCase(),
+          plan: isProPlus ? 'pro_plus' : 'pro',
         },
       }),
     });

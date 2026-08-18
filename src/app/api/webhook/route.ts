@@ -1,11 +1,12 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { activationCodes } from '@/db/schema';
+import { activationCodes, users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 export async function POST(request: Request) {
   try {
@@ -16,38 +17,66 @@ export async function POST(request: Request) {
     }
 
     const email = body.object?.metadata?.email;
-    const language = body.object?.metadata?.language || 'ru';
+    const plan = body.object?.metadata?.plan || (Number(body.object?.amount?.value) < 300 ? 'pro_plus' : 'pro');
+    const isProPlus = plan === 'pro_plus';
     
     if (!email) return NextResponse.json({ error: 'No email metadata' });
+    const normalizedEmail = email.trim().toLowerCase();
 
-    // 1. Генерируем код
+    // 1. Прямая активация пользователя в базе
+    const existingUser = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.email, normalizedEmail),
+    });
+
+    const now = new Date();
+    const proEndedAt = isProPlus ? new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) : null;
+
+    if (existingUser) {
+      await db.update(users).set({
+        isPro: true,
+        isProPlus: isProPlus,
+        proStartedAt: now,
+        proEndedAt: proEndedAt,
+        updatedAt: now,
+      }).where(eq(users.id, existingUser.id));
+    } else {
+      await db.insert(users).values({
+        email: normalizedEmail,
+        isPro: true,
+        isProPlus: isProPlus,
+        proStartedAt: now,
+        proEndedAt: proEndedAt,
+      });
+    }
+
+    // 2. Генерируем код
     const rawCode = crypto.randomBytes(8).toString('hex').toUpperCase();
     const formattedCode = rawCode.match(/.{1,4}/g)?.join('-') || rawCode;
 
-    // 2. Пишем в базу
+    // 3. Пишем в базу
     const [newCode] = await db.insert(activationCodes).values({
       code: formattedCode,
-      email: email,
+      email: normalizedEmail,
     }).returning();
 
-    // 3. Формируем красивое письмо (на 2-х языках)
-    // 3. Формируем красивое письмо
+    // 4. Формируем красивое письмо
+    const tierName = isProPlus ? 'PRO+ со встроенным ИИ 👑' : 'PRO (Навсегда) ⭐';
     const t = {
-      subject: 'Ваш код активации PRO 👑 - SmartNotes AI',
+      subject: `Ваш код активации ${tierName} - SmartNotes AI`,
       title: 'Спасибо за покупку!',
-      intro: 'Ваш код активации PRO для SmartNotes AI готов:',
-      instructions: 'Чтобы активировать PRO функции:',
+      intro: `Ваш код активации ${tierName} для SmartNotes AI готов:`,
+      instructions: 'Чтобы активировать функции:',
       step1: 'Откройте приложение SmartNotes AI',
-      step2: 'Введите ваш email и этот код на экране входа',
-      step3: 'Наслаждайтесь умными функциями и облачной синхронизацией!',
-      support: 'Нужна помощь? Напишите нам: support@smartnotes.ai',
+      step2: 'Введите ваш email и этот код на экране входа (или код из письма при входе)',
+      step3: isProPlus ? 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash и облачной синхронизацией!' : 'Наслаждайтесь неограниченными возможностями и облачной синхронизацией!',
+      support: 'Нужна помощь? Напишите нам: support@smartnotes-ai.ru',
       footer: 'Этот код действителен для активации до 3-х устройств (один аккаунт).'
     };
 
     const htmlContent = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
       <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
-        <h1 style="color: #9333ea; margin: 0; font-size: 24px;">SmartNotes AI PRO</h1>
+        <h1 style="color: #9333ea; margin: 0; font-size: 24px;">SmartNotes AI ${isProPlus ? 'PRO+' : 'PRO'}</h1>
       </div>
       <div style="padding: 20px 0;">
         <h2 style="color: #1f2937; font-size: 20px;">${t.title}</h2>
@@ -73,17 +102,16 @@ export async function POST(request: Request) {
     </div>
     `;
 
-    // 4. Отправляем письмо с ПРАВИЛЬНЫМ FROM (без скобок!)
-    const { error } = await resend.emails.send({
-      from: 'support@smartnotes-ai.ru', 
-      to: email,
-      subject: t.subject,
-      html: htmlContent,
-    });
-
-    if (error) {
-      console.error("Ошибка Resend:", error);
-      return NextResponse.json({ success: false, error });
+    // 5. Отправляем письмо
+    try {
+      await resend.emails.send({
+        from: 'support@smartnotes-ai.ru', 
+        to: normalizedEmail,
+        subject: t.subject,
+        html: htmlContent,
+      });
+    } catch (err) {
+      console.error("Ошибка Resend:", err);
     }
 
     return NextResponse.json({ success: true, code: newCode.code });
