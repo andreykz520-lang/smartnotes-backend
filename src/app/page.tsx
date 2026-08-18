@@ -69,16 +69,17 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             <a
-              href="#"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-gray-100 text-black font-semibold text-lg transition-all"
+              href="/SmartNotes.apk"
+              download="SmartNotes.apk"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-gray-100 text-black font-semibold text-lg transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
             >
-              {t('download_android')}
+              📥 {t('download_android')}
             </a>
             <Link
               href="/buy"
-              className="w-full flex items-center justify-center py-4 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-all"
+              className="w-full sm:w-auto flex items-center justify-center px-8 py-4 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg transition-all shadow-[0_0_20px_rgba(147,51,234,0.4)]"
             >
-              {t('buy_pro')}
+              👑 {t('buy_pro')}
             </Link>
           </div>
 
@@ -182,7 +183,7 @@ export default function Home() {
                 </li>
               </ul>
               
-              <a href="#" className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-center text-sm font-semibold hover:bg-white/10 transition-colors">
+              <a href="/SmartNotes.apk" download="SmartNotes.apk" className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-center text-sm font-semibold hover:bg-white/10 transition-colors">
                 {t('download_btn')}
               </a>
             </div>
@@ -209,14 +210,14 @@ export default function Home() {
               </ul>
               
               <Link href="/buy?plan=pro" className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-center text-sm font-bold border border-white/20 transition-all">
-                {t('pro_lifetime_plan')}
+                {t('buy_pro_lifetime')}
               </Link>
             </div>
 
             {/* 3. PRO+ AI */}
             <div className="bg-gradient-to-b from-purple-600/30 to-indigo-600/10 border-2 border-purple-500/60 rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center relative shadow-[0_0_30px_rgba(168,85,247,0.2)]">
               <div className="absolute -top-3.5 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-3.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
-                Популярный
+                {t('popular')}
               </div>
               <h3 className="text-xl font-bold mb-2">{t('pro_plan')}</h3>
               <p className="text-gray-300 text-sm mb-6">{t('pro_plan_desc')}</p>
