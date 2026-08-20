@@ -110,19 +110,26 @@ export async function POST(req: NextRequest) {
 
     const existingDevice = userDevices.find((d) => d.deviceId === deviceId);
     
-    // Лимит: 3 для PRO/PRO+, 1 для Free
-    const maxDevices = (user.isPro || user.isProPlus) ? 3 : 1;
+    // Для администратора/создателя лимит не ограничен (100)
+    const isAdmin = email === 'andreykz520@gmail.com' || email === 'autoneuro24@gmail.com';
+    const maxDevices = isAdmin ? 100 : ((user.isPro || user.isProPlus) ? 3 : 1);
 
     if (!existingDevice) {
       if (userDevices.length >= maxDevices) {
-        return NextResponse.json(
-          {
-            error: `Превышен лимит устройств. На вашем тарифе можно привязать не более ${maxDevices} устройств(а).`,
-            canReset: user.deviceResetsCount < 1,
-            resetsLeft: Math.max(0, 1 - user.deviceResetsCount)
-          },
-          { status: 403 }
-        );
+        if (isAdmin || user.isPro || user.isProPlus) {
+          // Автоматически ротируем самое старое устройство
+          const oldestDevice = userDevices[0];
+          await db.delete(devices).where(eq(devices.id, oldestDevice.id));
+        } else {
+          return NextResponse.json(
+            {
+              error: `Превышен лимит устройств. На вашем тарифе можно привязать не более ${maxDevices} устройств(а).`,
+              canReset: user.deviceResetsCount < 1,
+              resetsLeft: Math.max(0, 1 - user.deviceResetsCount)
+            },
+            { status: 403 }
+          );
+        }
       }
       
       // Регистрируем новое устройство
