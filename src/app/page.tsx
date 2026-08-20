@@ -149,17 +149,23 @@ export default function Home() {
             {t('description')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto flex-wrap">
             <a
               href="/SmartNotes.apk"
               download="SmartNotes.apk"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-gray-100 text-black font-bold text-base sm:text-lg transition-all shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white hover:bg-gray-100 text-black font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(255,255,255,0.25)]"
             >
               📥 {t('download_android')}
             </a>
             <a
+              href="/SmartNotes-Setup.exe"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition-all backdrop-blur-md"
+            >
+              💻 {t('download_windows')}
+            </a>
+            <a
               href="#pricing"
-              className="w-full sm:w-auto flex items-center justify-center px-8 py-4 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-base sm:text-lg transition-all shadow-[0_0_25px_rgba(147,51,234,0.4)]"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(147,51,234,0.4)]"
             >
               👑 {t('choose_plan')}
             </a>
@@ -321,9 +327,14 @@ export default function Home() {
                 </li>
               </ul>
               
-              <a href="/SmartNotes.apk" download="SmartNotes.apk" className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-center text-sm font-semibold hover:bg-white/10 transition-colors">
-                {t('download_btn')}
-              </a>
+              <div className="flex flex-col gap-2 w-full">
+                <a href="/SmartNotes.apk" download="SmartNotes.apk" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
+                  📱 {t('download_android')}
+                </a>
+                <a href="/SmartNotes-Setup.exe" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
+                  💻 {t('download_windows')}
+                </a>
+              </div>
             </div>
 
             {/* 2. PRO Lifetime */}
