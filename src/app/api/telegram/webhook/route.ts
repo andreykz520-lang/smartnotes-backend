@@ -28,13 +28,28 @@ async function sendMessage(chatId: number | string, text: string, replyMarkup?: 
   }
 }
 
-async function sendStarsInvoice(chatId: number | string, plan: 'pro_plus' | 'pro', userEmail?: string) {
-  const isProPlus = plan === 'pro_plus';
-  const starsAmount = isProPlus ? 150 : 500;
-  const title = isProPlus ? '👑 SmartNotes PRO+ (1 месяц)' : '⭐ SmartNotes PRO (Навсегда)';
-  const description = isProPlus
-    ? 'Встроенный ИИ Gemini 3.7 Flash, распознавание фото, голосовая диктовка на лету и облачная синхронизация на 3 устройства.'
-    : 'Бессрочная облачная синхронизация на 3 устройства, экспорт в PDF, секретные заметки с PIN и поддержка своих API-ключей.';
+async function sendStarsInvoice(chatId: number | string, plan: 'pro_plus_1m' | 'pro_plus_3m' | 'pro_plus_6m' | 'pro_plus' | 'pro', userEmail?: string) {
+  let starsAmount = 150;
+  let title = '👑 SmartNotes PRO+ (1 месяц)';
+  let description = 'Встроенный ИИ Gemini 3.7 Flash, распознавание фото, голосовая диктовка на лету и облачная синхронизация на 3 устройства.';
+  let label = 'SmartNotes PRO+ (30 дней)';
+
+  if (plan === 'pro') {
+    starsAmount = 500;
+    title = '⭐ SmartNotes PRO (Навсегда)';
+    description = 'Бессрочная облачная синхронизация на 3 устройства, экспорт в PDF, секретные заметки с PIN и поддержка своих API-ключей.';
+    label = 'SmartNotes PRO (Lifetime)';
+  } else if (plan === 'pro_plus_3m') {
+    starsAmount = 390;
+    title = '👑 SmartNotes PRO+ (3 месяца, скидка)';
+    description = 'Встроенный ИИ Gemini 3.7 Flash на 90 дней со скидкой и облачная синхронизация на 3 устройства.';
+    label = 'SmartNotes PRO+ (90 дней)';
+  } else if (plan === 'pro_plus_6m') {
+    starsAmount = 790;
+    title = '🎁👑 SmartNotes PRO+ (6 мес) + Вечный PRO!';
+    description = 'ИИ Gemini 3.7 Flash на 180 дней + ПОЖИЗНЕННЫЙ статус PRO (вечная синхронизация и PDF) в подарок навсегда!';
+    label = 'SmartNotes PRO+ (180 дн + Вечный PRO)';
+  }
 
   const payload = JSON.stringify({
     plan,
@@ -56,8 +71,8 @@ async function sendStarsInvoice(chatId: number | string, plan: 'pro_plus' | 'pro
         currency: 'XTR',    // Официальная валюта Telegram Stars
         prices: [
           {
-            label: isProPlus ? 'SmartNotes PRO+ (30 дней)' : 'SmartNotes PRO (Lifetime)',
-            amount: starsAmount, // 150 или 500 звезд
+            label: label,
+            amount: starsAmount,
           },
         ],
       }),
@@ -107,30 +122,53 @@ export async function POST(request: Request) {
         payloadData = { plan: 'pro_plus', email: '' };
       }
 
-      const plan: 'pro_plus' | 'pro' = payloadData.plan === 'pro' ? 'pro' : 'pro_plus';
-      const isProPlus = plan === 'pro_plus';
+      const plan = String(payloadData.plan || 'pro_plus_1m');
+      const isProOnly = plan === 'pro';
+      const isProPlus = !isProOnly;
       const rawEmail = (payloadData.email || `tg_${chatId}@smartnotes.app`).trim().toLowerCase();
 
-      const now = new Date();
-      const proEndedAt = isProPlus ? new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) : null;
+      // Определение срока и подарка
+      let daysToAdd = 0;
+      let isGiftPro = false;
+      let tierTitle = 'PRO (Навсегда) ⭐';
 
-      // 1. Активация в базе данных
+      if (plan === 'pro_plus_6m') {
+        daysToAdd = 180;
+        isGiftPro = true;
+        tierTitle = 'PRO+ (6 месяцев) + Вечный PRO в подарок! 🎁👑';
+      } else if (plan === 'pro_plus_3m') {
+        daysToAdd = 90;
+        tierTitle = 'PRO+ (3 месяца) 👑';
+      } else if (isProPlus) {
+        daysToAdd = 30;
+        tierTitle = 'PRO+ (1 месяц) 👑';
+      }
+
+      const now = new Date();
       const existingUser = await db.query.users.findFirst({
         where: (u, { eq }) => eq(u.email, rawEmail),
       });
 
+      let baseTime = now.getTime();
+      if (existingUser?.proEndedAt && new Date(existingUser.proEndedAt).getTime() > now.getTime()) {
+        baseTime = new Date(existingUser.proEndedAt).getTime();
+      }
+
+      const proEndedAt = isProPlus ? new Date(baseTime + daysToAdd * 24 * 60 * 60 * 1000) : null;
+      const shouldKeepPro = isProOnly || isGiftPro || (existingUser ? existingUser.isPro : false);
+
       if (existingUser) {
         await db.update(users).set({
-          isPro: true,
+          isPro: shouldKeepPro,
           isProPlus: isProPlus,
-          proStartedAt: now,
+          proStartedAt: existingUser.proStartedAt || now,
           proEndedAt: proEndedAt,
           updatedAt: now,
         }).where(eq(users.id, existingUser.id));
       } else {
         await db.insert(users).values({
           email: rawEmail,
-          isPro: true,
+          isPro: shouldKeepPro,
           isProPlus: isProPlus,
           proStartedAt: now,
           proEndedAt: proEndedAt,
@@ -152,20 +190,20 @@ export async function POST(request: Request) {
           await resend.emails.send({
             from: 'SmartNotes AI <noreply@smartnotes-ai.ru>',
             to: [rawEmail],
-            subject: `🎉 Ваш код активации SmartNotes ${isProPlus ? 'PRO+' : 'PRO'}`,
+            subject: `🎉 Ваш код активации SmartNotes ${tierTitle}`,
             html: `
               <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #0A0A0A; color: #fff; border-radius: 16px;">
                 <h1 style="color: #A855F7;">Оплата успешно завершена! 🎉</h1>
-                <p>Спасибо за приобретение <strong>SmartNotes ${isProPlus ? 'PRO+ (ИИ Gemini 3.7)' : 'PRO (Навсегда)'}</strong> через Telegram Stars.</p>
+                <p>Спасибо за приобретение <strong>SmartNotes ${tierTitle}</strong> через Telegram Stars.</p>
                 <div style="background-color: #1F1F2E; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center;">
                   <span style="font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #fff;">${formattedCode}</span>
                 </div>
                 <p><strong>Как активировать в приложении:</strong></p>
                 <ol style="color: #ccc; line-height: 1.6;">
-                  <li>Откройте приложение <strong>SmartNotes AI</strong> на телефоне.</li>
+                  <li>Откройте приложение <strong>SmartNotes AI</strong> на телефоне или компьютере.</li>
                   <li>Перейдите во вкладку <strong>Настройки</strong>.</li>
                   <li>Введите ваш Email (<code>${rawEmail}</code>) или код активации выше.</li>
-                  <li>Все функции PRO активируются мгновенно!</li>
+                  <li>Все функции активируются мгновенно!</li>
                 </ol>
                 <p style="color: #888; font-size: 12px; margin-top: 30px;">Команда SmartNotes AI</p>
               </div>
@@ -177,7 +215,7 @@ export async function POST(request: Request) {
       }
 
       // 4. Поздравление и код прямо в Telegram
-      const successText = `🎉 <b>Оплата ${payment.total_amount} ⭐ успешно завершена!</b>\n\nТариф: <b>SmartNotes ${isProPlus ? 'PRO+ с ИИ (30 дней)' : 'PRO (Навсегда)'}</b>\n\n🔑 <b>Ваш код активации:</b>\n<code>${formattedCode}</code>\n\n<b>Как активировать в приложении:</b>\n1. Откройте приложение <b>SmartNotes</b> на телефоне.\n2. Перейдите в <b>«Настройки»</b>.\n3. Введите ваш код активации или Email (<code>${rawEmail}</code>).\n\n<i>Все премиум-возможности активируются моментально!</i>`;
+      const successText = `🎉 <b>Оплата ${payment.total_amount} ⭐ успешно завершена!</b>\n\nТариф: <b>SmartNotes ${tierTitle}</b>\n\n🔑 <b>Ваш код активации:</b>\n<code>${formattedCode}</code>\n\n<b>Как активировать в приложении:</b>\n1. Откройте приложение <b>SmartNotes</b> на телефоне или ПК.\n2. Перейдите в <b>«Настройки»</b>.\n3. Введите ваш код активации или Email (<code>${rawEmail}</code>).\n\n<i>Все премиум-возможности активируются моментально!</i>`;
 
       await sendMessage(chatId, successText);
       return NextResponse.json({ ok: true });
@@ -193,22 +231,39 @@ export async function POST(request: Request) {
         const startParam = text.split(' ')[1] || '';
 
         if (startParam.startsWith('pro_plus') || startParam.startsWith('pro')) {
-          const parts = startParam.split('_');
-          const isProPlus = parts[0] === 'pro' && parts[1] === 'plus';
-          const plan: 'pro_plus' | 'pro' = isProPlus ? 'pro_plus' : 'pro';
-          const userEmail = parts.slice(isProPlus ? 2 : 1).join('_');
+          let plan: any = 'pro_plus_1m';
+          let userEmail = '';
+          if (startParam.startsWith('pro_plus_6m')) {
+            plan = 'pro_plus_6m';
+            userEmail = startParam.replace('pro_plus_6m_', '');
+          } else if (startParam.startsWith('pro_plus_3m')) {
+            plan = 'pro_plus_3m';
+            userEmail = startParam.replace('pro_plus_3m_', '');
+          } else if (startParam.startsWith('pro_plus')) {
+            plan = 'pro_plus_1m';
+            userEmail = startParam.replace('pro_plus_', '');
+          } else if (startParam.startsWith('pro')) {
+            plan = 'pro';
+            userEmail = startParam.replace('pro_', '');
+          }
 
-          await sendStarsInvoice(chatId, plan, userEmail);
+          await sendStarsInvoice(chatId, plan, userEmail === plan ? '' : userEmail);
           return NextResponse.json({ ok: true });
         }
 
         const keyboard = {
           inline_keyboard: [
             [
-              { text: '👑 PRO+ с ИИ (150 ⭐ • $3 / мес)', callback_data: 'buy_stars_pro_plus' },
+              { text: '🎁 PRO+ 6 мес (790 ⭐) + Вечный PRO в подарок!', callback_data: 'buy_stars_pro_plus_6m' },
             ],
             [
-              { text: '⭐ PRO Версия (500 ⭐ • $10 навсегда)', callback_data: 'buy_stars_pro' },
+              { text: '🔥 PRO+ 3 мес (390 ⭐ • скидка)', callback_data: 'buy_stars_pro_plus_3m' },
+            ],
+            [
+              { text: '👑 PRO+ 1 мес (150 ⭐ • $3)', callback_data: 'buy_stars_pro_plus_1m' },
+            ],
+            [
+              { text: '⭐ PRO Навсегда (500 ⭐ • $10)', callback_data: 'buy_stars_pro' },
             ],
             [
               { text: '🌐 Официальный сайт', url: 'https://smartnotes-ai.ru' },
@@ -216,7 +271,7 @@ export async function POST(request: Request) {
           ],
         };
 
-        const welcomeText = `👋 <b>Добро пожаловать в SmartNotes AI!</b>\n\nОфициальный бот для мгновенной оплаты подписки через <b>Telegram Stars (Звёзды)</b> по всему миру.\n\n<b>Выберите тариф для выставления счета:</b>\n\n👑 <b>PRO+ с ИИ (Gemini 3.7 Flash)</b> — 150 ⭐ ($3/мес)\n• Встроенный ИИ без своих ключей\n• Голосовая диктовка на лету\n• Распознавание фото и саммари\n• Облачная синхронизация на 3 устройства\n\n⭐ <b>PRO Версия</b> — 500 ⭐ ($10 разово)\n• Бессрочный доступ на 3 устройства\n• Экспорт в PDF и секретные заметки с PIN\n• Возможность ввода своих API-ключей`;
+        const welcomeText = `👋 <b>Добро пожаловать в SmartNotes AI!</b>\n\nОфициальный бот для мгновенной оплаты подписки через <b>Telegram Stars (Звёзды)</b> по всему миру.\n\n<b>Выберите тариф для выставления счета:</b>\n\n🎁 <b>PRO+ 6 месяцев</b> — 790 ⭐\n• Встроенный ИИ Gemini 3.7 Flash на 180 дней\n• <b>БОНУС:</b> Пожизненный статус PRO навсегда в подарок!\n\n🔥 <b>PRO+ 3 месяца</b> — 390 ⭐ (скидка)\n• Встроенный ИИ на 90 дней\n\n👑 <b>PRO+ 1 месяц</b> — 150 ⭐\n• Встроенный ИИ на 30 дней\n\n⭐ <b>PRO Версия</b> — 500 ⭐\n• Бессрочный доступ (облако на 3 устройства, PDF, PIN)`;
 
         await sendMessage(chatId, welcomeText, keyboard);
         return NextResponse.json({ ok: true });
@@ -230,10 +285,16 @@ export async function POST(request: Request) {
         const keyboard = {
           inline_keyboard: [
             [
-              { text: '👑 Оплатить PRO+ (150 ⭐)', callback_data: `invoice_pro_plus_${email}` },
+              { text: '🎁 Оплатить PRO+ 6 мес (790 ⭐ + Подарок PRO)', callback_data: `invoice_pro_plus_6m_${email}` },
             ],
             [
-              { text: '⭐ Оплатить PRO (500 ⭐)', callback_data: `invoice_pro_${email}` },
+              { text: '🔥 Оплатить PRO+ 3 мес (390 ⭐)', callback_data: `invoice_pro_plus_3m_${email}` },
+            ],
+            [
+              { text: '👑 Оплатить PRO+ 1 мес (150 ⭐)', callback_data: `invoice_pro_plus_1m_${email}` },
+            ],
+            [
+              { text: '⭐ Оплатить PRO Навсегда (500 ⭐)', callback_data: `invoice_pro_${email}` },
             ],
           ],
         };
@@ -260,20 +321,39 @@ export async function POST(request: Request) {
       const chatId = query.message.chat.id;
       const data = query.data || '';
 
-      if (data === 'buy_stars_pro_plus') {
-        await sendStarsInvoice(chatId, 'pro_plus');
+      if (data === 'buy_stars_pro_plus_6m') {
+        await sendStarsInvoice(chatId, 'pro_plus_6m');
         return NextResponse.json({ ok: true });
       }
-
+      if (data === 'buy_stars_pro_plus_3m') {
+        await sendStarsInvoice(chatId, 'pro_plus_3m');
+        return NextResponse.json({ ok: true });
+      }
+      if (data === 'buy_stars_pro_plus_1m' || data === 'buy_stars_pro_plus') {
+        await sendStarsInvoice(chatId, 'pro_plus_1m');
+        return NextResponse.json({ ok: true });
+      }
       if (data === 'buy_stars_pro') {
         await sendStarsInvoice(chatId, 'pro');
         return NextResponse.json({ ok: true });
       }
 
       if (data.startsWith('invoice_')) {
-        const parts = data.split('_');
-        const plan: 'pro_plus' | 'pro' = parts[1] === 'pro' && parts[2] === 'plus' ? 'pro_plus' : 'pro';
-        const userEmail = parts[parts.length - 1];
+        let plan: any = 'pro_plus_1m';
+        let userEmail = '';
+        if (data.startsWith('invoice_pro_plus_6m_')) {
+          plan = 'pro_plus_6m';
+          userEmail = data.replace('invoice_pro_plus_6m_', '');
+        } else if (data.startsWith('invoice_pro_plus_3m_')) {
+          plan = 'pro_plus_3m';
+          userEmail = data.replace('invoice_pro_plus_3m_', '');
+        } else if (data.startsWith('invoice_pro_plus_1m_')) {
+          plan = 'pro_plus_1m';
+          userEmail = data.replace('invoice_pro_plus_1m_', '');
+        } else if (data.startsWith('invoice_pro_')) {
+          plan = 'pro';
+          userEmail = data.replace('invoice_pro_', '');
+        }
 
         await sendStarsInvoice(chatId, plan, userEmail);
         return NextResponse.json({ ok: true });

@@ -8,7 +8,7 @@ export default function Home() {
   const { t, language, setLanguage } = useLanguage();
   const isRu = language === 'ru';
 
-  const [selectedPlan, setSelectedPlan] = useState<'pro_plus' | 'pro'>('pro_plus');
+  const [selectedPlan, setSelectedPlan] = useState<'pro_plus_1m' | 'pro_plus_3m' | 'pro_plus_6m' | 'pro_plus' | 'pro'>('pro_plus_1m');
   const [paymentMethod, setPaymentMethod] = useState<'yookassa' | 'telegram'>(isRu ? 'yookassa' : 'telegram');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -22,8 +22,8 @@ export default function Home() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const planParam = params.get('plan');
-      if (planParam === 'pro' || planParam === 'pro_plus') {
-        setSelectedPlan(planParam);
+      if (planParam === 'pro' || planParam === 'pro_plus_6m' || planParam === 'pro_plus_3m' || planParam === 'pro_plus_1m' || planParam === 'pro_plus') {
+        setSelectedPlan(planParam as any);
       }
       const emailParam = params.get('email');
       if (emailParam) {
@@ -372,28 +372,81 @@ export default function Home() {
               <div className="absolute -top-3.5 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-3.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
                 {t('popular')}
               </div>
-              <h3 className="text-xl font-bold mb-2">{t('pro_plan')}</h3>
-              <p className="text-gray-300 text-sm mb-6">{t('pro_plan_desc')}</p>
-              <div className="flex items-end gap-1.5 mb-6">
-                <span className="text-3xl font-bold text-white">{t('pro_price')}</span>
-                <span className="text-purple-300 text-xs mb-1">{t('pro_period')}</span>
+              <h3 className="text-xl font-bold mb-1">{t('pro_plan')}</h3>
+              <p className="text-gray-300 text-xs sm:text-sm mb-4">{t('pro_plan_desc')}</p>
+
+              {/* DURATION PILLS */}
+              <div className="grid grid-cols-3 gap-1.5 p-1 bg-black/40 border border-white/10 rounded-xl mb-4 w-full text-xs">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlan('pro_plus_1m')}
+                  className={`py-1.5 px-1 rounded-lg font-semibold transition-all ${
+                    selectedPlan === 'pro_plus_1m' || selectedPlan === 'pro_plus'
+                      ? 'bg-purple-600 text-white shadow'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  1 мес
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlan('pro_plus_3m')}
+                  className={`py-1.5 px-1 rounded-lg font-semibold transition-all relative ${
+                    selectedPlan === 'pro_plus_3m'
+                      ? 'bg-purple-600 text-white shadow'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  3 мес
+                  <span className="block text-[9px] text-amber-300">-13%</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlan('pro_plus_6m')}
+                  className={`py-1.5 px-1 rounded-lg font-semibold transition-all relative ${
+                    selectedPlan === 'pro_plus_6m'
+                      ? 'bg-purple-600 text-white shadow'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  6 мес
+                  <span className="block text-[9px] text-emerald-300">🎁 +PRO</span>
+                </button>
+              </div>
+
+              <div className="flex flex-col items-center mb-4">
+                <div className="flex items-end gap-1.5">
+                  <span className="text-3xl font-bold text-white">
+                    {selectedPlan === 'pro_plus_6m' ? (isRu ? '790 ₽' : '$15') : selectedPlan === 'pro_plus_3m' ? (isRu ? '390 ₽' : '$8') : (isRu ? '150 ₽' : '$3')}
+                  </span>
+                  <span className="text-purple-300 text-xs mb-1">
+                    {selectedPlan === 'pro_plus_6m' ? (isRu ? 'за 6 месяцев' : '/ 6 mo') : selectedPlan === 'pro_plus_3m' ? (isRu ? 'за 3 месяца' : '/ 3 mo') : (isRu ? '/ месяц' : '/ mo')}
+                  </span>
+                </div>
+                {selectedPlan === 'pro_plus_6m' && (
+                  <span className="mt-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold">
+                    {isRu ? '🎁 Вечный PRO (500 ₽) в подарок!' : '🎁 Lifetime PRO included as a gift!'}
+                  </span>
+                )}
               </div>
               
-              <ul className="space-y-3 mb-8 flex-1 text-left w-full text-sm">
-                <li className="flex items-center gap-3 text-white">
+              <ul className="space-y-2.5 mb-6 flex-1 text-left w-full text-xs sm:text-sm">
+                <li className="flex items-center gap-2.5 text-white">
                   <span className="text-purple-300 font-bold">★</span> {t('pro_feat_1')}
                 </li>
-                <li className="flex items-center gap-3 text-white">
+                <li className="flex items-center gap-2.5 text-white">
                   <span className="text-purple-300 font-bold">★</span> {t('pro_feat_2')}
                 </li>
-                <li className="flex items-center gap-3 text-white">
+                <li className="flex items-center gap-2.5 text-white">
                   <span className="text-purple-300 font-bold">★</span> {t('pro_feat_3')}
                 </li>
               </ul>
               
               <a 
                 href="#checkout" 
-                onClick={() => setSelectedPlan('pro_plus')}
+                onClick={() => {
+                  if (selectedPlan === 'pro') setSelectedPlan('pro_plus_1m');
+                }}
                 className="w-full py-3 rounded-xl bg-white text-black text-center text-sm font-bold hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.4)] cursor-pointer"
               >
                 {t('buy_pro')}
@@ -410,33 +463,65 @@ export default function Home() {
             </div>
 
             {/* ПЕРЕКЛЮЧАТЕЛЬ ТАРИФОВ */}
-            <div className="grid grid-cols-2 gap-3 p-1.5 bg-black/40 border border-white/10 rounded-2xl mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 bg-black/40 border border-white/10 rounded-2xl mb-6">
               <button
                 type="button"
-                onClick={() => setSelectedPlan('pro_plus')}
-                className={`py-3 px-2 rounded-xl font-semibold text-xs sm:text-sm transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                  selectedPlan === 'pro_plus'
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
+                onClick={() => setSelectedPlan('pro_plus_1m')}
+                className={`py-2.5 px-1.5 rounded-xl font-semibold text-xs transition-all text-center flex flex-col items-center justify-center gap-0.5 ${
+                  selectedPlan === 'pro_plus_1m' || selectedPlan === 'pro_plus'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <span className="flex items-center gap-1 font-bold">👑 {t('pro_plan')}</span>
-                <span className="text-[11px] opacity-90">{t('pro_price')} {t('pro_period')}</span>
+                <span className="font-bold">PRO+ 1 мес</span>
+                <span className="text-[11px] opacity-90">{isRu ? '150 ₽' : '$3'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedPlan('pro_plus_3m')}
+                className={`py-2.5 px-1.5 rounded-xl font-semibold text-xs transition-all text-center flex flex-col items-center justify-center gap-0.5 ${
+                  selectedPlan === 'pro_plus_3m'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <span className="font-bold">PRO+ 3 мес</span>
+                <span className="text-[11px] text-amber-300 font-bold">{isRu ? '390 ₽' : '$8'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedPlan('pro_plus_6m')}
+                className={`py-2.5 px-1.5 rounded-xl font-semibold text-xs transition-all text-center flex flex-col items-center justify-center gap-0.5 relative ${
+                  selectedPlan === 'pro_plus_6m'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <span className="font-bold">PRO+ 6 мес</span>
+                <span className="text-[11px] text-emerald-300 font-bold">{isRu ? '790 ₽' : '$15'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSelectedPlan('pro')}
-                className={`py-3 px-2 rounded-xl font-semibold text-xs sm:text-sm transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                className={`py-2.5 px-1.5 rounded-xl font-semibold text-xs transition-all text-center flex flex-col items-center justify-center gap-0.5 ${
                   selectedPlan === 'pro'
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.4)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <span className="flex items-center gap-1 font-bold">⭐ {t('pro_lifetime_plan')}</span>
-                <span className="text-[11px] opacity-90">{t('pro_lifetime_price')} {t('pro_lifetime_period')}</span>
+                <span className="font-bold">⭐ PRO</span>
+                <span className="text-[11px] opacity-90">{isRu ? '500 ₽' : '$10'}</span>
               </button>
             </div>
+
+            {selectedPlan === 'pro_plus_6m' && (
+              <div className="mb-4 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-center text-xs text-emerald-300 font-semibold">
+                🎁 <b>Бонус:</b> Пожизненный статус PRO (стоимостью 500 ₽) останется с вами навсегда!
+              </div>
+            )}
 
             {/* СПОСОБ ОПЛАТЫ */}
             <div className="mb-6">
@@ -501,7 +586,7 @@ export default function Home() {
                   disabled={loading}
                   className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-4 shadow-[0_0_25px_rgba(147,51,234,0.35)] text-sm"
                 >
-                  {loading ? '...' : `${t('pay_via_yookassa')} (${selectedPlan === 'pro_plus' ? (isRu ? '150 ₽' : '$3') : (isRu ? '500 ₽' : '$10')})`}
+                  {loading ? '...' : `${t('pay_via_yookassa')} (${selectedPlan === 'pro_plus_6m' ? (isRu ? '790 ₽' : '$15') : selectedPlan === 'pro_plus_3m' ? (isRu ? '390 ₽' : '$8') : selectedPlan === 'pro' ? (isRu ? '500 ₽' : '$10') : (isRu ? '150 ₽' : '$3')})`}
                 </button>
               </div>
             ) : (

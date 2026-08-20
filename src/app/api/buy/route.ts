@@ -16,11 +16,23 @@ export async function POST(request: Request) {
        return NextResponse.json({ error: 'Сервер оплат временно недоступен' }, { status: 500 });
     }
 
-    const isProPlus = plan === 'pro_plus';
-    const amountValue = isProPlus ? '150.00' : '500.00';
-    const description = isProPlus 
-      ? 'SmartNotes AI - Подписка PRO+ (ИИ, 1 месяц)' 
-      : 'SmartNotes AI - PRO Версия (Навсегда)';
+    let amountValue = '150.00';
+    let description = 'SmartNotes AI - Подписка PRO+ (1 месяц)';
+
+    if (plan === 'pro') {
+      amountValue = '500.00';
+      description = 'SmartNotes AI - PRO Версия (Навсегда)';
+    } else if (plan === 'pro_plus_3m') {
+      amountValue = '390.00';
+      description = 'SmartNotes AI - Подписка PRO+ (3 месяца, скидка)';
+    } else if (plan === 'pro_plus_6m') {
+      amountValue = '790.00';
+      description = 'SmartNotes AI - Подписка PRO+ (6 месяцев) + Вечный PRO в подарок!';
+    } else {
+      // pro_plus or pro_plus_1m
+      amountValue = '150.00';
+      description = 'SmartNotes AI - Подписка PRO+ (1 месяц)';
+    }
 
     const authString = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
     const idempotenceKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -47,7 +59,7 @@ export async function POST(request: Request) {
         description: description,
         metadata: {
           email: email.trim().toLowerCase(),
-          plan: isProPlus ? 'pro_plus' : 'pro',
+          plan: plan || 'pro_plus_1m',
         },
       }),
     });

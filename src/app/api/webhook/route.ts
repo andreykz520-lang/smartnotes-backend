@@ -17,11 +17,29 @@ export async function POST(request: Request) {
     }
 
     const email = body.object?.metadata?.email;
-    const plan = body.object?.metadata?.plan || (Number(body.object?.amount?.value) < 300 ? 'pro_plus' : 'pro');
-    const isProPlus = plan === 'pro_plus';
+    const plan = String(body.object?.metadata?.plan || 'pro_plus_1m');
+    const isProOnly = plan === 'pro';
+    const isProPlus = !isProOnly;
     
     if (!email) return NextResponse.json({ error: 'No email metadata' });
     const normalizedEmail = email.trim().toLowerCase();
+
+    // Определение дней и подарка
+    let daysToAdd = 0;
+    let isGiftPro = false;
+    let tierName = 'PRO (Навсегда) ⭐';
+
+    if (plan === 'pro_plus_6m') {
+      daysToAdd = 180;
+      isGiftPro = true;
+      tierName = 'PRO+ на 6 месяцев (с вечным PRO в подарок!) 🎁👑';
+    } else if (plan === 'pro_plus_3m') {
+      daysToAdd = 90;
+      tierName = 'PRO+ на 3 месяца 👑';
+    } else if (isProPlus) {
+      daysToAdd = 30;
+      tierName = 'PRO+ на 1 месяц 👑';
+    }
 
     // 1. Прямая активация пользователя в базе
     const existingUser = await db.query.users.findFirst({
@@ -29,20 +47,26 @@ export async function POST(request: Request) {
     });
 
     const now = new Date();
-    const proEndedAt = isProPlus ? new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) : null;
+    let baseTime = now.getTime();
+    if (existingUser?.proEndedAt && new Date(existingUser.proEndedAt).getTime() > now.getTime()) {
+      baseTime = new Date(existingUser.proEndedAt).getTime();
+    }
+
+    const proEndedAt = isProPlus ? new Date(baseTime + daysToAdd * 24 * 60 * 60 * 1000) : null;
+    const shouldKeepPro = isProOnly || isGiftPro || (existingUser ? existingUser.isPro : false);
 
     if (existingUser) {
       await db.update(users).set({
-        isPro: true,
+        isPro: shouldKeepPro,
         isProPlus: isProPlus,
-        proStartedAt: now,
+        proStartedAt: existingUser.proStartedAt || now,
         proEndedAt: proEndedAt,
         updatedAt: now,
       }).where(eq(users.id, existingUser.id));
     } else {
       await db.insert(users).values({
         email: normalizedEmail,
-        isPro: true,
+        isPro: shouldKeepPro,
         isProPlus: isProPlus,
         proStartedAt: now,
         proEndedAt: proEndedAt,
@@ -60,15 +84,18 @@ export async function POST(request: Request) {
     }).returning();
 
     // 4. Формируем красивое письмо
-    const tierName = isProPlus ? 'PRO+ со встроенным ИИ 👑' : 'PRO (Навсегда) ⭐';
     const t = {
       subject: `Ваш код активации ${tierName} - SmartNotes AI`,
       title: 'Спасибо за покупку!',
       intro: `Ваш код активации ${tierName} для SmartNotes AI готов:`,
       instructions: 'Чтобы активировать функции:',
       step1: 'Откройте приложение SmartNotes AI',
-      step2: 'Введите ваш email и этот код на экране входа (или код из письма при входе)',
-      step3: isProPlus ? 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash и облачной синхронизацией!' : 'Наслаждайтесь неограниченными возможностями и облачной синхронизацией!',
+      step2: 'Введите ваш email и этот код на экране входа (или в Настройках)',
+      step3: isProPlus 
+        ? (isGiftPro 
+            ? 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash на 6 месяцев + пожизненным PRO навсегда!' 
+            : 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash и облачной синхронизацией!') 
+        : 'Наслаждайтесь неограниченными возможностями и облачной синхронизацией!',
       support: 'Нужна помощь? Напишите нам: support@smartnotes-ai.ru',
       footer: 'Этот код действителен для активации до 3-х устройств (один аккаунт).'
     };
