@@ -10,13 +10,17 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function POST(req: NextRequest) {
   try {
-    const { email: rawEmail, code: rawCode, deviceId } = await req.json();
+    let { email: rawEmail, code: rawCode, deviceId } = await req.json();
 
-    if (!rawEmail || !rawCode || !deviceId) {
+    if (!rawEmail || !rawCode) {
       return NextResponse.json(
-        { error: "Заполните все поля (email, код, устройство)" },
+        { error: "Заполните все поля (email, код)" },
         { status: 400 }
       );
+    }
+
+    if (!deviceId) {
+      deviceId = 'device_win_' + Math.random().toString(36).substring(2);
     }
 
     const email = String(rawEmail).trim().toLowerCase();
