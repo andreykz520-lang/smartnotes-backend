@@ -17,9 +17,9 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       }
     }
 
-    const authHeader = req.headers.get("Authorization") || "";
-    let apiKey = authHeader.replace("Bearer ", "").trim();
-    if (!apiKey || apiKey === "null" || apiKey === "undefined") {
+    const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
+    let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
+    if (!apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer") {
       apiKey = process.env.OPENROUTER_API_KEY || Buffer.from(DEFAULT_KEY_B64, 'base64').toString('utf-8');
     }
 
@@ -59,9 +59,9 @@ export async function GET(req: NextRequest, { params }: { params?: Promise<{ pat
       }
     }
 
-    const authHeader = req.headers.get("Authorization") || "";
-    let apiKey = authHeader.replace("Bearer ", "").trim();
-    if (!apiKey || apiKey === "null" || apiKey === "undefined") {
+    const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
+    let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
+    if (!apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer") {
       apiKey = process.env.OPENROUTER_API_KEY || Buffer.from(DEFAULT_KEY_B64, 'base64').toString('utf-8');
     }
 
