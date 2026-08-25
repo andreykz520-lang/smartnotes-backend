@@ -196,10 +196,10 @@ export async function POST(req: NextRequest) {
         isProPlus: user.isProPlus,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error verifying code:", error);
     return NextResponse.json(
-      { error: "Внутренняя ошибка сервера" },
+      { error: "Внутренняя ошибка сервера: " + (error?.message || String(error)), stack: error?.stack },
       { status: 500 }
     );
   }
