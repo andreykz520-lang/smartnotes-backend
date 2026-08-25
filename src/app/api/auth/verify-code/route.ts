@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
       user = inserted[0];
     }
 
-    // Для администратора/создателя всегда включаем полный доступ
-    const isAdmin = email === 'andreykz@yahoo.com' || email === 'andreykz520@gmail.com' || email === 'autoneuro24@gmail.com';
+    // Для главного администратора включаем полный доступ
+    const isAdmin = email === 'andreykz520@gmail.com' || email === 'autoneuro24@gmail.com';
     
     // Проверяем план кода
     const codePlan = (activationRecord as any).plan || '';
