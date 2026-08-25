@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const DEFAULT_KEY_B64 = "c2stb3ItdjEtYjlhMGJmNjRmMWQ2NDBmMjM3YzA1OTk0ZjRiM2U3OGMzMzJmZjlmNDNkZDRkMTQwNjU4OTZmZjJkMTQ1MjlmMA==";
-
 export async function POST(req: NextRequest, { params }: { params?: Promise<{ path?: string[] }> }) {
   try {
     const body = await req.json();
@@ -20,11 +18,16 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
     let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
     if (!apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer") {
-      apiKey = process.env.OPENROUTER_API_KEY || Buffer.from(DEFAULT_KEY_B64, 'base64').toString('utf-8');
+      apiKey = process.env.OPENROUTER_API_KEY || "";
     }
 
     if (!apiKey) {
-      return NextResponse.json({ error: "OpenRouter API key is required" }, { status: 400 });
+      return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
+    }
+
+    // Защита: разрешаем только модели для SmartNotes (Gemini), блокируя сторонние модели ботов
+    if (body && body.model && !body.model.includes('gemini')) {
+      body.model = 'google/gemini-3.7-flash';
     }
 
     const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
@@ -62,7 +65,7 @@ export async function GET(req: NextRequest, { params }: { params?: Promise<{ pat
     const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
     let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
     if (!apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer") {
-      apiKey = process.env.OPENROUTER_API_KEY || Buffer.from(DEFAULT_KEY_B64, 'base64').toString('utf-8');
+      apiKey = process.env.OPENROUTER_API_KEY || "";
     }
 
     const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
