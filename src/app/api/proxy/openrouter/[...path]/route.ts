@@ -25,7 +25,11 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
     }
 
-    // Защита: разрешаем только модели для SmartNotes (Gemini), блокируя сторонние модели ботов
+    // Защита: полностью блокируем Kimi/Moonshot и сторонние модели
+    if (body && body.model && (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot'))) {
+      return NextResponse.json({ error: "Model Kimi is blocked and not allowed" }, { status: 403 });
+    }
+
     if (body && body.model && !body.model.includes('gemini')) {
       body.model = 'google/gemini-3.7-flash';
     }
