@@ -92,29 +92,38 @@ export async function POST(req: NextRequest) {
       user = inserted[0];
     }
 
-    const isProCode = code.length > 6;
-    if (isProCode && !user.isPro) {
+    // Для администратора/создателя всегда включаем полный доступ
+    const isAdmin = email === 'andreykz@yahoo.com' || email === 'andreykz520@gmail.com' || email === 'autoneuro24@gmail.com';
+    
+    // Проверяем план кода
+    const codePlan = (activationRecord as any).plan || '';
+    const shouldBeProPlus = isAdmin || codePlan.includes('pro_plus') || codePlan.includes('plus');
+    const shouldBePro = isAdmin || shouldBeProPlus || codePlan === 'pro' || code.length > 6;
+
+    if ((shouldBePro && !user.isPro) || (shouldBeProPlus && !user.isProPlus)) {
       const updatedUser = await db
         .update(users)
-        .set({ isPro: true })
+        .set({ 
+          isPro: user.isPro || shouldBePro,
+          isProPlus: user.isProPlus || shouldBePlus
+        })
         .where(eq(users.id, user.id))
         .returning();
-      user = updatedUser[0];
+      if (updatedUser && updatedUser[0]) {
+        user = updatedUser[0];
+      }
     }
 
-    // 3. Проверка лимитов устройств
+    // 3. Проверка лимитов устройств и безопасная регистрация
     const userDevices = await db
       .select()
       .from(devices)
       .where(eq(devices.userId, user.id));
 
-    const existingDevice = userDevices.find((d) => d.deviceId === deviceId);
-    
-    // Для администратора/создателя лимит не ограничен (100)
-    const isAdmin = email === 'andreykz520@gmail.com' || email === 'autoneuro24@gmail.com';
+    const existingDeviceForUser = userDevices.find((d) => d.deviceId === deviceId);
     const maxDevices = isAdmin ? 100 : ((user.isPro || user.isProPlus) ? 3 : 1);
 
-    if (!existingDevice) {
+    if (!existingDeviceForUser) {
       if (userDevices.length >= maxDevices) {
         if (isAdmin || user.isPro || user.isProPlus) {
           // Автоматически ротируем самое старое устройство
@@ -132,11 +141,25 @@ export async function POST(req: NextRequest) {
         }
       }
       
-      // Регистрируем новое устройство
-      await db.insert(devices).values({
-        userId: user.id,
-        deviceId: deviceId,
-      });
+      // Проверяем, не привязан ли deviceId к другому профилю
+      const globalDevice = await db
+        .select()
+        .from(devices)
+        .where(eq(devices.deviceId, deviceId));
+
+      if (globalDevice.length > 0) {
+        // Перепривязываем к текущему пользователю
+        await db
+          .update(devices)
+          .set({ userId: user.id })
+          .where(eq(devices.deviceId, deviceId));
+      } else {
+        // Регистрируем новое устройство
+        await db.insert(devices).values({
+          userId: user.id,
+          deviceId: deviceId,
+        });
+      }
     }
 
     // 4. Отмечаем код как использованный (если еще не был отмечен)

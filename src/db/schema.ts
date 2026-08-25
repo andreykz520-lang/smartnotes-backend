@@ -25,6 +25,7 @@ export const devices = pgTable("devices", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
   deviceId: text("device_id").unique().notNull(), // Уникальный ID устройства
+  deviceType: text("device_type"),
   lastSyncAt: timestamp("last_sync_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -36,6 +37,7 @@ export const activationCodes = pgTable("activation_codes", {
   email: text("email").notNull(),
   isUsed: boolean("is_used").default(false).notNull(),
   usedByDeviceId: text("used_by_device_id"),
+  plan: text("plan"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   activatedAt: timestamp("activated_at"),
 });

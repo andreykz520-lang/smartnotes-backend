@@ -8,6 +8,8 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is required");
 }
 
+const cleanDatabaseUrl = databaseUrl.replace('&channel_binding=require', '').replace('?channel_binding=require&', '?');
+
 const globalForDb = globalThis as typeof globalThis & {
   __arenaNextJsPostgresqlPool?: Pool;
 };
@@ -15,7 +17,13 @@ const globalForDb = globalThis as typeof globalThis & {
 export const pool =
   globalForDb.__arenaNextJsPostgresqlPool ??
   new Pool({
-    connectionString: databaseUrl,
+    connectionString: cleanDatabaseUrl,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
   });
 
 if (process.env.NODE_ENV !== "production") {
