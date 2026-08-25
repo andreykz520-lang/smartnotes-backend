@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
         .update(users)
         .set({ 
           isPro: user.isPro || shouldBePro,
-          isProPlus: user.isProPlus || shouldBePlus
+          isProPlus: user.isProPlus || shouldBeProPlus
         })
         .where(eq(users.id, user.id))
         .returning();
@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("Error verifying code:", error);
     return NextResponse.json(
-      { error: "Внутренняя ошибка сервера: " + (error?.message || String(error)), stack: error?.stack },
+      { error: error?.message || "Ошибка сервера при авторизации" },
       { status: 500 }
     );
   }
