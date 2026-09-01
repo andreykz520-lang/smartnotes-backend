@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { email, plan } = await request.json();
@@ -8,8 +10,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const shopId = process.env.YOOKASSA_SHOP_ID;
-    const secretKey = process.env.YOOKASSA_SECRET_KEY;
+    const shopId = process.env.YOOKASSA_SHOP_ID || '1418145';
+    const secretKey = process.env.YOOKASSA_SECRET_KEY || 'live_9ZgCsG1u-hTnBURIWcVPYqASSQmDdxtBEOSi_uAHl4Y';
 
     if (!shopId || !secretKey) {
        console.error("YooKassa credentials not configured");
@@ -35,9 +37,9 @@ export async function POST(request: Request) {
     }
 
     const authString = Buffer.from(`${shopId}:${secretKey}`).toString('base64');
-    const idempotenceKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const idempotenceKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Date.now();
 
-    const origin = request.headers.get('origin') || 'https://smartnotes-backend-two.vercel.app';
+    const origin = request.headers.get('origin') || 'https://smartnotes-ai.ru';
 
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
@@ -70,10 +72,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, paymentUrl: data.confirmation.confirmation_url });
     } else {
       console.error('YooKassa Error:', data);
-      return NextResponse.json({ error: 'Не удалось создать платеж. Попробуйте позже.' }, { status: 500 });
+      return NextResponse.json({ error: data.description || 'Не удалось создать платеж в ЮKassa. Попробуйте позже.' }, { status: 500 });
     }
   } catch (error) {
     console.error('Payment Error:', error);
     return NextResponse.json({ error: 'Внутренняя ошибка сервера' }, { status: 500 });
   }
 }
+
