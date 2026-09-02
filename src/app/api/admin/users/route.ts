@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { users, activationCodes, devices, notes } from "@/db/schema";
+import { users, activationCodes, devices, notes, payments } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic';
@@ -91,10 +91,22 @@ export async function POST(req: NextRequest) {
     // Получаем все коды активации
     const allCodes = await db.select().from(activationCodes).orderBy(desc(activationCodes.createdAt));
 
+    // Получаем все платежи и считаем общую выручку
+    let allPayments: any[] = [];
+    let totalRevenue = 0;
+    try {
+      allPayments = await db.select().from(payments).orderBy(desc(payments.createdAt));
+      totalRevenue = allPayments.reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0);
+    } catch (e) {
+      console.error('Error fetching payments in admin API:', e);
+    }
+
     return NextResponse.json({ 
       success: true, 
       users: usersWithDevices,
-      codes: allCodes
+      codes: allCodes,
+      payments: allPayments,
+      totalRevenue: totalRevenue
     });
 
   } catch (error) {
@@ -105,3 +117,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

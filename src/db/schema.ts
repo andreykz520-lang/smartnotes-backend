@@ -58,6 +58,18 @@ export const notes = pgTable("notes", {
   isDeleted: boolean("is_deleted").default(false).notNull(), // Для soft-delete при синхронизации
 });
 
+// 5. ТАБЛИЦА ПЛАТЕЖЕЙ И ВЫРУЧКИ
+export const payments = pgTable("payments", {
+  id: serial("id").primaryKey(),
+  paymentId: text("payment_id").unique(),
+  email: text("email").notNull(),
+  amount: text("amount").notNull(),
+  currency: text("currency").default("RUB").notNull(),
+  status: text("status").default("succeeded").notNull(),
+  plan: text("plan").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // СВЯЗИ
 export const usersRelations = relations(users, ({ many }) => ({
   devices: many(devices),
@@ -77,3 +89,4 @@ export const notesRelations = relations(notes, ({ one }) => ({
     references: [users.id],
   }),
 }));
+

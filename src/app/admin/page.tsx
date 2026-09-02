@@ -25,6 +25,17 @@ interface ActivationCode {
   activatedAt?: string | null;
 }
 
+interface PaymentItem {
+  id: number;
+  paymentId: string;
+  email: string;
+  amount: string;
+  currency: string;
+  status: string;
+  plan: string;
+  createdAt: string;
+}
+
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
@@ -33,9 +44,12 @@ export default function AdminPage() {
   
   const [users, setUsers] = useState<User[]>([]);
   const [codes, setCodes] = useState<ActivationCode[]>([]);
+  const [payments, setPayments] = useState<PaymentItem[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  
   const [activeFilter, setActiveFilter] = useState<"all" | "free" | "pro" | "pro_plus">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<"users" | "codes" | "manual">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "payments" | "codes" | "manual">("users");
 
   // Форма ручной выдачи
   const [manualEmail, setManualEmail] = useState("");
@@ -55,6 +69,8 @@ export default function AdminPage() {
       if (res.ok && data.success) {
         setUsers(data.users || []);
         setCodes(data.codes || []);
+        setPayments(data.payments || []);
+        setTotalRevenue(data.totalRevenue || 0);
         setLoggedIn(true);
       } else {
         setMessage(data.error || "Неверный пароль администратора");
@@ -66,6 +82,7 @@ export default function AdminPage() {
       setLoading(false);
     }
   };
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,81 +316,102 @@ export default function AdminPage() {
         )}
 
         {/* КЛИКАБЕЛЬНЫЕ КАРТОЧКИ СТАТИСТИКИ (ФИЛЬТРЫ) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
           
           {/* Всего */}
           <button
-            onClick={() => setActiveFilter("all")}
-            className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${
-              activeFilter === "all"
+            onClick={() => { setActiveFilter("all"); setActiveTab("users"); }}
+            className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+              activeTab === "users" && activeFilter === "all"
                 ? "bg-purple-950/40 border-purple-500 ring-2 ring-purple-500/30 shadow-lg shadow-purple-500/10"
                 : "bg-slate-900 border-slate-800 hover:border-slate-700"
             }`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase font-bold tracking-wider text-slate-400">Все пользователи</span>
-              <span className="text-xl">👥</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-slate-400">Всего юзеров</span>
+              <span className="text-lg">👥</span>
             </div>
-            <div className="text-3xl font-extrabold text-white">{totalCount}</div>
-            <div className="text-xs text-purple-400 mt-2 font-medium">
-              {activeFilter === "all" ? "● Активный фильтр" : "Нажмите для просмотра"}
+            <div className="text-2xl font-extrabold text-white">{totalCount}</div>
+            <div className="text-[11px] text-purple-400 mt-1 font-medium">
+              {activeTab === "users" && activeFilter === "all" ? "● Активен" : "Показать всех"}
             </div>
           </button>
 
           {/* FREE */}
           <button
-            onClick={() => setActiveFilter("free")}
-            className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${
-              activeFilter === "free"
+            onClick={() => { setActiveFilter("free"); setActiveTab("users"); }}
+            className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+              activeTab === "users" && activeFilter === "free"
                 ? "bg-slate-800/80 border-slate-400 ring-2 ring-slate-400/30 shadow-lg"
                 : "bg-slate-900 border-slate-800 hover:border-slate-700"
             }`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase font-bold tracking-wider text-slate-400">FREE (Базовый)</span>
-              <span className="text-xl">🆓</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-slate-400">FREE</span>
+              <span className="text-lg">🆓</span>
             </div>
-            <div className="text-3xl font-extrabold text-slate-300">{freeCount}</div>
-            <div className="text-xs text-slate-400 mt-2 font-medium">
-              {activeFilter === "free" ? "● Активный фильтр" : "Нажмите для просмотра"}
+            <div className="text-2xl font-extrabold text-slate-300">{freeCount}</div>
+            <div className="text-[11px] text-slate-400 mt-1 font-medium">
+              {activeTab === "users" && activeFilter === "free" ? "● Активен" : "Фильтр FREE"}
             </div>
           </button>
 
           {/* PRO */}
           <button
-            onClick={() => setActiveFilter("pro")}
-            className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${
-              activeFilter === "pro"
+            onClick={() => { setActiveFilter("pro"); setActiveTab("users"); }}
+            className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+              activeTab === "users" && activeFilter === "pro"
                 ? "bg-blue-950/40 border-blue-500 ring-2 ring-blue-500/30 shadow-lg shadow-blue-500/10"
                 : "bg-slate-900 border-slate-800 hover:border-slate-700"
             }`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase font-bold tracking-wider text-blue-400">PRO (Вечный)</span>
-              <span className="text-xl">⚡</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-blue-400">PRO (Вечный)</span>
+              <span className="text-lg">⚡</span>
             </div>
-            <div className="text-3xl font-extrabold text-blue-300">{proCount}</div>
-            <div className="text-xs text-blue-400 mt-2 font-medium">
-              {activeFilter === "pro" ? "● Активный фильтр" : "Нажмите для просмотра"}
+            <div className="text-2xl font-extrabold text-blue-300">{proCount}</div>
+            <div className="text-[11px] text-blue-400 mt-1 font-medium">
+              {activeTab === "users" && activeFilter === "pro" ? "● Активен" : "Фильтр PRO"}
             </div>
           </button>
 
           {/* PRO+ */}
           <button
-            onClick={() => setActiveFilter("pro_plus")}
-            className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${
-              activeFilter === "pro_plus"
+            onClick={() => { setActiveFilter("pro_plus"); setActiveTab("users"); }}
+            className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+              activeTab === "users" && activeFilter === "pro_plus"
                 ? "bg-amber-950/40 border-amber-500 ring-2 ring-amber-500/30 shadow-lg shadow-amber-500/10"
                 : "bg-slate-900 border-slate-800 hover:border-slate-700"
             }`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase font-bold tracking-wider text-amber-400">PRO+ (ИИ Gemini)</span>
-              <span className="text-xl">👑</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-amber-400">PRO+ (ИИ)</span>
+              <span className="text-lg">👑</span>
             </div>
-            <div className="text-3xl font-extrabold text-amber-300">{proPlusCount}</div>
-            <div className="text-xs text-amber-400 mt-2 font-medium">
-              {activeFilter === "pro_plus" ? "● Активный фильтр" : "Нажмите для просмотра"}
+            <div className="text-2xl font-extrabold text-amber-300">{proPlusCount}</div>
+            <div className="text-[11px] text-amber-400 mt-1 font-medium">
+              {activeTab === "users" && activeFilter === "pro_plus" ? "● Активен" : "Фильтр PRO+"}
+            </div>
+          </button>
+
+          {/* ВЫРУЧКА / КАССА */}
+          <button
+            onClick={() => setActiveTab("payments")}
+            className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+              activeTab === "payments"
+                ? "bg-emerald-950/50 border-emerald-500 ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10"
+                : "bg-slate-900 border-slate-800 hover:border-emerald-500/40"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-400">Выручка (Касса)</span>
+              <span className="text-lg">💰</span>
+            </div>
+            <div className="text-2xl font-extrabold text-emerald-300">
+              {totalRevenue.toLocaleString("ru-RU")} ₽
+            </div>
+            <div className="text-[11px] text-emerald-400 mt-1 font-medium">
+              {payments.length} {payments.length === 1 ? "продажа" : "продаж"} • Журнал →
             </div>
           </button>
 
@@ -384,7 +422,7 @@ export default function AdminPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
             
             {/* Табы */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setActiveTab("users")}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
@@ -393,7 +431,17 @@ export default function AdminPage() {
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                 }`}
               >
-                👥 Список пользователей ({filteredUsers.length})
+                👥 Пользователи ({filteredUsers.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("payments")}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 ${
+                  activeTab === "payments"
+                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
+                    : "bg-slate-800 text-emerald-400 hover:bg-slate-700"
+                }`}
+              >
+                💰 Платежи ({payments.length}) • <span className="font-bold">{totalRevenue.toLocaleString("ru-RU")} ₽</span>
               </button>
               <button
                 onClick={() => setActiveTab("codes")}
@@ -572,7 +620,104 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ВКЛАДКА 2: КОДЫ АКТИВАЦИИ */}
+          {/* ВКЛАДКА 2: ПЛАТЕЖИ И КАССА */}
+          {activeTab === "payments" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-2xl">
+                <div>
+                  <h3 className="text-sm font-bold text-emerald-300">💰 Касса и журнал транзакций ЮKassa</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Все успешные реальные оплаты через СБП, карты и SberPay</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-slate-400">Общая выручка:</div>
+                  <div className="text-xl font-extrabold text-emerald-400">{totalRevenue.toLocaleString("ru-RU")} ₽</div>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
+                      <th className="py-3 px-4">#</th>
+                      <th className="py-3 px-4">Дата и время</th>
+                      <th className="py-3 px-4">Email покупателя</th>
+                      <th className="py-3 px-4">Тариф</th>
+                      <th className="py-3 px-4">Сумма</th>
+                      <th className="py-3 px-4">Статус</th>
+                      <th className="py-3 px-4 text-right">ID транзакции</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60">
+                    {payments.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-8 text-center text-slate-500">
+                          Платежи пока отсутствуют
+                        </td>
+                      </tr>
+                    ) : (
+                      payments.map((p, idx) => (
+                        <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
+                          <td className="py-3.5 px-4 text-slate-500 font-mono text-xs">{idx + 1}</td>
+                          <td className="py-3.5 px-4 text-xs text-slate-300">
+                            {p.createdAt
+                              ? new Date(p.createdAt).toLocaleDateString("ru-RU", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "—"}
+                          </td>
+                          <td className="py-3.5 px-4 font-medium text-slate-200">
+                            <div className="flex items-center gap-2">
+                              <span>{p.email}</span>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(p.email);
+                                  alert("Email скопирован!");
+                                }}
+                                className="text-slate-500 hover:text-slate-300 text-xs"
+                                title="Копировать"
+                              >
+                                📋
+                              </button>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-xs uppercase px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 font-semibold">
+                              {p.plan === "pro"
+                                ? "⚡ PRO (Вечный)"
+                                : p.plan === "pro_plus_6m"
+                                ? "🎁 PRO+ 6 Мес"
+                                : p.plan === "pro_plus_3m"
+                                ? "👑 PRO+ 3 Мес"
+                                : "👑 PRO+ 1 Мес"}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                              {parseFloat(p.amount || "0").toLocaleString("ru-RU")} {p.currency === "RUB" ? "₽" : p.currency}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-medium">
+                              ✅ Оплачено (ЮKassa)
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-mono text-[11px] text-slate-500">
+                            {p.paymentId ? p.paymentId.substring(0, 18) + "..." : "—"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ВКЛАДКА 3: КОДЫ АКТИВАЦИИ */}
           {activeTab === "codes" && (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-sm">
@@ -620,7 +765,7 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ВКЛАДКА 3: РУЧНАЯ ВЫДАЧА */}
+          {/* ВКЛАДКА 4: РУЧНАЯ ВЫДАЧА */}
           {activeTab === "manual" && (
             <div className="max-w-xl mx-auto p-6 bg-slate-950 border border-slate-800 rounded-2xl space-y-4">
               <h3 className="text-lg font-bold text-slate-200">Выдать или изменить тариф вручную</h3>
@@ -667,3 +812,4 @@ export default function AdminPage() {
     </div>
   );
 }
+

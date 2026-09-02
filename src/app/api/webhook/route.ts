@@ -1,10 +1,11 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { activationCodes, users } from '@/db/schema';
+import { activationCodes, users, payments } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 import { Resend } from 'resend';
+
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
@@ -81,7 +82,25 @@ export async function POST(request: Request) {
     const [newCode] = await db.insert(activationCodes).values({
       code: formattedCode,
       email: normalizedEmail,
+      plan: plan,
     }).returning();
+
+    // 3.1 Логируем в историю платежей
+    const paymentId = body.object?.id || `yoo_${Date.now()}`;
+    const amountVal = body.object?.amount?.value || (plan === 'pro' ? '500.00' : plan === 'pro_plus_6m' ? '790.00' : plan === 'pro_plus_3m' ? '390.00' : '150.00');
+    try {
+      await db.insert(payments).values({
+        paymentId: paymentId,
+        email: normalizedEmail,
+        amount: String(amountVal),
+        currency: 'RUB',
+        status: 'succeeded',
+        plan: plan,
+      });
+    } catch (payErr) {
+      console.error('Error recording payment to DB:', payErr);
+    }
+
 
     // 4. Формируем красивое письмо
     const t = {
