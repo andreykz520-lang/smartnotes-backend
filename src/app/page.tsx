@@ -130,13 +130,19 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto px-6 relative z-10 flex flex-col items-center">
           
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-300 text-xs sm:text-sm font-medium mb-8 backdrop-blur-md">
+          <a 
+            href="https://www.rustore.ru/catalog/app/com.andrey.smartnotes"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 hover:border-purple-400 text-purple-300 text-xs sm:text-sm font-medium mb-8 backdrop-blur-md transition-all group"
+          >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            {isRu ? 'Встроенный ИИ Gemini 3.7 Flash и голосовой ввод на лету' : 'Built-in Gemini 3.7 Flash AI & Live Voice Dictation'}
-          </div>
+            <span>{isRu ? '🇷🇺 Доступно в официальном каталоге RuStore' : 'Official RuStore Release'}</span>
+            <span className="text-purple-400 group-hover:translate-x-1 transition-transform">→</span>
+          </a>
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.15] mb-6">
             {t('title')} <br />
@@ -151,11 +157,12 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto flex-wrap">
             <a
-              href="/SmartNotes.apk"
-              download="SmartNotes.apk"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white hover:bg-gray-100 text-black font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+              href="https://www.rustore.ru/catalog/app/com.andrey.smartnotes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(59,130,246,0.35)]"
             >
-              📥 {t('download_android')}
+              <span>📲</span> {isRu ? 'Скачать в RuStore' : 'Get on RuStore'}
             </a>
             <a
               href="/SmartNotes-Setup.exe"
@@ -164,12 +171,20 @@ export default function Home() {
               💻 {t('download_windows')}
             </a>
             <a
+              href="/SmartNotes.apk"
+              download="SmartNotes.apk"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs sm:text-sm border border-white/10 transition-all"
+            >
+              📥 {isRu ? 'Прямой APK' : 'Direct APK'}
+            </a>
+            <a
               href="#pricing"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(147,51,234,0.4)]"
             >
               👑 {t('choose_plan')}
             </a>
           </div>
+
 
         </div>
       </section>
