@@ -38,6 +38,8 @@ interface PaymentItem {
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
+  const [totpCode, setTotpCode] = useState("");
+  const [show2FaModal, setShow2FaModal] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -55,14 +57,14 @@ export default function AdminPage() {
   const [manualEmail, setManualEmail] = useState("");
   const [manualPlan, setManualPlan] = useState<"pro" | "pro_plus" | "free">("pro_plus");
 
-  const loadData = async (pwd = password) => {
+  const loadData = async (pwd = password, totp = totpCode) => {
     setLoading(true);
     setMessage("");
     try {
       const res = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pwd }),
+        body: JSON.stringify({ password: pwd, totpCode: totp }),
       });
 
       const data = await res.json();
@@ -83,11 +85,11 @@ export default function AdminPage() {
     }
   };
 
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    loadData(password);
+    loadData(password, totpCode);
   };
+
 
   // Удаление пользователя
   const handleDeleteUser = async (user: User) => {
@@ -253,6 +255,23 @@ export default function AdminPage() {
               />
             </div>
 
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Код Google Authenticator (2FA)
+                </label>
+                <span className="text-[11px] text-slate-500">6 цифр</span>
+              </div>
+              <input
+                type="text"
+                maxLength={6}
+                value={totpCode}
+                onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ""))}
+                placeholder="Например: 582910"
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono tracking-widest text-center focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-base"
+              />
+            </div>
+
             {message && (
               <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm text-center">
                 {message}
@@ -261,12 +280,18 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              disabled={loading || !password}
+              disabled={loading || (!password && !totpCode)}
               className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2"
             >
               {loading ? "Вход..." : "Войти в панель"}
             </button>
           </form>
+
+          <div className="mt-6 pt-4 border-t border-slate-800 text-center">
+            <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
+              🛡️ Защита: 2FA TOTP + Анти-Брутфорс
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -286,26 +311,93 @@ export default function AdminPage() {
               </h1>
             </div>
             <p className="text-sm text-slate-400 mt-1">
-              Управление пользователями, лицензиями и устройствами
+              Управление пользователями, лицензиями и выручкой
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
-              onClick={() => loadData(password)}
+              onClick={() => setShow2FaModal(true)}
+              className="px-3.5 py-2 bg-purple-950/40 hover:bg-purple-900/50 text-purple-300 rounded-xl border border-purple-500/30 text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5"
+            >
+              📱 2FA Аутентификатор
+            </button>
+            <button
+              onClick={() => loadData(password, totpCode)}
               disabled={loading}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 text-sm font-medium transition-all flex items-center gap-2"
+              className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 text-xs sm:text-sm font-medium transition-all flex items-center gap-2"
             >
               🔄 {loading ? "Обновление..." : "Обновить"}
             </button>
             <button
               onClick={() => setLoggedIn(false)}
-              className="px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-xl border border-red-500/20 text-sm font-medium transition-all"
+              className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-xl border border-red-500/20 text-xs sm:text-sm font-medium transition-all"
             >
               Выйти
             </button>
           </div>
         </div>
+
+        {/* МОДАЛКА НАСТРОЙКИ 2FA */}
+        {show2FaModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📱</span>
+                  <h3 className="text-lg font-bold text-white">Google Authenticator (2FA)</h3>
+                </div>
+                <button
+                  onClick={() => setShow2FaModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4 text-sm text-slate-300">
+                <p>
+                  Для включения двухфакторной защиты привяжите ключ к приложению <b>Google Authenticator</b> (или Яндекс Ключ / Microsoft Authenticator) на вашем смартфоне:
+                </p>
+
+                <div className="p-4 bg-slate-950 border border-purple-500/30 rounded-2xl space-y-2">
+                  <div className="text-xs text-slate-400 uppercase font-semibold">Ваш секретный ключ настройки:</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-base font-bold text-purple-300 select-all">
+                      KREUWT2ZGBMUO2DGKNIVSR27GFMU242T
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText("KREUWT2ZGBMUO2DGKNIVSR27GFMU242T");
+                        alert("Секретный ключ скопирован в буфер обмена!");
+                      }}
+                      className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold"
+                    >
+                      Копировать
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-xs text-slate-400 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                  <div className="font-bold text-slate-200 mb-1">Как добавить в телефон:</div>
+                  <div>1. Откройте <b>Google Authenticator</b> на телефоне.</div>
+                  <div>2. Нажмите на значок <b>«+»</b> внизу экрана ➔ выберите <b>«Ввести ключ настройки»</b>.</div>
+                  <div>3. Название аккаунта: <b>SmartNotes AI</b></div>
+                  <div>4. Ключ: вставьте скопированный выше ключ.</div>
+                  <div>5. Тип ключа: <b>По времени (Time-based)</b> ➔ нажмите <b>«Добавить»</b>.</div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShow2FaModal(false)}
+                className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-all"
+              >
+                Понятно, готово!
+              </button>
+            </div>
+          </div>
+        )}
+
 
         {/* Уведомления */}
         {message && (

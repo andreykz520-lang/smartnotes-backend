@@ -715,10 +715,10 @@ export default function Home() {
           
           <div className="flex items-center gap-4">
             <p>{t('footer')}</p>
-            <Link href="/admin" className="text-gray-700 hover:text-gray-400 transition-colors text-[11px]">Admin</Link>
           </div>
         </div>
       </footer>
+
 
     </div>
   );

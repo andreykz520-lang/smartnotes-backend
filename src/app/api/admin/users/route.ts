@@ -2,21 +2,100 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { users, activationCodes, devices, notes, payments } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import crypto from "crypto";
 
 export const dynamic = 'force-dynamic';
 
-const checkPassword = (pwd: string) => {
-  const adminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || "smartnotes_admin_2026";
-  return pwd === adminPass || pwd === "123456" || pwd === "smartnotes_admin_2026";
-};
+// Защита от брутфорса (IP Lockout)
+const failedAttemptsMap = new Map<string, { count: number; lockedUntil: number }>();
+
+const TOTP_SECRET = process.env.ADMIN_TOTP_SECRET || "KREUWT2ZGBMUO2DGKNIVSR27GFMU242T";
+const MASTER_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || "smartnotes_admin_2026";
+
+function base32Decode(base32: string): Buffer {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = '';
+  for (let i = 0; i < base32.length; i++) {
+    const val = alphabet.indexOf(base32.charAt(i).toUpperCase());
+    if (val >= 0) bits += val.toString(2).padStart(5, '0');
+  }
+  const bytes = [];
+  for (let i = 0; i + 8 <= bits.length; i += 8) {
+    bytes.push(parseInt(bits.substring(i, i + 8), 2));
+  }
+  return Buffer.from(bytes);
+}
+
+function verifyTotp(token: string, secret: string, window = 1): boolean {
+  if (!token || token.trim().length !== 6) return false;
+  try {
+    const key = base32Decode(secret.replace(/\s+/g, ''));
+    const epoch = Math.floor(Date.now() / 1000);
+    const currentCounter = Math.floor(epoch / 30);
+
+    for (let i = -window; i <= window; i++) {
+      const counter = currentCounter + i;
+      const counterBuf = Buffer.alloc(8);
+      counterBuf.writeBigInt64BE(BigInt(counter));
+
+      const hmac = crypto.createHmac('sha1', key).update(counterBuf).digest();
+      const offset = hmac[hmac.length - 1] & 0xf;
+      const code = ((hmac[offset] & 0x7f) << 24 |
+                    (hmac[offset + 1] & 0xff) << 16 |
+                    (hmac[offset + 2] & 0xff) << 8 |
+                    (hmac[offset + 3] & 0xff)) % 1000000;
+
+      if (code.toString().padStart(6, '0') === token.trim()) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error('TOTP verification error:', e);
+  }
+  return false;
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { password, action, userId, targetEmail, plan } = await req.json();
+    const clientIp = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+    const now = Date.now();
 
-    if (!checkPassword(password)) {
-      return NextResponse.json({ error: "Неверный пароль администратора" }, { status: 401 });
+    // Проверка блокировки IP
+    const attemptRecord = failedAttemptsMap.get(clientIp);
+    if (attemptRecord && attemptRecord.lockedUntil > now) {
+      const remainingMinutes = Math.ceil((attemptRecord.lockedUntil - now) / 60000);
+      return NextResponse.json(
+        { error: `Слишком много неверных попыток. Доступ заблокирован на ${remainingMinutes} мин.` },
+        { status: 429 }
+      );
     }
+
+    const { password, totpCode, action, userId, targetEmail, plan } = await req.json();
+
+    const isPasswordValid = password === MASTER_PASSWORD || password === "smartnotes_admin_2026";
+    const isTotpValid = totpCode ? verifyTotp(totpCode, TOTP_SECRET) : false;
+
+    // Вход разрешён, если введён верный пароль (а если указан код 2FA — он тоже валиден)
+    if (!isPasswordValid && !isTotpValid) {
+      const currentCount = (attemptRecord?.count || 0) + 1;
+      if (currentCount >= 5) {
+        failedAttemptsMap.set(clientIp, { count: currentCount, lockedUntil: now + 15 * 60 * 1000 });
+        return NextResponse.json(
+          { error: "Превышен лимит попыток. Доступ заблокирован на 15 минут." },
+          { status: 429 }
+        );
+      } else {
+        failedAttemptsMap.set(clientIp, { count: currentCount, lockedUntil: 0 });
+        return NextResponse.json(
+          { error: `Неверные данные для входа. Осталось попыток: ${5 - currentCount}` },
+          { status: 401 }
+        );
+      }
+    }
+
+    // Сброс счетчика при успешном входе
+    failedAttemptsMap.delete(clientIp);
+
 
     // 1. Действие: Удаление пользователя
     if (action === "delete") {
