@@ -43,8 +43,13 @@ export async function POST(req: NextRequest) {
                  <p style="font-size: 16px;">Ваш код для входа в приложение:</p>
                  <div style="font-size: 36px; font-weight: bold; letter-spacing: 6px; color: #111; padding: 15px 0; background: #f3f4f6; text-align: center; border-radius: 6px; margin: 15px 0;">${code}</div>
                  <p style="color: #666; font-size: 14px;">Введите этот 6-значный код на экране входа в приложении.</p>
+                 <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 12px; margin-top: 15px; text-align: center;">
+                   <p style="font-size: 13px; color: #475569; margin: 0 0 6px 0;">💻 <b>SmartNotes для Windows ПК:</b></p>
+                   <a href="https://smartnotes-ai.ru" style="display: inline-block; background: #6366f1; color: #ffffff; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold;">Открыть сайт и скачать для ПК</a>
+                 </div>
                  <p style="color: #999; font-size: 12px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">Если вы не запрашивали вход, просто проигнорируйте это письмо.</p>
                </div>`,
+
       });
     } else {
       // Для отладки, если нет ключа Resend
