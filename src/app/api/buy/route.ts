@@ -10,13 +10,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const shopId = process.env.YOOKASSA_SHOP_ID || '1418145';
-    const secretKey = process.env.YOOKASSA_SECRET_KEY || 'live_9ZgCsG1u-hTnBURIWcVPYqASSQmDdxtBEOSi_uAHl4Y';
+    // Боевой магазин ЮKassa
+    const shopId = '1418145';
+    const secretKey = 'live_9ZgCsG1u-hTnBURIWcVPYqASSQmDdxtBEOSi_uAHl4Y';
 
-    if (!shopId || !secretKey) {
-       console.error("YooKassa credentials not configured");
-       return NextResponse.json({ error: 'Сервер оплат временно недоступен' }, { status: 500 });
-    }
 
     let amountValue = '150.00';
     let description = 'SmartNotes AI - Подписка PRO+ (1 месяц)';
