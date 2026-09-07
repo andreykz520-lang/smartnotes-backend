@@ -653,9 +653,23 @@ export default function AdminPage() {
                           )}
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className="text-xs font-mono bg-slate-950 px-2 py-1 rounded-md border border-slate-800 text-slate-300">
-                            📱 {user.devicesCount} / {user.isPro || user.isProPlus ? 3 : 1}
-                          </span>
+                          <div className="flex flex-col gap-1.5 items-start">
+                            <span className="text-xs font-mono bg-slate-950 px-2 py-1 rounded-md border border-slate-800 text-slate-300">
+                              📱 {user.devicesCount} / {user.isPro || user.isProPlus ? 3 : 1}
+                            </span>
+                            {user.devices && user.devices.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {user.devices.map((d, i) => {
+                                  const isWin = d.startsWith('device_win_');
+                                  return (
+                                    <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded border ${isWin ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`} title={d}>
+                                      {isWin ? 'Windows' : 'Mobile'}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3.5 px-4 text-xs text-slate-400">
                           {user.createdAt ? new Date(user.createdAt).toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"}
