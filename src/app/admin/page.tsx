@@ -660,7 +660,7 @@ export default function AdminPage() {
                             {user.devices && user.devices.length > 0 && (
                               <div className="flex flex-wrap gap-1">
                                 {user.devices.map((d, i) => {
-                                  const isWin = d.startsWith('device_win_');
+                                  const isWin = d.startsWith('device_win_') || d.startsWith('win_');
                                   return (
                                     <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded border ${isWin ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`} title={d}>
                                       {isWin ? 'Windows' : 'Mobile'}
