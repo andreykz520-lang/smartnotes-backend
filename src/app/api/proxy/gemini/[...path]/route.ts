@@ -38,9 +38,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
       return NextResponse.json({ error: "API key is required" }, { status: 400 });
     }
 
-    // Собираем оригинальный путь, который запрашивало приложение
-    const pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models';
+    let pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models';
 
+    // Если используется серверный ключ, принудительно переключаем дорогие модели на ультрадешевую Flash
+    const isUsingDevKey = key === process.env.GEMINI_API_KEY || !key || key.trim() === '';
+    if (isUsingDevKey && pathString.includes('gemini-1.5-pro')) {
+       pathString = pathString.replace('gemini-1.5-pro', 'gemini-1.5-flash');
+    }
+    
     // Перенаправляем запрос на оригинальный сервер Google
     const googleUrl = `https://generativelanguage.googleapis.com/${pathString}?key=${key}`;
 

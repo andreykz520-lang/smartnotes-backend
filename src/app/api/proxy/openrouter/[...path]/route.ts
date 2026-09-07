@@ -25,13 +25,19 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
     }
 
-    // Защита: полностью блокируем Kimi/Moonshot и сторонние модели
-    if (body && body.model && (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot'))) {
-      return NextResponse.json({ error: "Model Kimi is blocked and not allowed" }, { status: 403 });
-    }
-
-    if (body && body.model && !body.model.includes('gemini')) {
-      body.model = 'google/gemini-3.7-flash';
+    // Если используется ключ из .env (ключ разработчика), принудительно ставим самую дешевую модель
+    // Это защитит баланс от утечек, так как все бесплатные/триальные юзеры используют этот ключ
+    const isUsingDevKey = !authHeader || authHeader === "null" || authHeader === "undefined" || authHeader.toLowerCase() === "bearer";
+    
+    if (body && body.model) {
+      if (isUsingDevKey) {
+        body.model = 'google/gemini-2.0-flash-lite-preview-02-05:free'; // Или любая сверхдешевая модель
+      } else {
+        // Защита: полностью блокируем Kimi/Moonshot для всех
+        if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
+          return NextResponse.json({ error: "Model Kimi is blocked and not allowed" }, { status: 403 });
+        }
+      }
     }
 
     const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
