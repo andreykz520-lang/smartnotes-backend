@@ -171,6 +171,12 @@ export default function Home() {
               💻 {t('download_windows')}
             </a>
             <a
+              href="/SmartNotes-Linux.deb"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition-all backdrop-blur-md"
+            >
+              🐧 {t('download_linux')}
+            </a>
+            <a
               href="/SmartNotes.apk"
               download="SmartNotes.apk"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs sm:text-sm border border-white/10 transition-all"
@@ -348,6 +354,9 @@ export default function Home() {
                 </a>
                 <a href="/SmartNotes-Setup.exe" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
                   💻 {t('download_windows')}
+                </a>
+                <a href="/SmartNotes-Linux.deb" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
+                  🐧 {t('download_linux')}
                 </a>
               </div>
             </div>
