@@ -104,8 +104,15 @@ export async function POST(req: NextRequest) {
     let finalIsProPlus = user.isProPlus || shouldBeProPlus;
     let finalProEndedAt = user.proEndedAt;
     
-    // Если пользователь новый (или без активной подписки) и не админ, даем 3-дневный триал PRO+
-    if (!isAdmin && !codePlan && !user.proStartedAt) {
+    // Проверяем, использовалось ли это устройство ранее кем-либо
+    const globalDevice = await db
+      .select()
+      .from(devices)
+      .where(eq(devices.deviceId, deviceId));
+    const isDeviceAlreadyUsed = globalDevice.length > 0;
+    
+    // Если пользователь новый, не админ и ЭТО УСТРОЙСТВО еще не было в базе, даем 3-дневный триал
+    if (!isAdmin && !codePlan && !user.proStartedAt && !isDeviceAlreadyUsed) {
       finalIsPro = true;
       finalIsProPlus = true;
       const threeDaysLater = new Date();
@@ -162,14 +169,9 @@ export async function POST(req: NextRequest) {
         }
       }
       
-      // Проверяем, не привязан ли deviceId к другому профилю
-      const globalDevice = await db
-        .select()
-        .from(devices)
-        .where(eq(devices.deviceId, deviceId));
-
+      // Устройство уже найдено выше в переменной globalDevice
       if (globalDevice.length > 0) {
-        // Перепривязываем к текущему пользователю
+        // Переписываем на текущего пользователя
         await db
           .update(devices)
           .set({ userId: user.id })
