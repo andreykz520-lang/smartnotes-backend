@@ -100,12 +100,33 @@ export async function POST(req: NextRequest) {
     const shouldBeProPlus = isAdmin || codePlan.includes('pro_plus') || codePlan.includes('plus');
     const shouldBePro = isAdmin || shouldBeProPlus || codePlan === 'pro' || code.length > 6;
 
-    if ((shouldBePro && !user.isPro) || (shouldBeProPlus && !user.isProPlus)) {
+    let finalIsPro = user.isPro || shouldBePro;
+    let finalIsProPlus = user.isProPlus || shouldBeProPlus;
+    let finalProEndedAt = user.proEndedAt;
+    
+    // Если пользователь новый (или без активной подписки) и не админ, даем 3-дневный триал PRO+
+    if (!isAdmin && !codePlan && !user.proStartedAt) {
+      finalIsPro = true;
+      finalIsProPlus = true;
+      const threeDaysLater = new Date();
+      threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+      finalProEndedAt = threeDaysLater;
+    }
+
+    // Проверка на истечение триала/подписки
+    if (!isAdmin && finalProEndedAt && new Date(finalProEndedAt).getTime() < Date.now()) {
+      finalIsPro = false;
+      finalIsProPlus = false;
+    }
+
+    if (finalIsPro !== user.isPro || finalIsProPlus !== user.isProPlus || (!user.proStartedAt && finalIsPro) || finalProEndedAt !== user.proEndedAt) {
       const updatedUser = await db
         .update(users)
         .set({ 
-          isPro: user.isPro || shouldBePro,
-          isProPlus: user.isProPlus || shouldBeProPlus
+          isPro: finalIsPro,
+          isProPlus: finalIsProPlus,
+          proStartedAt: user.proStartedAt || new Date(),
+          proEndedAt: finalProEndedAt,
         })
         .where(eq(users.id, user.id))
         .returning();
