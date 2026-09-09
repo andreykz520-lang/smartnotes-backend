@@ -89,6 +89,8 @@
     "faq_nav": "FAQ",
     "screenshots_nav": "Screenshots",
     "footer": "© 2026 SmartNotes AI. All rights reserved.",
-    "download_linux": "Download for Linux"
+    "download_linux": "Download for Linux",
+    "download_linux_deb": "Linux (.deb)",
+    "download_linux_appimage": "Linux (.AppImage)"
   }
 }
