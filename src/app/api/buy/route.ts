@@ -10,9 +10,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    // Боевой магазин ЮKassa
-    const shopId = '1418145';
-    const secretKey = 'live_9ZgCsG1u-hTnBURIWcVPYqASSQmDdxtBEOSi_uAHl4Y';
+    // Боевой магазин ЮKassa из переменных окружения
+    const shopId = process.env.YOOKASSA_SHOP_ID || '1418145';
+    const secretKey = process.env.YOOKASSA_SECRET_KEY;
+
+    if (!secretKey) {
+      return NextResponse.json({ error: 'YooKassa secret key is not configured' }, { status: 500 });
+    }
 
 
     let amountValue = '150.00';
