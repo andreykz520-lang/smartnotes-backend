@@ -111,13 +111,13 @@ export async function POST(req: NextRequest) {
       .where(eq(devices.deviceId, deviceId));
     const isDeviceAlreadyUsed = globalDevice.length > 0;
     
-    // Если пользователь новый, не админ и ЭТО УСТРОЙСТВО еще не было в базе, даем 3-дневный триал
+    // Если пользователь новый, не админ и ЭТО УСТРОЙСТВО еще не было в базе, даем 30-дневный триал (1 месяц)
     if (!isAdmin && !codePlan && !user.proStartedAt && !isDeviceAlreadyUsed) {
       finalIsPro = true;
       finalIsProPlus = true;
-      const threeDaysLater = new Date();
-      threeDaysLater.setDate(threeDaysLater.getDate() + 3);
-      finalProEndedAt = threeDaysLater;
+      const thirtyDaysLater = new Date();
+      thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
+      finalProEndedAt = thirtyDaysLater;
     }
 
     // Проверка на истечение триала/подписки

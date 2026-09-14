@@ -12,6 +12,8 @@ interface User {
   createdAt: string;
   devicesCount: number;
   devices?: string[];
+  daysLeft?: number | null;
+  isExpired?: boolean;
 }
 
 interface ActivationCode {
@@ -640,11 +642,15 @@ export default function AdminPage() {
                         <td className="py-3.5 px-4">
                           {user.isProPlus ? (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                              👑 PRO+ (ИИ)
+                              👑 PRO+ {user.daysLeft !== null && user.daysLeft !== undefined ? `(${user.daysLeft} дн.)` : '(ИИ)'}
                             </span>
                           ) : user.isPro ? (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/30">
                               ⚡ PRO
+                            </span>
+                          ) : user.isExpired ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
+                              ⌛ FREE (Истёк)
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">

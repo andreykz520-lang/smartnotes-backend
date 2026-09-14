@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { users, activationCodes, devices, notes, payments } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, sql, notInArray } from "drizzle-orm";
 import crypto from "crypto";
 
 export const dynamic = 'force-dynamic';
@@ -154,16 +154,45 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: `Тариф успешно обновлен на ${plan}` });
     }
 
+    // 0. Автоматически переводим в FREE всех пользователей, чей срок подписки/триала истек
+    try {
+      await db
+        .update(users)
+        .set({ isPro: false, isProPlus: false })
+        .where(
+          and(
+            sql`pro_ended_at IS NOT NULL`,
+            sql`pro_ended_at < NOW()`,
+            notInArray(users.email, ['andreykz520@gmail.com', 'autoneuro24@gmail.com', 'andreykz@yahoo.com'])
+          )
+        );
+    } catch (err) {
+      console.error("Auto-expire users error:", err);
+    }
+
     // 3. По умолчанию: Получаем всех пользователей с их устройствами
     const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
     const allDevices = await db.select().from(devices);
     
     const usersWithDevices = allUsers.map(user => {
       const userDevices = allDevices.filter(d => d.userId === user.id);
+      let daysLeft: number | null = null;
+      let isExpired = false;
+      if (user.proEndedAt) {
+        const diffMs = new Date(user.proEndedAt).getTime() - Date.now();
+        if (diffMs <= 0) {
+          isExpired = true;
+          daysLeft = 0;
+        } else {
+          daysLeft = Math.max(1, Math.ceil(diffMs / (24 * 60 * 60 * 1000)));
+        }
+      }
       return {
         ...user,
         devicesCount: userDevices.length,
         devices: userDevices.map(d => d.deviceId),
+        daysLeft,
+        isExpired,
       };
     });
 
