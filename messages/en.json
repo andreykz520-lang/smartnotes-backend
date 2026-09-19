@@ -74,6 +74,8 @@
     "faq_4_a": "Yes! All note editing and offline voice recognition work without internet. Network access is only required for AI chat and multi-device sync.",
     "faq_5_q": "How many devices can I use with one account?",
     "faq_5_a": "You can use your PRO or PRO+ account across up to 3 devices simultaneously with real-time cloud synchronization.",
+    "faq_6_q": "How to use the web version on PC or iPhone/Android without installing?",
+    "faq_6_a": "🌐 Any device:\nOpen https://smartnotes-ai.ru/app on your PC, iPhone (Safari), or Android (Chrome) — the full SmartNotes app opens directly in your browser without any installation.\n\n📲 Add to Home Screen (PWA):\n• On iPhone: tap the Share button (square with arrow) → \"Add to Home Screen\". A SmartNotes icon will appear on your home screen and open fullscreen without browser frames.\n• On Android / PC: an \"Install App\" button will appear in your browser.",
     "back_to_home": "← Back to Home",
     "tariffs_title": "SmartNotes Pricing Plans",
     "tariffs_subtitle": "Select a plan and convenient payment method",

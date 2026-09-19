@@ -686,7 +686,7 @@ export default function Home() {
           </div>
 
           <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => {
+            {[1, 2, 3, 4, 5, 6].map((i) => {
               const isOpen = openFaq === i;
               return (
                 <div 
@@ -704,7 +704,7 @@ export default function Home() {
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-gray-300 leading-relaxed border-t border-white/5 pt-4">
+                    <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base text-gray-300 leading-relaxed border-t border-white/5 pt-4 whitespace-pre-line">
                       {t(`faq_${i}_a` as any)}
                     </div>
                   )}
