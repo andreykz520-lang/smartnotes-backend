@@ -6,7 +6,7 @@
   },
   "entries": [
     {
-      "id": "urn:air:smartnotes-ai.ru:app:smartnotes",
+      "identifier": "urn:air:smartnotes-ai.ru:app:smartnotes",
       "displayName": "SmartNotes AI",
       "type": "text/markdown",
       "url": "https://smartnotes-ai.ru/llms.txt",

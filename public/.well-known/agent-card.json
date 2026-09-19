@@ -1,0 +1,22 @@
+{
+  "name": "SmartNotes AI Agent",
+  "version": "1.0.0",
+  "description": "SmartNotes AI note-taking and document assistant",
+  "supportedInterfaces": [
+    {
+      "url": "https://smartnotes-ai.ru/llms.txt",
+      "protocol": "https"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "skills": [
+    {
+      "id": "notes-info",
+      "name": "Notes Information",
+      "description": "Provides information about notes and AI capabilities"
+    }
+  ]
+}
