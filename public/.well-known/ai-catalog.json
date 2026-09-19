@@ -1,0 +1,20 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "SmartNotes AI",
+    "url": "https://smartnotes-ai.ru"
+  },
+  "entries": [
+    {
+      "id": "urn:air:smartnotes-ai.ru:app:smartnotes",
+      "displayName": "SmartNotes AI",
+      "type": "text/markdown",
+      "url": "https://smartnotes-ai.ru/llms.txt",
+      "representativeQueries": [
+        "SmartNotes AI notes app",
+        "AI assistant note taking",
+        "Download SmartNotes APK"
+      ]
+    }
+  ]
+}

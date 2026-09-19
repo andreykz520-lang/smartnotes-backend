@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
           { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" },
         ],
       },
+      {
+        source: "/",
+        headers: [
+          { key: "Link", value: '<https://smartnotes-ai.ru/llms.txt>; rel="service-doc", <https://smartnotes-ai.ru/.well-known/api-catalog>; rel="api-catalog"' },
+        ],
+      },
     ];
   },
   async redirects() {

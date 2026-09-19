@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema.json",
+  "serverInfo": {
+    "name": "smartnotes-ai",
+    "version": "1.0.0"
+  },
+  "description": "SmartNotes AI agent discovery endpoint",
+  "capabilities": {
+    "tools": false,
+    "resources": true,
+    "prompts": false
+  }
+}
