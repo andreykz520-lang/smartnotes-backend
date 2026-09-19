@@ -1,0 +1,22 @@
+{
+  "short_name": "SmartNotes",
+  "name": "SmartNotes AI - Умные заметки",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/apple-icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/app",
+  "background_color": "#0A0A0A",
+  "theme_color": "#9333ea",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/app"
+}

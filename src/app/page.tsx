@@ -97,6 +97,13 @@ export default function Home() {
 
           <div className="flex items-center gap-3 sm:gap-4">
             <a 
+              href="/app" 
+              className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all font-semibold text-xs sm:text-sm border border-white/20 backdrop-blur-md flex items-center gap-1.5"
+            >
+              🌐 {isRu ? 'Веб-версия' : 'Web App'}
+            </a>
+
+            <a 
               href="#checkout" 
               className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white transition-all font-semibold text-xs sm:text-sm shadow-[0_0_20px_rgba(147,51,234,0.4)]"
             >
@@ -156,6 +163,12 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto flex-wrap">
+            <a
+              href="/app"
+              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(168,85,247,0.45)] transform hover:-translate-y-0.5"
+            >
+              <span>🌐</span> {isRu ? 'Открыть в браузере (Онлайн)' : 'Open in Browser (Online)'}
+            </a>
             <a
               href="https://www.rustore.ru/catalog/app/com.andrey.smartnotes"
               target="_blank"

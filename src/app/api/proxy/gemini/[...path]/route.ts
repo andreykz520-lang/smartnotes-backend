@@ -7,7 +7,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ path
   try {
     const resolvedParams = await params;
     const { searchParams } = new URL(req.url);
-    const key = searchParams.get("key");
+    let key = searchParams.get("key");
+    if (!key || key === "BUILTIN" || key === "SERVER_DEFAULT") {
+      key = process.env.GEMINI_API_KEY || "";
+    }
 
     if (!key) {
       return NextResponse.json({ error: "API key is required" }, { status: 400 });
@@ -32,7 +35,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
     
     // Получаем API ключ Gemini из параметров URL
     const { searchParams } = new URL(req.url);
-    const key = searchParams.get("key");
+    let key = searchParams.get("key");
+    if (!key || key === "BUILTIN" || key === "SERVER_DEFAULT") {
+      key = process.env.GEMINI_API_KEY || "";
+    }
 
     if (!key) {
       return NextResponse.json({ error: "API key is required" }, { status: 400 });
