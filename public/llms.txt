@@ -1,0 +1,21 @@
+# SmartNotes AI
+
+> SmartNotes AI — мобильное и десктопное приложение для организации заметок, распознавания текста и анализа изображений с помощью искусственного интеллекта.
+
+## О проекте
+SmartNotes AI позволяет пользователям:
+- Вести умные заметки с категориями, тегами и быстрым поиском.
+- Использовать голосовой ввод с мгновенным распознаванием речи.
+- Общаться со встроенным ИИ-ассистентом (Gemini Flash), анализировать фото и документы.
+- Безопасно сохранять данные с защитой PIN-кодом и сквозным шифрованием.
+
+## Полезные ссылки
+- Официальный сайт: https://smartnotes-ai.ru/
+- RuStore: https://www.rustore.ru/catalog/app/com.andrey.smartnotes
+- Скачать APK для Android: https://smartnotes-ai.ru/SmartNotes.apk
+- Скачать для Windows: https://smartnotes-ai.ru/SmartNotes-Setup.exe
+- Скачать для Linux (.AppImage): https://smartnotes-ai.ru/SmartNotes-Linux.AppImage
+- Скачать для Linux (.deb): https://smartnotes-ai.ru/SmartNotes-Linux.deb
+- Политика конфиденциальности: https://smartnotes-ai.ru/privacy
+- Условия использования: https://smartnotes-ai.ru/terms
+- Правила возврата: https://smartnotes-ai.ru/refund
