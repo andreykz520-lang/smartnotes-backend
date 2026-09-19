@@ -1,15 +1,40 @@
 # SmartNotes AI
 
+> SmartNotes AI is a cross-platform note-taking app with AI assistance, voice transcription, photo analysis, and end-to-end privacy.
 > SmartNotes AI — мобильное и десктопное приложение для организации заметок, распознавания текста и анализа изображений с помощью искусственного интеллекта.
 
-## О проекте
-SmartNotes AI позволяет пользователям:
-- Вести умные заметки с категориями, тегами и быстрым поиском.
-- Использовать голосовой ввод с мгновенным распознаванием речи.
-- Общаться со встроенным ИИ-ассистентом (Gemini Flash), анализировать фото и документы.
-- Безопасно сохранять данные с защитой PIN-кодом и сквозным шифрованием.
+## English
 
-## Полезные ссылки
+### Features
+- Smart notes with categories, tags, pinning, and instant search.
+- Real-time voice-to-text dictation.
+- AI Assistant chat with photo and document analysis (powered by Gemini Flash).
+- Secure private notes protected by PIN code and encryption.
+- Cloud synchronization across devices.
+
+### Download & Links
+- Website: https://smartnotes-ai.ru/
+- RuStore: https://www.rustore.ru/catalog/app/com.andrey.smartnotes
+- Android APK: https://smartnotes-ai.ru/SmartNotes.apk
+- Windows: https://smartnotes-ai.ru/SmartNotes-Setup.exe
+- Linux (.AppImage): https://smartnotes-ai.ru/SmartNotes-Linux.AppImage
+- Linux (.deb): https://smartnotes-ai.ru/SmartNotes-Linux.deb
+- Privacy Policy: https://smartnotes-ai.ru/privacy
+- Terms of Service: https://smartnotes-ai.ru/terms
+- Refund Policy: https://smartnotes-ai.ru/refund
+
+---
+
+## Русский
+
+### Возможности
+- Умные заметки с категориями, тегами и быстрым поиском.
+- Голосовой ввод с мгновенным распознаванием речи на лету.
+- Встроенный ИИ-ассистент (Gemini Flash), анализ фото и документов в чате.
+- Безопасное хранение заметок под PIN-кодом и надежное шифрование.
+- Облачная синхронизация между устройствами.
+
+### Ссылки
 - Официальный сайт: https://smartnotes-ai.ru/
 - RuStore: https://www.rustore.ru/catalog/app/com.andrey.smartnotes
 - Скачать APK для Android: https://smartnotes-ai.ru/SmartNotes.apk
