@@ -34,11 +34,7 @@ export async function POST(req: NextRequest) {
 
     // Отправляем письмо через Resend
     if (process.env.RESEND_API_KEY) {
-      await resend.emails.send({
-        from: "SmartNotes AI <no-reply@smartnotes-ai.ru>", 
-        to: email,
-        subject: "Код для входа в SmartNotes",
-        html: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: 0 auto; border: 1px solid #eee; border-radius: 8px;">
+      const emailHtml = `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: 0 auto; border: 1px solid #eee; border-radius: 8px;">
                  <h2 style="color: #6366f1; margin-top: 0;">SmartNotes AI</h2>
                  <p style="font-size: 16px;">Ваш код для входа в приложение:</p>
                  <div style="font-size: 36px; font-weight: bold; letter-spacing: 6px; color: #111; padding: 15px 0; background: #f3f4f6; text-align: center; border-radius: 6px; margin: 15px 0;">${code}</div>
@@ -48,9 +44,29 @@ export async function POST(req: NextRequest) {
                    <a href="https://smartnotes-ai.ru" style="display: inline-block; background: #6366f1; color: #ffffff; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold;">Открыть сайт и скачать для ПК</a>
                  </div>
                  <p style="color: #999; font-size: 12px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">Если вы не запрашивали вход, просто проигнорируйте это письмо.</p>
-               </div>`,
+               </div>`;
 
+      let sendResult = await resend.emails.send({
+        from: "SmartNotes AI <no-reply@smartnotes-ai.ru>", 
+        to: email,
+        subject: "Код для входа в SmartNotes",
+        html: emailHtml,
       });
+
+      // Если домен smartnotes-ai.ru еще не подтвержден в Resend, отправляем через тестовый onboarding
+      if (sendResult?.error && (sendResult.error.message?.includes('not verified') || sendResult.error.statusCode === 403)) {
+        console.warn("Domain not verified in Resend, using onboarding fallback...");
+        sendResult = await resend.emails.send({
+          from: "SmartNotes AI <onboarding@resend.dev>",
+          to: email,
+          subject: "Код для входа в SmartNotes",
+          html: emailHtml,
+        });
+      }
+
+      if (sendResult?.error) {
+        console.error("Resend delivery error:", sendResult.error);
+      }
     } else {
       // Для отладки, если нет ключа Resend
       console.log(`[DEBUG] Activation code for ${email} is ${code}`);
