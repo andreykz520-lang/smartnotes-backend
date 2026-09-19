@@ -1,8 +1,8 @@
-.next
-node_modules
+/.next
+/node_modules
 .env*
 *.log
-.turbo
+/.turbo
 
 .vercel
 .env*
