@@ -666,10 +666,41 @@ export default function AdminPage() {
                             {user.devices && user.devices.length > 0 && (
                               <div className="flex flex-wrap gap-1">
                                 {user.devices.map((d, i) => {
-                                  const isWin = d.startsWith('device_win_') || d.startsWith('win_');
+                                  const lower = d.toLowerCase();
+                                  let label = 'Android';
+                                  let icon = '🤖';
+                                  let style = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
+
+                                  if (lower.startsWith('web_') || lower.includes('web')) {
+                                    label = 'Web';
+                                    icon = '🌐';
+                                    style = 'bg-purple-500/15 text-purple-300 border-purple-500/40';
+                                  } else if (lower.startsWith('linux_') || lower.includes('linux')) {
+                                    label = 'Linux';
+                                    icon = '🐧';
+                                    style = 'bg-amber-500/15 text-amber-300 border-amber-500/40';
+                                  } else if (lower.startsWith('mac_') || lower.includes('mac') || lower.startsWith('darwin_')) {
+                                    label = 'macOS';
+                                    icon = '🍎';
+                                    style = 'bg-slate-500/15 text-slate-300 border-slate-500/40';
+                                  } else if (lower.startsWith('device_win_') || lower.startsWith('win_') || lower.includes('win')) {
+                                    label = 'Windows';
+                                    icon = '💻';
+                                    style = 'bg-blue-500/15 text-blue-300 border-blue-500/40';
+                                  } else if (lower.startsWith('ios_') || lower.includes('ios') || lower.includes('iphone')) {
+                                    label = 'iOS';
+                                    icon = '🍏';
+                                    style = 'bg-teal-500/15 text-teal-300 border-teal-500/40';
+                                  }
+
                                   return (
-                                    <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded border ${isWin ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`} title={d}>
-                                      {isWin ? 'Windows' : 'Mobile'}
+                                    <span
+                                      key={i}
+                                      className={`text-[10px] px-1.5 py-0.5 rounded-md border flex items-center gap-1 font-medium ${style}`}
+                                      title={d}
+                                    >
+                                      <span>{icon}</span>
+                                      <span>{label}</span>
                                     </span>
                                   );
                                 })}
