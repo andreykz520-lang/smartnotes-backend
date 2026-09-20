@@ -29,18 +29,16 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     // Это защитит баланс от утечек, так как все бесплатные/триальные юзеры используют этот ключ
     const isUsingDevKey = !authHeader || authHeader === "null" || authHeader === "undefined" || authHeader.toLowerCase() === "bearer";
     
-    if (body && body.model) {
-      if (isUsingDevKey) {
-        body.model = 'google/gemini-2.0-flash-lite-preview-02-05:free'; // Или любая сверхдешевая модель
-      } else {
-        // Защита: полностью блокируем Kimi/Moonshot для всех
-        if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
-          return NextResponse.json({ error: "Model Kimi is blocked and not allowed" }, { status: 403 });
-        }
+    if (body) {
+      if (!body.model || isUsingDevKey) {
+        body.model = body.model || 'google/gemini-3.7-flash';
+      }
+      if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
+        return NextResponse.json({ error: "Model is not supported" }, { status: 403 });
       }
     }
 
-    const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
+    const openRouterUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       method: "POST",
@@ -78,7 +76,7 @@ export async function GET(req: NextRequest, { params }: { params?: Promise<{ pat
       apiKey = process.env.OPENROUTER_API_KEY || "";
     }
 
-    const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
+    const openRouterUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       headers: {
