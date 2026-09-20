@@ -12,7 +12,7 @@ const httpsAgent = new https.Agent({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { authKey, messages } = body;
+    const { authKey, model, messages } = body;
 
     if (!authKey) {
       return NextResponse.json({ error: "GigaChat Auth Key is required" }, { status: 400 });
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify({
-        model: 'GigaChat',
+        model: model || 'GigaChat',
         messages: messages || [{ role: 'user', content: 'Привет' }],
         temperature: 0.7,
         max_tokens: 1024,
