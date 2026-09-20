@@ -672,7 +672,14 @@ export default function AdminPage() {
                                   let style = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
 
                                   if (lower.startsWith('web_') || lower.includes('web')) {
-                                    label = 'Web';
+                                    let os = '';
+                                    if (lower.includes('android')) os = ' (Android)';
+                                    else if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) os = ' (iOS)';
+                                    else if (lower.includes('win')) os = ' (Windows)';
+                                    else if (lower.includes('mac')) os = ' (macOS)';
+                                    else if (lower.includes('linux')) os = ' (Linux)';
+
+                                    label = `Web${os}`;
                                     icon = '🌐';
                                     style = 'bg-purple-500/15 text-purple-300 border-purple-500/40';
                                   } else if (lower.startsWith('linux_') || lower.includes('linux')) {
