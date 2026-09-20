@@ -3,14 +3,34 @@
   "name": "SmartNotes AI - Умные заметки",
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/app/icon-192.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
-      "src": "/apple-icon.png",
+      "src": "/app/icon-192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/app/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/app/icon.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
     }
   ],
   "start_url": "/app",
