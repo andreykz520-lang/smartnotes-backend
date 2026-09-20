@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import https from "https";
+import crypto from "crypto";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -19,19 +20,43 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Получаем токен доступа в Сбере
-    const rqUid = 'req_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-    const tokenRes = await fetch('https://ngw.devices.sberbank.ru:9443/api/v2/oauth', {
+    let cleanKey = authKey.trim();
+    if (cleanKey.toLowerCase().startsWith('basic ')) {
+      cleanKey = cleanKey.slice(6).trim();
+    }
+
+    const rqUid = crypto.randomUUID();
+    let tokenRes = await fetch('https://ngw.devices.sberbank.ru:9443/api/v2/oauth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',
         'RqUID': rqUid,
-        'Authorization': `Basic ${authKey.trim()}`
+        'Authorization': `Basic ${cleanKey}`
       },
       body: 'scope=GIGACHAT_API_PERS',
       // @ts-ignore
       agent: httpsAgent
     });
+
+    if (!tokenRes.ok) {
+      // Попробуем корпоративный скоуп, если персональный не подошел
+      const retryRes = await fetch('https://ngw.devices.sberbank.ru:9443/api/v2/oauth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+          'RqUID': crypto.randomUUID(),
+          'Authorization': `Basic ${cleanKey}`
+        },
+        body: 'scope=GIGACHAT_API_CORP',
+        // @ts-ignore
+        agent: httpsAgent
+      });
+      if (retryRes.ok) {
+        tokenRes = retryRes;
+      }
+    }
 
     if (!tokenRes.ok) {
       const errText = await tokenRes.text();
