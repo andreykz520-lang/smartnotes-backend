@@ -7,3 +7,5 @@
 .vercel
 .env*
 *.tsbuildinfo
+public/*.exe
+

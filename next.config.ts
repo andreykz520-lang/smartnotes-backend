@@ -24,22 +24,22 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/SmartNotes-Setup.exe',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.2/SmartNotes.AI.Setup.1.0.2.exe',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI.Setup.1.0.3.exe',
         permanent: false,
       },
       {
         source: '/download/windows',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.2/SmartNotes.AI.Setup.1.0.2.exe',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI.Setup.1.0.3.exe',
         permanent: false,
       },
       {
         source: '/SmartNotes-Linux.deb',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.2/smartnotesapp_1.0.2_amd64.deb',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/smartnotesapp_1.0.3_amd64.deb',
         permanent: false,
       },
       {
         source: '/SmartNotes-Linux.AppImage',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.2/SmartNotes.AI-1.0.2.AppImage',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI-1.0.3.AppImage',
         permanent: false,
       },
     ];
