@@ -1,0 +1,31 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "OBD2 SCAN AI",
+    "url": "https://obd2scanai.ru",
+    "description": "AI OBD-II Car Diagnostic & Trouble Code Scanner"
+  },
+  "entries": [
+    {
+      "id": "urn:air:obd2scanai.ru:mcp:server",
+      "displayName": "OBD2 SCAN AI MCP Server",
+      "type": "application/json",
+      "url": "https://obd2scanai.ru/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "Read vehicle DTC error codes",
+        "Diagnose car check engine light",
+        "Find OBD2 code meanings"
+      ]
+    },
+    {
+      "id": "urn:air:obd2scanai.ru:api:openapi",
+      "displayName": "OBD2 SCAN AI OpenAPI",
+      "type": "application/vnd.oai.openapi+json",
+      "url": "https://obd2scanai.ru/api/openapi.json",
+      "representativeQueries": [
+        "Car diagnostic API",
+        "DTC fault code lookup"
+      ]
+    }
+  ]
+}

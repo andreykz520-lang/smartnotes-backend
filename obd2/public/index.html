@@ -7,6 +7,40 @@
   <meta name="description" content="Умная автодиагностика на базе нейросетей Gemini и GigaChat. Считывание и сброс ошибок Check Engine, АКПП, ABS, SRS. Поддержка Bluetooth, Wi-Fi и USB-OTG.">
       <link rel="icon" type="image/png" href="/api/img?name=app_icon.png">
   <link rel="apple-touch-icon" href="/api/img?name=app_icon.png">
+  <link rel="service-doc" href="/llms.txt">
+  <link rel="api-catalog" href="/.well-known/api-catalog">
+  <script>
+    (function() {
+      function initWebMCP() {
+        try {
+          if (typeof navigator !== 'undefined' && navigator.modelContext && typeof navigator.modelContext.provideContext === 'function') {
+            navigator.modelContext.provideContext({
+              tools: [
+                {
+                  name: "diagnoseDtc",
+                  description: "Diagnose vehicle OBD-II DTC trouble codes and automotive engine symptoms",
+                  inputSchema: {
+                    type: "object",
+                    properties: {
+                      code: { type: "string", description: "OBD-II DTC code (e.g. P0300, P0420)" }
+                    },
+                    required: ["code"]
+                  },
+                  execute: async function(p) { return { success: true, result: "Diagnosis for DTC " + p.code }; }
+                }
+              ]
+            });
+          }
+        } catch(e) {
+          console.warn("WebMCP error", e);
+        }
+      }
+      initWebMCP();
+      if (typeof window !== 'undefined') {
+        window.addEventListener('DOMContentLoaded', initWebMCP);
+      }
+    })();
+  </script>
   <link rel="preload" as="image" href="/api/img?name=screen_mainmenu_pro.webp">
   <link rel="preload" as="image" href="/api/img?name=screen_dashboard.webp">
   <link rel="preload" as="image" href="/api/img?name=screen_antifraud.webp">

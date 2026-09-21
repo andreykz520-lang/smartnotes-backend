@@ -17,6 +17,34 @@ const botApi = require('./api/bot');
 const imgApi = require('./api/img');
 const proxyOpenRouterApi = require('./api/proxy-openrouter');
 
+function serveFile(res, filePath, contentType, isDownload = false, downloadName = '', extraHeaders = {}) {
+  if (!fs.existsSync(filePath)) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end('File Not Found');
+  }
+
+  const stat = fs.statSync(filePath);
+  const headers = {
+    'Content-Type': contentType || 'application/octet-stream',
+    'Content-Length': stat.size,
+    'Access-Control-Allow-Origin': '*',
+    ...extraHeaders
+  };
+
+  if (isDownload) {
+    headers['Content-Disposition'] = `attachment; filename="${downloadName || path.basename(filePath)}"`;
+    headers['Cache-Control'] = 'no-cache';
+  } else if (filePath.includes('img') || filePath.endsWith('.png') || filePath.endsWith('.ico') || filePath.endsWith('.webp')) {
+    headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+  } else {
+    headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate';
+  }
+
+  res.writeHead(200, headers);
+  const stream = fs.createReadStream(filePath);
+  stream.pipe(res);
+}
+
 function handleObd2(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,7 +57,113 @@ function handleObd2(req, res) {
   }
 
   const url = new URL(req.url, `http://localhost:${PORT}`);
-  const pathname = url.pathname;
+  const pathname = decodeURIComponent(url.pathname);
+  const accept = (req.headers.accept || '').toLowerCase();
+
+  // 1. AI Content / Markdown Negotiation (Accept: text/markdown)
+  if (accept.includes('text/markdown') && (pathname === '/' || pathname === '/index' || pathname === '/main' || pathname === '')) {
+    const mdPath = path.join(__dirname, 'public', 'llms.txt');
+    return serveFile(res, mdPath, 'text/markdown; charset=utf-8', false, '', {
+      'x-markdown-tokens': '380',
+      'Vary': 'Accept',
+      'Link': '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"'
+    });
+  }
+
+  // 2. robots.txt
+  if (pathname === '/robots.txt') {
+    return serveFile(res, path.join(__dirname, 'public', 'robots.txt'), 'text/plain; charset=utf-8');
+  }
+
+  // 3. sitemap.xml
+  if (pathname === '/sitemap.xml') {
+    return serveFile(res, path.join(__dirname, 'public', 'sitemap.xml'), 'application/xml; charset=utf-8');
+  }
+
+  // 4. llms.txt & auth.md
+  if (pathname === '/llms.txt') {
+    return serveFile(res, path.join(__dirname, 'public', 'llms.txt'), 'text/markdown; charset=utf-8');
+  }
+  if (pathname === '/auth.md') {
+    return serveFile(res, path.join(__dirname, 'public', 'auth.md'), 'text/markdown; charset=utf-8');
+  }
+
+  // 5. RFC 9727 API Catalog
+  if (pathname === '/.well-known/api-catalog') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'api-catalog'), 'application/linkset+json');
+  }
+
+  // 6. ARD Manifest (ai-catalog.json)
+  if (pathname === '/.well-known/ai-catalog.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'ai-catalog.json'), 'application/json; charset=utf-8');
+  }
+
+  // 7. MCP Server Card
+  if (pathname === '/.well-known/mcp/server-card.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'mcp', 'server-card.json'), 'application/json; charset=utf-8');
+  }
+
+  // 8. Agent Skills Index
+  if (pathname === '/.well-known/agent-skills/index.json' || pathname === '/.well-known/agent-skills') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'agent-skills', 'index.json'), 'application/json; charset=utf-8');
+  }
+
+  // 9. OpenID & OAuth Discovery
+  if (pathname === '/.well-known/openid-configuration' || pathname === '/.well-known/openid-configuration.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'openid-configuration'), 'application/json; charset=utf-8');
+  }
+  if (pathname === '/.well-known/oauth-authorization-server' || pathname === '/.well-known/oauth-authorization-server.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-authorization-server'), 'application/json; charset=utf-8');
+  }
+  if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource.json' || pathname === '/.well-known/oauth-protected-resource/') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-protected-resource'), 'application/json; charset=utf-8');
+  }
+
+  // 10. Agent Registration endpoints (WorkOS auth.md discovery)
+  if (pathname === '/api/agent/register') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'registered',
+      client_id: 'agent_' + Date.now().toString(36),
+      token_endpoint: 'https://obd2scanai.ru/api/auth/token'
+    }));
+  }
+  if (pathname === '/api/agent/identity') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'ok',
+      identity_assertion: 'mock_assertion_' + Date.now().toString(36)
+    }));
+  }
+  if (pathname === '/api/agent/claim') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', claimed: true }));
+  }
+  if (pathname === '/api/agent/event' || pathname === '/api/agent/event/notify') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'received' }));
+  }
+  if (pathname === '/api/auth/token') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      access_token: 'agent_tok_' + Date.now().toString(36),
+      token_type: 'Bearer',
+      expires_in: 86400
+    }));
+  }
+  if (pathname === '/api/auth/revoke') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'revoked' }));
+  }
+
+  // 11. API Health and OpenAPI spec
+  if (pathname === '/api/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', service: 'obd2-scan-ai' }));
+  }
+  if (pathname === '/api/openapi.json') {
+    return serveFile(res, path.join(__dirname, 'public', 'api', 'openapi.json'), 'application/vnd.oai.openapi+json');
+  }
 
   // Add express/vercel-like helpers
   req.query = Object.fromEntries(url.searchParams);
@@ -89,12 +223,17 @@ function handleObd2(req, res) {
     if (pathname === '/' || pathname === '/index' || pathname === '/main') {
       filePath = path.join(__dirname, 'public', 'index.html');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'index.html');
+      return serveFile(res, filePath, 'text/html; charset=utf-8', false, '', {
+        'Link': '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"'
+      });
     } else if (pathname === '/download' || pathname === '/download-apk' || pathname === '/apk') {
       filePath = path.join(__dirname, 'public', 'obd2scanai.apk');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'obd2scanai.apk');
+      return serveFile(res, filePath, 'application/vnd.android.package-archive', true, 'OBD2_SCAN_AI.apk');
     } else if (pathname === '/download-windows' || pathname === '/download-win' || pathname === '/windows' || pathname === '/win' || pathname === '/exe') {
       filePath = path.join(__dirname, 'public', 'OBD2_SCAN_AI_Setup.exe');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'obd2scanai-windows.exe');
+      return serveFile(res, filePath, 'application/octet-stream', true, 'OBD2_SCAN_AI_Setup.exe');
     } else if (pathname === '/buy' || pathname === '/buy-pro') {
       res.writeHead(302, { Location: '/' });
       return res.end();
@@ -129,31 +268,9 @@ function handleObd2(req, res) {
         '.svg': 'image/svg+xml',
         '.apk': 'application/vnd.android.package-archive',
         '.zip': 'application/zip',
-        '.exe': 'application/x-msdownload'
+        '.exe': 'application/octet-stream'
       };
-      res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
-      if (ext === '.apk') {
-        res.setHeader('Content-Disposition', 'attachment; filename="OBD2_SCAN_AI.apk"');
-      } else if (ext === '.exe') {
-        res.setHeader('Content-Disposition', 'attachment; filename="OBD2_SCAN_AI_Setup.exe"');
-      } else if (ext === '.zip') {
-        res.setHeader('Content-Disposition', 'attachment; filename="OBD2_SCAN_AI_Windows.zip"');
-      }
-      if (ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.webp' || ext === '.ico' || ext === '.svg') {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      } else {
-        res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
-      }
-      
-      if (ext === '.html' || ext === '.css' || ext === '.js') {
-        const text = fs.readFileSync(filePath, 'utf-8');
-        res.setHeader('Content-Length', Buffer.byteLength(text, 'utf-8'));
-        return res.end(text, 'utf-8');
-      } else {
-        const data = fs.readFileSync(filePath);
-        res.setHeader('Content-Length', data.length);
-        return res.end(data);
-      }
+      return serveFile(res, filePath, mimeTypes[ext] || 'application/octet-stream');
     }
 
     res.status(404).send('Not Found');

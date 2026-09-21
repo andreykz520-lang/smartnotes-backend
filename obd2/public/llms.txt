@@ -1,0 +1,20 @@
+# OBD2 SCAN AI — ИИ-Автосканер и Диагност
+
+> OBD2 SCAN AI is an AI-driven OBD-II diagnostics and vehicle troubleshooting platform for drivers, mechanics, and autonomous diagnostic agents.
+> OBD2 SCAN AI — интеллектуальная диагностика автомобилей через OBD-II сканеры ELM327 и нейросетевой анализ кодов DTC.
+
+## Capabilities / Возможности
+- OBD-II fault code (DTC) reading and interpretation (P0300, P0171, P0420, etc.).
+- Step-by-step repair guides and symptom-based diagnostic assistance.
+- Torque specs calculator and automotive component troubleshooting.
+- Cross-platform support for Android (APK) and Windows PC.
+
+## Discovery Endpoints / Эндпоинты
+- Website: https://obd2scanai.ru/
+- API Catalog: https://obd2scanai.ru/.well-known/api-catalog
+- OpenAPI Spec: https://obd2scanai.ru/api/openapi.json
+- MCP Server Card: https://obd2scanai.ru/.well-known/mcp/server-card.json
+- Agent Skills Index: https://obd2scanai.ru/.well-known/agent-skills/index.json
+- Protected Resource: https://obd2scanai.ru/.well-known/oauth-protected-resource
+- Authorization Server: https://obd2scanai.ru/.well-known/oauth-authorization-server
+- Agent Registration: https://obd2scanai.ru/auth.md

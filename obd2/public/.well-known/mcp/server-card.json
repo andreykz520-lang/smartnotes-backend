@@ -1,0 +1,28 @@
+{
+  "serverInfo": {
+    "name": "obd2-scan-ai",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://obd2scanai.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "diagnoseDtc",
+        "description": "Diagnose OBD-II diagnostic trouble codes and symptoms",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "DTC code (e.g. P0300, P0420)"
+            }
+          },
+          "required": ["code"]
+        }
+      }
+    ]
+  }
+}

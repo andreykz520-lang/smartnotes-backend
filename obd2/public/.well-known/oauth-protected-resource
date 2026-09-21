@@ -1,0 +1,15 @@
+{
+  "resource": "https://obd2scanai.ru",
+  "resource_name": "OBD2 SCAN AI",
+  "authorization_servers": [
+    "https://obd2scanai.ru"
+  ],
+  "scopes_supported": [
+    "obd:read",
+    "obd:diagnose"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://obd2scanai.ru/llms.txt"
+}

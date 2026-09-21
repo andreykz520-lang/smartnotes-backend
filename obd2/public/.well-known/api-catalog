@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://obd2scanai.ru/api",
+      "service-desc": [
+        {
+          "href": "https://obd2scanai.ru/api/openapi.json",
+          "type": "application/vnd.oai.openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://obd2scanai.ru/llms.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://obd2scanai.ru/api/health",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

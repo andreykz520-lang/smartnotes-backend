@@ -1,0 +1,20 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OBD2 SCAN AI API",
+    "version": "1.0.0",
+    "description": "Vehicle diagnostics and OBD-II trouble code API"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Healthy"
+          }
+        }
+      }
+    }
+  }
+}
