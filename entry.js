@@ -1,24 +1,30 @@
 const http = require('http');
 const next = require('next');
 const handleObd2 = require('./obd2/server.js');
+const handleAutomechanic = require('./automechanic/server.js');
 
 const dev = false;
 const port = parseInt(process.env.PORT || '3000', 10);
 const app = next({ dev, dir: __dirname });
 const handleNext = app.getRequestHandler();
 
-console.log(`[Multi-Site] Initializing SmartNotes Next.js and OBD2ScanAI...`);
+console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, and AutoMechanic...`);
 
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
     const host = (req.headers.host || '').toLowerCase();
     
-    // Если запрос пришел для obd2scanai.ru (или с поддоменом obd2)
+    // 1. Автомеханик: automechanic.obd2scanai.ru
+    if (host.includes('automechanic')) {
+      return handleAutomechanic(req, res);
+    }
+
+    // 2. OBD2 Сканер: obd2scanai.ru
     if (host.includes('obd2scanai.ru') || host.includes('obd2')) {
       return handleObd2(req, res);
     }
 
-    // Для smartnotes-ai.ru и всех остальных хостов
+    // 3. SmartNotes: smartnotes-ai.ru и остальные хосты
     return handleNext(req, res);
   });
 
@@ -26,6 +32,7 @@ app.prepare().then(() => {
     console.log(`✅ [Multi-Site] Multi-Site Server listening on port ${port}`);
     console.log(`   - SmartNotes AI: smartnotes-ai.ru`);
     console.log(`   - OBD2 SCAN AI: obd2scanai.ru`);
+    console.log(`   - AutoMechanic AI: automechanic.obd2scanai.ru`);
   });
 }).catch((err) => {
   console.error('[Multi-Site] Error starting server:', err);
