@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AutoMechanic AI API",
+    "version": "1.0.0",
+    "description": "AutoMechanic AI vehicle diagnostics and parts catalog API"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "API status OK"
+          }
+        }
+      }
+    },
+    "/api/license/check": {
+      "get": {
+        "summary": "License check",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "License status"
+          }
+        }
+      }
+    }
+  }
+}

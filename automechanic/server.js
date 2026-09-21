@@ -17,10 +17,13 @@ const MIME_TYPES = {
   '.zip': 'application/zip',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
-  '.ttf': 'font/ttf'
+  '.ttf': 'font/ttf',
+  '.xml': 'application/xml; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8'
 };
 
-function serveFile(res, filePath, contentType, isDownload = false, downloadName = '') {
+function serveFile(res, filePath, contentType, isDownload = false, downloadName = '', extraHeaders = {}) {
   if (!fs.existsSync(filePath)) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     return res.end('File Not Found');
@@ -30,7 +33,8 @@ function serveFile(res, filePath, contentType, isDownload = false, downloadName 
   const headers = {
     'Content-Type': contentType || 'application/octet-stream',
     'Content-Length': stat.size,
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    ...extraHeaders
   };
 
   if (isDownload) {
@@ -59,14 +63,83 @@ module.exports = function handleAutomechanic(req, res) {
 
   const url = new URL(req.url, 'http://localhost');
   const pathname = decodeURIComponent(url.pathname);
+  const accept = (req.headers.accept || '').toLowerCase();
 
-  // Перенаправление со страниц оплаты на главную страницу к блоку скачивания
+  // 1. AI Content / Markdown Negotiation (Accept: text/markdown)
+  if (accept.includes('text/markdown') && (pathname === '/' || pathname === '/index' || pathname === '/main' || pathname === '')) {
+    const mdPath = path.join(__dirname, 'public', 'llms.txt');
+    return serveFile(res, mdPath, 'text/markdown; charset=utf-8', false, '', {
+      'x-markdown-tokens': '380',
+      'Vary': 'Accept',
+      'Link': '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"'
+    });
+  }
+
+  // 2. robots.txt
+  if (pathname === '/robots.txt') {
+    return serveFile(res, path.join(__dirname, 'public', 'robots.txt'), 'text/plain; charset=utf-8');
+  }
+
+  // 3. sitemap.xml
+  if (pathname === '/sitemap.xml') {
+    return serveFile(res, path.join(__dirname, 'public', 'sitemap.xml'), 'application/xml; charset=utf-8');
+  }
+
+  // 4. llms.txt & auth.md
+  if (pathname === '/llms.txt') {
+    return serveFile(res, path.join(__dirname, 'public', 'llms.txt'), 'text/markdown; charset=utf-8');
+  }
+  if (pathname === '/auth.md') {
+    return serveFile(res, path.join(__dirname, 'public', 'auth.md'), 'text/markdown; charset=utf-8');
+  }
+
+  // 5. RFC 9727 API Catalog
+  if (pathname === '/.well-known/api-catalog') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'api-catalog'), 'application/linkset+json');
+  }
+
+  // 6. ARD Manifest (ai-catalog.json)
+  if (pathname === '/.well-known/ai-catalog.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'ai-catalog.json'), 'application/json');
+  }
+
+  // 7. MCP Server Card
+  if (pathname === '/.well-known/mcp/server-card.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'mcp', 'server-card.json'), 'application/json');
+  }
+
+  // 8. Agent Skills Index
+  if (pathname === '/.well-known/agent-skills/index.json' || pathname === '/.well-known/agent-skills') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'agent-skills', 'index.json'), 'application/json');
+  }
+
+  // 9. OpenID & OAuth Discovery
+  if (pathname === '/.well-known/openid-configuration') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'openid-configuration'), 'application/json');
+  }
+  if (pathname === '/.well-known/oauth-authorization-server') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-authorization-server'), 'application/json');
+  }
+  if (pathname === '/.well-known/oauth-protected-resource') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-protected-resource'), 'application/json');
+  }
+
+  // 10. API Health and OpenAPI spec
+  if (pathname === '/api/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', service: 'automechanic-ai' }));
+  }
+  if (pathname === '/api/openapi.json') {
+    return serveFile(res, path.join(__dirname, 'public', 'api', 'openapi.json'), 'application/vnd.oai.openapi+json');
+  }
+
+  // Перенаправление со страниц оплаты на блок скачивания
   if (pathname === '/buy' || pathname === '/buy-pro' || pathname.startsWith('/buy')) {
     res.writeHead(302, { Location: '/#download' });
     return res.end();
   }
 
-  // API для мобильного приложения: статус лицензии (во время теста всегда PRO)
+  // API для мобильного приложения: статус лицензии
   if (pathname === '/api/license/check') {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify({
@@ -79,9 +152,11 @@ module.exports = function handleAutomechanic(req, res) {
     }));
   }
 
-  // Главная страница
+  // Главная страница с заголовками обнаружения агентов (RFC 8288 Link)
   if (pathname === '/' || pathname === '/index' || pathname === '/main') {
-    return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8');
+    return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8', false, '', {
+      'Link': '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"'
+    });
   }
 
   // Статические страницы
@@ -107,21 +182,6 @@ module.exports = function handleAutomechanic(req, res) {
   }
 
   if (pathname === '/AutoMechanic-AI-Setup.exe' || pathname === '/download-windows' || pathname === '/download-win' || pathname === '/exe') {
-    return serveFile(
-      res,
-      path.join(__dirname, 'public', 'AutoMechanic-AI-Setup.exe'),
-      'application/octet-stream',
-      true,
-      'AutoMechanic-AI-Setup.exe'
-    );
-  }
-
-  if (pathname === '/AutoMechanic-AI-Windows.zip' || pathname === '/windows-zip') {
-    const zipPath = path.join(__dirname, 'public', 'AutoMechanic-AI-Windows.zip');
-    if (fs.existsSync(zipPath)) {
-      return serveFile(res, zipPath, 'application/zip', true, 'AutoMechanic-AI-Windows.zip');
-    }
-    // Если zip отсутствует, отдаем exe установщик
     return serveFile(
       res,
       path.join(__dirname, 'public', 'AutoMechanic-AI-Setup.exe'),

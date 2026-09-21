@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema.json",
+  "serverInfo": {
+    "name": "automechanic-ai",
+    "version": "1.0.0"
+  },
+  "description": "AutoMechanic AI agent discovery and diagnostic endpoint",
+  "transport": {
+    "type": "sse",
+    "endpoint": "https://automechanic.obd2scanai.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false
+  }
+}

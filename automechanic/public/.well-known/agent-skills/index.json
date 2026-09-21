@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "automechanic-diagnosis",
+      "type": "skill-md",
+      "description": "AutoMechanic AI vehicle diagnosis and OBD2 DTC troubleshooting",
+      "url": "https://automechanic.obd2scanai.ru/llms.txt",
+      "sha256": "4b92b6a95f87b8f9e68b371191ecae64119391ab1a121307ab46793a0dc94943"
+    }
+  ]
+}

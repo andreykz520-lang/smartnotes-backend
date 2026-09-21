@@ -1,0 +1,21 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "AutoMechanic AI",
+    "url": "https://automechanic.obd2scanai.ru"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:automechanic.obd2scanai.ru:app:automechanic",
+      "displayName": "AutoMechanic AI Car Diagnostics",
+      "type": "text/markdown",
+      "url": "https://automechanic.obd2scanai.ru/llms.txt",
+      "representativeQueries": [
+        "AutoMechanic AI app",
+        "Car diagnostics AI assistant",
+        "OBD2 DTC error codes troubleshooting",
+        "Auto parts search by OEM and photo"
+      ]
+    }
+  ]
+}

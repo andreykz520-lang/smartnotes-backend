@@ -1,0 +1,13 @@
+{
+  "issuer": "https://automechanic.obd2scanai.ru",
+  "authorization_endpoint": "https://automechanic.obd2scanai.ru/auth/authorize",
+  "token_endpoint": "https://automechanic.obd2scanai.ru/api/auth/token",
+  "jwks_uri": "https://automechanic.obd2scanai.ru/.well-known/jwks.json",
+  "response_types_supported": ["code", "token"],
+  "grant_types_supported": ["authorization_code", "client_credentials"],
+  "agent_auth": {
+    "register_uri": "https://automechanic.obd2scanai.ru/auth.md",
+    "supported_identity_types": ["agent", "user"],
+    "supported_credential_types": ["bearer"]
+  }
+}

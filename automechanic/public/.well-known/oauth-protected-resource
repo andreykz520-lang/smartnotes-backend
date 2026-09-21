@@ -1,0 +1,10 @@
+{
+  "resource": "https://automechanic.obd2scanai.ru/api",
+  "authorization_servers": [
+    "https://automechanic.obd2scanai.ru"
+  ],
+  "scopes_supported": [
+    "read:vehicle",
+    "write:diagnosis"
+  ]
+}

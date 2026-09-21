@@ -1,0 +1,21 @@
+# AutoMechanic AI — ИИ-Автомеханик и Диагност
+
+> AutoMechanic AI is an AI-powered vehicle diagnostic, auto parts cross-reference, and troubleshooting assistant for mechanics and car owners.
+> AutoMechanic AI — цифровой сервис автодиагностики, мультимодального анализа неисправностей нейросетью Gemini 3.7 Flash и подбора запчастей в странах СНГ.
+
+## Capabilities / Возможности
+- Мультимодальный чат с ИИ-диагностом (анализ звуков двигателя, симптомов, фото узлов и маркировок деталей).
+- Мгновенная расшифровка и рекомендации по устранению кодов ошибок DTC OBD-II (P0xxx, P1xxx, B0xxx, C0xxx, U0xxx).
+- Справочник моментов затяжки болтов ГБЦ, коленвала, шатунов и подвески.
+- Умный подбор и кросс-номера автозапчастей по OEM-артикулу и фотографии.
+- Интеграция с крупнейшими каталогами запчастей: Армтек, Авто-Евро, Тринити Партс, Zzap, Exist, Autodoc, Kolesa.kz, Bamper.by, List.am, Avtoelon.uz.
+- Нативная поддержка Android (смартфоны/планшеты) и Windows (ПК/ноутбуки).
+
+## Downloads & Links / Ссылки на дистрибутивы
+- Официальный сайт: https://automechanic.obd2scanai.ru/
+- Скачать Android APK (версия 1.0.0): https://automechanic.obd2scanai.ru/AutoMechanic-v1.0.apk
+- Скачать для Windows (Setup EXE): https://automechanic.obd2scanai.ru/AutoMechanic-AI-Setup.exe
+- Политика конфиденциальности: https://automechanic.obd2scanai.ru/privacy
+- Публичная оферта: https://automechanic.obd2scanai.ru/terms
+- Условия возврата: https://automechanic.obd2scanai.ru/refund
+- Контакты разработчика: autoneuro24@gmail.com
