@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBD2 SCAN AI — Официальный Сервисный Портал</title>
+  <link rel="icon" type="image/png" href="/img/app_icon.png">
+  <link rel="apple-touch-icon" href="/img/app_icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #151c2c;
+      --accent: #3b82f6;
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #232d42;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 540px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #fff; }
+    .lang-select {
+      background: #111827;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+    .logo-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+    .logo-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0;
+    }
+    .logo-header p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .tabs {
+      display: flex;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 6px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    .tab-btn.tab-ai.active {
+      background: var(--purple);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .price {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--success);
+      margin: 16px 0;
+      text-align: center;
+    }
+    .price.purple {
+      color: #a78bfa;
+    }
+    .price-period {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: normal;
+    }
+    .features {
+      list-style: none;
+      padding: 0;
+      background: #0d1322;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+    .features li {
+      margin-bottom: 10px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .features li:last-child { margin-bottom: 0; }
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 14px;
+      background: #0d1322;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    input:focus { border-color: var(--accent); }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn.btn-purple { background: var(--purple); }
+    .btn.btn-purple:hover { background: #7c3aed; }
+    .success-box {
+      background: #0d1322;
+      border: 2px solid var(--success);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .code-display {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--success);
+      letter-spacing: 2px;
+      margin: 12px 0;
+      font-family: monospace;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="/" class="back-link" data-i18n="back_home">← На главную</a>
+      <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
+    </div>
+
+    <div class="logo-header">
+      <img src="/img/app_icon.png" alt="OBD2 SCAN AI" class="logo-img">
+      <h1>OBD2 SCAN AI</h1>
+      <p data-i18n="portal_sub">Официальный сервисный портал активации и подписок</p>
+    </div>
+
+    <!-- Переключатель вкладок -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtnBuy" onclick="switchTab('buyTab', this)" data-i18n="tab_buy">💳 PRO (500 ₽)</button>
+      <button class="tab-btn tab-ai" id="tabBtnAi" onclick="switchTab('aiTab', this)" data-i18n="tab_ai">🤖 PRO+ ИИ (150 ₽)</button>
+      <button class="tab-btn" id="tabBtnRecover" onclick="switchTab('recoverTab', this)" data-i18n="tab_recover">🔑 Восстановить</button>
+    </div>
+
+    <div class="card">
+      <!-- ВКЛАДКА 1: КУПИТЬ PRO -->
+      <div id="buyTab" class="tab-content active">
+        <h2 style="margin-top: 0; text-align: center;" data-i18n="buy_title">Активация PRO Версии</h2>
+        <div class="price" id="proPriceDisplay" data-i18n="buy_price">500 ₽ <span class="price-period" data-i18n="period_forever">/ навсегда</span></div>
+        <ul class="features">
+          <li data-i18n="f1">✅ Бессрочная лицензия PRO (однократная оплата навсегда)</li>
+          <li data-i18n="f_conn">✅ Подключение через Bluetooth, Wi-Fi и USB-OTG кабель</li>
+          <li data-i18n="f2">✅ Расширенные параметры Peugeot/Citroën, Nissan, VAG</li>
+          <li data-i18n="f3">✅ Сброс ошибок двигателя, АКПП, ABS и SRS подушек</li>
+          <li data-i18n="f4">✅ Проверка реального одометра и моточасов</li>
+          <li data-i18n="f5">✅ ИИ-Диагност (свой API ключ — безлимитно)</li>
+        </ul>
+        
+        <!-- БЛОК ДЛЯ ТЕСТИРОВЩИКОВ (ОПЛАТА СКРЫТА) -->
+        <div id="testingBlock" style="background: rgba(16, 185, 129, 0.12); border: 1px solid var(--success); border-radius: 12px; padding: 22px; text-align: center; margin-top: 20px;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🧪</div>
+          <h3 style="color: #fff; margin: 0 0 8px 0; font-size: 18px;">Идёт открытое тестирование!</h3>
+          <p style="font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 16px 0;">
+            Прямая оплата временно отключена. Мы бесплатно выдаём <strong style="color: #fff;">PRO-версию</strong> всем, кто тестирует приложение на своих авто!
+          </p>
+          <div style="background: #0d1322; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 13px; color: var(--text); text-align: left; line-height: 1.6;">
+            <div style="font-weight: 600; margin-bottom: 4px; color: var(--accent);">Как получить PRO бесплатно:</div>
+            1. Установите приложение из RuStore или по ссылке.<br>
+            2. Подключитесь к машине и снимите лог работы.<br>
+            3. Напишите нам в Telegram — и мы выдадим персональный PRO-код!
+          </div>
+          <a href="https://t.me/obd2_scan_test_bot" target="_blank" class="btn" style="background: #229ED9; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 700;">
+            💬 Получить PRO-код тестировщика в Telegram
+          </a>
+        </div>
+
+        <div id="buyForm" style="display: none;">
+          <input type="email" id="buyerEmail" placeholder="Введите ваш E-mail (для отправки кода)" data-i18n-ph="ph_email">
+          <button onclick="startPayment('pro')" class="btn btn-success" id="payBtn" style="background: var(--success); margin-bottom: 10px; font-weight: 700;">
+            💳 Оплатить картой или СБП (ЮKassa) — 500 ₽
+          </button>
+          <div style="text-align: center; margin: 10px 0; color: var(--muted); font-size: 12px;">— или в мессенджере —</div>
+          <a href="https://t.me/obd2_scan_test_bot?start=buy_pro" target="_blank" class="btn" style="background: #229ED9; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+            🤖 Купить через Telegram-Бот (500 ₽)
+          </a>
+          <p style="font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center;" data-i18n="pay_note">
+            Код активации покажется сразу на экране и дублируется на ваш E-mail.
+          </p>
+        </div>
+
+        <div id="buySuccess" style="display: none;">
+          <div class="success-box">
+            <h3 style="color: var(--success); margin-top: 0;" data-i18n="succ_title">🎉 Оплата успешна!</h3>
+            <p style="font-size: 14px;" data-i18n="succ_sub">Ваш персональный код активации:</p>
+            <div id="resultCode" class="code-display">PRO1-XXXX-XXXX-XXXX</div>
+            <button onclick="copyCode()" class="btn" style="background: var(--success);" data-i18n="btn_copy">Скопировать код</button>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center;" data-i18n="succ_inst">
+            Откройте приложение OBD2 SCAN AI ➔ Активация PRO ➔ вставьте скопированный код!
+          </p>
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 2: ПОДПИСКА НА ИИ (PRO+) -->
+      <div id="aiTab" class="tab-content">
+        <h2 style="margin-top: 0; text-align: center;" data-i18n="ai_title">🤖 Подписка PRO+ (ИИ-Диагност)</h2>
+        <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 16px;" data-i18n="ai_sub">
+          Пакет нейросетевых токенов для авторасшифровки кодов, симптомов поломок и инструкций по ремонту
+        </p>
+
+        <!-- Выбор периода подписки PRO+ -->
+        <div style="display: flex; gap: 6px; margin-bottom: 16px; background: #0d1322; padding: 4px; border-radius: 10px; border: 1px solid var(--border);">
+          <button type="button" class="plan-sub-btn active" id="subBtn1m" onclick="selectSubPlan('pro_plus_1m', '150 ₽', '$3 USD', '/ месяц')" style="flex: 1; padding: 8px 4px; border: none; background: var(--purple); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">1 мес (150 ₽)</button>
+          <button type="button" class="plan-sub-btn" id="subBtn3m" onclick="selectSubPlan('pro_plus_3m', '390 ₽', '$7.5 USD', '/ 3 месяца')" style="flex: 1; padding: 8px 4px; border: none; background: transparent; color: var(--muted); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">3 мес (390 ₽)</button>
+          <button type="button" class="plan-sub-btn" id="subBtn6m" onclick="selectSubPlan('pro_plus_6m', '790 ₽', '$15 USD', '/ 6 мес + 🎁')" style="flex: 1; padding: 8px 4px; border: none; background: transparent; color: #fbbf24; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">6 мес + 🎁</button>
+        </div>
+
+        <div class="price purple" id="aiPriceDisplay" data-i18n="ai_price">150 ₽ <span class="price-period" id="aiPeriodDisplay" data-i18n="period_month">/ месяц</span></div>
+
+        <div id="aiGiftNotice" style="display: none; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); padding: 10px; border-radius: 8px; margin-bottom: 14px; text-align: center; font-size: 12px; color: #fbbf24; font-weight: 600;">
+          🎁 БОНУС: Бессрочная лицензия PRO (стоимостью 500 ₽) навсегда в подарок!
+        </div>
+
+        <ul class="features">
+          <li data-i18n="ai_f1">✅ Безлимитные запросы к Gemini AI и GigaChat</li>
+          <li data-i18n="ai_f2">✅ Пошаговые алгоритмы устранения неисправностей</li>
+          <li data-i18n="ai_f3">✅ Подбор оригинальных номеров автозапчастей ИИ</li>
+          <li data-i18n="ai_f4">✅ Работает через Bluetooth, Wi-Fi и USB-OTG</li>
+          <li data-i18n="ai_f5">✅ Отмена подписки в любое время</li>
+        </ul>
+
+        <!-- БЛОК ДЛЯ ТЕСТИРОВЩИКОВ ИИ (ОПЛАТА СКРЫТА) -->
+        <div style="background: rgba(139, 92, 246, 0.12); border: 1px solid var(--purple); border-radius: 12px; padding: 20px; text-align: center; margin-top: 20px;">
+          <div style="font-size: 30px; margin-bottom: 8px;">🤖</div>
+          <h3 style="color: #fff; margin: 0 0 8px 0; font-size: 17px;">ИИ-Диагност на тестировании</h3>
+          <p style="font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0 0 16px 0;">
+            Оплата подписки отключена на время бета-теста. Для безлимитной работы ИИ вы можете использовать собственный бесплатный API-ключ (Gemini / GigaChat) в настройках приложения, либо запросить тестовый доступ.
+          </p>
+          <a href="https://t.me/obd2_scan_test_bot" target="_blank" class="btn btn-purple" style="display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 700;">
+            💬 Запросить доступ в Telegram
+          </a>
+        </div>
+
+        <div id="aiForm" style="display: none;">
+          <input type="email" id="aiEmail" placeholder="Ваш E-mail (для получения кода подписки)" data-i18n-ph="ph_ai_email">
+          <button onclick="startPayment(selectedSubPlanKey)" class="btn btn-purple" id="aiPayBtn" style="margin-bottom: 10px; font-weight: 700;">
+            💳 Оплатить картой или СБП (ЮKassa) — <span id="aiPayBtnPrice">150 ₽ / $3</span>
+          </button>
+          <div style="text-align: center; margin: 10px 0; color: var(--muted); font-size: 12px;">— или в мессенджере —</div>
+          <a href="https://t.me/obd2_scan_test_bot?start=buy_plus" target="_blank" class="btn" style="background: #229ED9; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+            🤖 Оформить в Telegram-Боте
+          </a>
+          <p style="font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center;" data-i18n="pay_note">
+            Код подписки покажется сразу на экране и дублируется на ваш E-mail.
+          </p>
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 3: ВОССТАНОВИТЬ КОД -->
+      <div id="recoverTab" class="tab-content">
+        <h2 style="margin-top: 0; text-align: center;" data-i18n="rec_title">🔑 Перенос / Восстановление</h2>
+        <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;" data-i18n="rec_sub">
+          Перенесите вашу PRO-лицензию на новый смартфон по вашему Email
+        </p>
+
+        <input type="text" id="recoverCode" placeholder="Ваш код активации (PRO1-XXXX-XXXX-XXXX)" data-i18n-ph="ph_code">
+        <input type="email" id="recoverEmail" placeholder="Ваш E-mail, указанный при покупке" data-i18n-ph="ph_rec_email">
+        <button onclick="recoverLicense()" class="btn" id="recoverBtn" data-i18n="btn_recover">Перенести лицензию на это устройство</button>
+        
+        <div id="recoverMsg" style="display: none; margin-top: 16px;"></div>
+      </div>
+    </div>
+
+    <!-- Футер с реквизитами и ссылками -->
+    <div style="margin-top: 24px; padding: 16px; background: #111827; border: 1px solid var(--border); border-radius: 12px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6;">
+      <div><strong>Информация о продавце:</strong></div>
+      <div>Самозанятый: <strong>Чемарев Андрей Владимирович</strong> (ИНН: 540314274724)</div>
+      <div>Служба поддержки: <a href="mailto:autoneuro24@gmail.com" style="color: var(--cyan);">autoneuro24@gmail.com</a> | <a href="mailto:support@obd2scanai.ru" style="color: var(--cyan);">support@obd2scanai.ru</a></div>
+      <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <a href="/privacy" style="color: #9ca3af; text-decoration: underline;">Политика конфиденциальности</a>
+        <a href="/terms" style="color: #9ca3af; text-decoration: underline;">Публичная оферта</a>
+        <a href="/refund" style="color: #9ca3af; text-decoration: underline;">Оплата и возврат</a>
+        <a href="/admin" style="color: #06b6d4; text-decoration: none; font-weight: 600;">🔑 Админка</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activePlan = 'pro';
+
+    const translations = {
+      ru: {
+        back_home: "← На главную",
+        portal_sub: "Официальный сервисный портал активации и подписок",
+        tab_buy: "💳 PRO (500 ₽)",
+        tab_ai: "🤖 PRO+ ИИ (150 ₽)",
+        tab_recover: "🔑 Восстановить",
+        buy_title: "Активация PRO Версии",
+        buy_price: "500 ₽ / навсегда",
+        period_forever: "/ навсегда",
+        period_month: "/ месяц",
+        f1: "✅ Бессрочная лицензия PRO (однократная оплата навсегда)",
+        f_conn: "✅ Подключение через Bluetooth, Wi-Fi и USB-OTG кабель",
+        f2: "✅ Расширенные параметры Peugeot/Citroën, Nissan, VAG",
+        f3: "✅ Сброс ошибок двигателя, АКПП, ABS и SRS подушек",
+        f4: "✅ Проверка реального одометра и моточасов",
+        f5: "✅ ИИ-Диагност (свой API ключ — безлимитно)",
+        ph_email: "Введите ваш E-mail (для отправки кода)",
+        btn_pay: "Оплатить 500 ₽ картой или СБП (ЮKassa)",
+        pay_note: "Код активации покажется сразу на экране и дублируется на ваш E-mail.",
+        succ_title: "🎉 Оплата успешна!",
+        succ_sub: "Ваш персональный код активации:",
+        btn_copy: "Скопировать код",
+        succ_inst: "Откройте приложение OBD2 SCAN AI ➔ Активация PRO ➔ вставьте скопированный код!",
+        rec_title: "🔑 Перенос / Восстановление",
+        rec_sub: "Перенесите вашу PRO-лицензию на новый смартфон по вашему Email",
+        ph_code: "Ваш код активации (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "Ваш E-mail, указанный при покупке",
+        btn_recover: "Перенести лицензию на это устройство",
+        ai_title: "🤖 Подписка PRO+ (ИИ-Диагност)",
+        ai_sub: "Пакет нейросетевых токенов для авторасшифровки кодов и рекомендаций",
+        ai_price: "150 ₽ / месяц",
+        ai_f1: "✅ Безлимитные запросы к Gemini AI и GigaChat",
+        ai_f2: "✅ Пошаговые алгоритмы устранения неисправностей",
+        ai_f3: "✅ Подбор оригинальных номеров автозапчастей ИИ",
+        ai_f4: "✅ Работает через Bluetooth, Wi-Fi и USB-OTG",
+        ai_f5: "✅ Отмена подписки в любое время",
+        ph_ai_email: "Ваш E-mail (для получения кода подписки)",
+        btn_ai_sub: "Оформить подписку на ИИ (150 ₽)"
+      },
+      en: {
+        back_home: "← Home Page",
+        portal_sub: "Official License & AI Subscription Portal",
+        tab_buy: "💳 Buy PRO",
+        tab_recover: "🔑 Recover",
+        tab_ai: "🤖 AI Subscription (PRO+)",
+        buy_title: "PRO Lifetime Activation",
+        buy_price: "$10 USD / lifetime",
+        period_forever: "/ lifetime",
+        period_month: "/ month",
+        f1: "✅ Lifetime PRO License (one-time payment forever)",
+        f_conn: "✅ Supports Bluetooth, Wi-Fi and USB-OTG adapters",
+        f2: "✅ Dealer OEM parameters (Peugeot/Citroën, Nissan, VAG)",
+        f3: "✅ Full ECU scan & Clear Check Engine / ABS / SRS",
+        f4: "✅ True Odometer audit & Engine hours check",
+        f5: "✅ AI Diagnostic (bring your own API key — unlimited)",
+        ph_email: "Enter your E-mail (for code delivery)",
+        btn_pay: "Pay $10 USD with Card",
+        pay_note: "Activation code will appear immediately and will be sent to your email.",
+        succ_title: "🎉 Payment Successful!",
+        succ_sub: "Your personal activation code:",
+        btn_copy: "Copy Code",
+        succ_inst: "Open OBD2 SCAN AI app ➔ Activate PRO ➔ paste copied code!",
+        rec_title: "🔑 License Transfer & Recovery",
+        rec_sub: "Transfer your PRO license to your new smartphone using your Email",
+        ph_code: "Your activation code (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "Your E-mail specified at purchase",
+        btn_recover: "Transfer License to This Device",
+        ai_title: "🤖 PRO+ AI Diagnostics Subscription",
+        ai_sub: "Extended neural network token pack for automatic AI fault analysis",
+        ai_price: "$3 USD / month",
+        ai_f1: "✅ Unlimited AI queries to Gemini AI & GigaChat",
+        ai_f2: "✅ Step-by-step repair guides & symptom breakdown",
+        ai_f3: "✅ Smart OEM spare parts finder by AI",
+        ai_f4: "✅ Works over Bluetooth, Wi-Fi & USB-OTG",
+        ai_f5: "✅ Cancel subscription anytime",
+        ph_ai_email: "Your E-mail (for subscription code)",
+        btn_ai_sub: "Subscribe to AI Assistant ($3 USD / mo)"
+      },
+      de: {
+        back_home: "← Startseite",
+        portal_sub: "Offizielles Service- & Lizenzportal",
+        tab_buy: "💳 PRO Kaufen",
+        tab_recover: "🔑 Wiederherstellen",
+        tab_ai: "🤖 KI-Abo (PRO+)",
+        buy_title: "PRO-Version Aktivierung",
+        buy_price: "€10 EUR / Lebenslang",
+        period_forever: "/ Lebenslang",
+        period_month: "/ Monat",
+        f1: "✅ Lebenslange PRO-Lizenz (Einmalige Zahlung)",
+        f_conn: "✅ Unterstützt Bluetooth, Wi-Fi & USB-OTG Kabel",
+        f2: "✅ Erweiterte Händlerparameter (Peugeot, VAG, Nissan)",
+        f3: "✅ Motorkontrollleuchte & alle Fehler löschen",
+        f4: "✅ Echten Kilometerstand & Betriebsstunden prüfen",
+        f5: "✅ KI-Diagnose (eigener API-Schlüssel — unbegrenzt)",
+        ph_email: "E-Mail-Adresse eingeben (für Lizenzcode)",
+        btn_pay: "Jetzt Bezahlen (€10 EUR)",
+        pay_note: "Der Aktivierungscode wird sofort angezeigt und per E-Mail gesendet.",
+        succ_title: "🎉 Zahlung Erfolgreich!",
+        succ_sub: "Ihr persönlicher Aktivierungscode:",
+        btn_copy: "Code Kopieren",
+        succ_inst: "Öffnen Sie OBD2 SCAN AI ➔ PRO Aktivierung ➔ Code einfügen!",
+        rec_title: "🔑 Lizenz Übertragen & Wiederherstellen",
+        rec_sub: "Übertragen Sie Ihre Lizenz per E-Mail auf ein neues Smartphone",
+        ph_code: "Ihr Aktivierungscode (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "Ihre E-Mail beim Kauf",
+        btn_recover: "Lizenz Auf Dieses Gerät Übertragen",
+        ai_title: "🤖 PRO+ KI-Diagnose-Assistent",
+        ai_sub: "Erweiterte KI-Tokens für Reparaturanleitungen",
+        ai_price: "€3 EUR / Monat",
+        ai_f1: "✅ Unbegrenzte KI-Anfragen an Gemini AI & GigaChat",
+        ai_f2: "✅ Schritt-für-Schritt Reparaturanleitungen",
+        ai_f3: "✅ KI-Ersatzteilsuche",
+        ai_f4: "✅ Funktioniert über Bluetooth, Wi-Fi & USB-OTG",
+        ai_f5: "✅ Jederzeit kündbar",
+        ph_ai_email: "Ihre E-Mail-Adresse",
+        btn_ai_sub: "KI-Abo Buchen (€3 EUR / Monat)"
+      },
+      fr: {
+        back_home: "← Accueil",
+        portal_sub: "Portail Officiel de Service & Activation",
+        tab_buy: "💳 Acheter PRO",
+        tab_recover: "🔑 Restaurer",
+        tab_ai: "🤖 Abonnement IA (PRO+)",
+        buy_title: "Activation de la Version PRO",
+        buy_price: "€10 EUR / À vie",
+        period_forever: "/ À vie",
+        period_month: "/ mois",
+        f1: "✅ Licence PRO à vie (paiement unique)",
+        f_conn: "✅ Connexion Bluetooth, Wi-Fi et câble USB-OTG",
+        f2: "✅ Paramètres constructeur (Peugeot/Citroën, Nissan, VAG)",
+        f3: "✅ Effacement voyant moteur & calculateurs",
+        f4: "✅ Audit du kilométrage réel & heures moteur",
+        f5: "✅ Diagnostic IA (clé API perso — illimité)",
+        ph_email: "Saisissez votre E-mail (pour le code)",
+        btn_pay: "Payer €10 EUR par Carte",
+        pay_note: "Le code apparaîtra immédiatement et sera envoyé par E-mail.",
+        succ_title: "🎉 Paiement Réussi !",
+        succ_sub: "Votre code d'activation personnel :",
+        btn_copy: "Copier le Code",
+        succ_inst: "Ouvrez l'application OBD2 SCAN AI ➔ Activer PRO ➔ collez le code !",
+        rec_title: "🔑 Transfert & Restauration de Licence",
+        rec_sub: "Transférez votre licence PRO sur votre nouveau smartphone via E-mail",
+        ph_code: "Votre code d'activation (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "Votre E-mail d'achat",
+        btn_recover: "Transférer la Licence",
+        ai_title: "🤖 Abonnement PRO+ Assistant IA",
+        ai_sub: "Forfait jetons réseaux de neurones pour analyse de panne",
+        ai_price: "€3 EUR / mois",
+        ai_f1: "✅ Requêtes IA illimitées vers Gemini & GigaChat",
+        ai_f2: "✅ Procédures de réparation pas à pas",
+        ai_f3: "✅ Recherche intelligente de pièces par IA",
+        ai_f4: "✅ Compatible Bluetooth, Wi-Fi & USB-OTG",
+        ai_f5: "✅ Annulation possible à tout moment",
+        ph_ai_email: "Votre E-mail",
+        btn_ai_sub: "S'abonner à l'IA (€3 EUR / mois)"
+      },
+      es: {
+        back_home: "← Inicio",
+        portal_sub: "Portal Oficial de Servicio y Activación",
+        tab_buy: "💳 Comprar PRO",
+        tab_recover: "🔑 Recuperar",
+        tab_ai: "🤖 Suscripción IA (PRO+)",
+        buy_title: "Activación de Versión PRO",
+        buy_price: "$10 USD / de por vida",
+        period_forever: "/ de por vida",
+        period_month: "/ mes",
+        f1: "✅ Licencia PRO de por vida (pago único)",
+        f_conn: "✅ Compatible con Bluetooth, Wi-Fi y cable USB-OTG",
+        f2: "✅ Parámetros OEM (Peugeot/Citroën, Nissan, VAG)",
+        f3: "✅ Borrado de luz Check Engine y ECUs",
+        f4: "✅ Auditoría de kilometraje real y horas de motor",
+        f5: "✅ Diagnóstico IA (con clave API propia — ilimitado)",
+        ph_email: "Ingresa tu E-mail (para recibir el código)",
+        btn_pay: "Pagar $10 USD con Tarjeta",
+        pay_note: "El código aparecerá inmediatamente y se enviará a tu e-mail.",
+        succ_title: "🎉 ¡Pago Exitoso!",
+        succ_sub: "Tu código personal de activación PRO:",
+        btn_copy: "Copiar Código",
+        succ_inst: "Abre OBD2 SCAN AI ➔ Activar PRO ➔ ¡pega el código!",
+        rec_title: "🔑 Transferencia y Recuperación",
+        rec_sub: "Transfiere tu licencia PRO a tu nuevo teléfono mediante tu E-mail",
+        ph_code: "Tu código de activación (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "Tu E-mail de compra",
+        btn_recover: "Transferir Licencia a Este Dispositivo",
+        ai_title: "🤖 Suscripción PRO+ Diagnóstico IA",
+        ai_sub: "Paquete de tokens de redes neuronales para reparación",
+        ai_price: "$3 USD / mes",
+        ai_f1: "✅ Consultas IA ilimitadas a Gemini AI & GigaChat",
+        ai_f2: "✅ Guías paso a paso de reparación",
+        ai_f3: "✅ Búsqueda inteligente de repuestos",
+        ai_f4: "✅ Funciona con Bluetooth, Wi-Fi y USB-OTG",
+        ai_f5: "✅ Cancelación en cualquier momento",
+        ph_ai_email: "Tu E-mail",
+        btn_ai_sub: "Suscribirse a IA ($3 USD / mes)"
+      },
+      ar: {
+        back_home: "← الرئيسية",
+        portal_sub: "البوابة الرسمية للتفعيل والخدمات",
+        tab_buy: "💳 شراء PRO",
+        tab_recover: "🔑 استعادة",
+        tab_ai: "🤖 اشتراك الذكاء الاصطناعي (PRO+)",
+        buy_title: "تفعيل نسخة PRO",
+        buy_price: "$10 USD / مدى الحياة",
+        period_forever: "/ مدى الحياة",
+        period_month: "/ شهرياً",
+        f1: "✅ ترخيص PRO مدى الحياة (دفع لمرة واحدة)",
+        f_conn: "✅ يدعم التوصيل عبر البلوتوث والواي فاي وكابل USB-OTG",
+        f2: "✅ قراءات الوكالات المتقدمة (Peugeot, VAG, Nissan)",
+        f3: "✅ مسح لمبة المحرك والأعطال",
+        f4: "✅ فحص العداد الحقيقي وساعات عمل المحرك",
+        f5: "✅ تشخيص الذكاء الاصطناعي (مفتاحك الخاص)",
+        ph_email: "أدخل بريدك الإلكتروني (لحفظ الكود)",
+        btn_pay: "دفع $10 USD بالبطاقة",
+        pay_note: "سيظهر كود التفعيل فوراً على الشاشة ويسلم إلى بريدك الإلكتروني.",
+        succ_title: "🎉 تم الدفع بنجاح!",
+        succ_sub: "كود التفعيل الخاص بك:",
+        btn_copy: "نسخ الكود",
+        succ_inst: "افتح تطبيق OBD2 SCAN AI ➔ تفعيل PRO ➔ الصق الكود!",
+        rec_title: "🔑 نقل واستعادة الترخيص",
+        rec_sub: "أنقل ترخيص PRO إلى هاتفك الجديد عبر بريدك الإلكتروني",
+        ph_code: "كود التفعيل (PRO1-XXXX-XXXX-XXXX)",
+        ph_rec_email: "بريدك الإلكتروني المستخدم عند الشراء",
+        btn_recover: "نقل الترخيص إلى هذا الجهاز",
+        ai_title: "🤖 اشتراك PRO+ مساعد الذكاء الاصطناعي",
+        ai_sub: "حزمة رموز الشبكات العصبية لفك الأعطال",
+        ai_price: "$3 USD / شهرياً",
+        ai_f1: "✅ استعلامات غير محدودة للذكاء الاصطناعي",
+        ai_f2: "✅ دليل تفصيلي لإصلاح الأعطال",
+        ai_f3: "✅ بحث ذكي عن قطع الغيار",
+        ai_f4: "✅ يعمل مع Bluetooth و Wi-Fi و USB-OTG",
+        ai_f5: "✅ إلغاء الاشتراك في أي وقت",
+        ph_ai_email: "بريدك الإلكتروني",
+        btn_ai_sub: "الاشتراك في مساعد الذكاء الاصطناعي ($3 USD)"
+      }
+    };
+
+    function changeLang(lang) {
+      localStorage.setItem('obd2_lang', lang);
+      const dict = translations[lang] || translations.ru;
+
+      if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerText = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (dict[key]) el.placeholder = dict[key];
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('obd2_lang');
+      const userLang = (navigator.language || 'ru').substring(0, 2).toLowerCase();
+      const targetLang = savedLang || (translations[userLang] ? userLang : 'ru');
+      
+      document.getElementById('langSelect').value = targetLang;
+      changeLang(targetLang);
+    });
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (btn) btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromUrl = urlParams.get('code');
+    const statusFromUrl = urlParams.get('status');
+    const tabFromUrl = urlParams.get('tab');
+
+    if (tabFromUrl === 'recover') switchTab('recoverTab', document.getElementById('tabBtnRecover'));
+    if (tabFromUrl === 'ai' || tabFromUrl === 'plus') switchTab('aiTab', document.getElementById('tabBtnAi'));
+
+    if (statusFromUrl === 'success' && codeFromUrl) {
+      document.getElementById('buyForm').style.display = 'none';
+      if (document.getElementById('aiForm')) document.getElementById('aiForm').style.display = 'none';
+      document.getElementById('buySuccess').style.display = 'block';
+      document.getElementById('resultCode').innerText = codeFromUrl;
+    }
+
+    let selectedSubPlanKey = 'pro_plus_1m';
+
+    function selectSubPlan(planKey, rubPrice, usdPrice, periodText) {
+      selectedSubPlanKey = planKey;
+      document.querySelectorAll('.plan-sub-btn').forEach(b => {
+        b.style.background = 'transparent';
+        b.style.color = b.id === 'subBtn6m' ? '#fbbf24' : 'var(--muted)';
+      });
+      const activeBtn = document.getElementById(planKey === 'pro_plus_6m' ? 'subBtn6m' : (planKey === 'pro_plus_3m' ? 'subBtn3m' : 'subBtn1m'));
+      if (activeBtn) {
+        activeBtn.style.background = 'var(--purple)';
+        activeBtn.style.color = '#fff';
+      }
+
+      const lang = document.getElementById('langSelect').value;
+      const isUsd = (lang !== 'ru');
+      document.getElementById('aiPriceDisplay').innerHTML = (isUsd ? usdPrice : rubPrice) + ` <span class="price-period" id="aiPeriodDisplay">${periodText}</span>`;
+      document.getElementById('aiPayBtnPrice').innerText = `${rubPrice} / ${usdPrice}`;
+      
+      const giftNotice = document.getElementById('aiGiftNotice');
+      if (giftNotice) {
+        giftNotice.style.display = (planKey === 'pro_plus_6m' ? 'block' : 'none');
+      }
+    }
+
+    async function startPayment(planType = 'pro') {
+      const lang = document.getElementById('langSelect').value;
+      const isUsd = (lang !== 'ru');
+      
+      let email = '';
+      let btn = null;
+
+      if (planType !== 'pro') {
+        email = document.getElementById('aiEmail').value.trim();
+        btn = document.getElementById('aiPayBtn');
+      } else {
+        email = document.getElementById('buyerEmail').value.trim();
+        btn = document.getElementById('payBtn');
+      }
+
+      if (!email || !email.includes('@')) {
+        alert(lang === 'ru' ? 'Пожалуйста, введите корректный E-mail адрес!' : 'Please enter a valid E-mail address!');
+        return;
+      }
+
+      const origText = btn.innerText;
+      btn.innerText = (lang === 'ru' ? 'Создаем платёж...' : 'Creating payment...');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            plan: planType,
+            currency: isUsd ? 'USD' : 'RUB'
+          })
+        });
+        const data = await res.json();
+        if (data.confirmationUrl) {
+          window.location.href = data.confirmationUrl;
+        } else {
+          alert((lang === 'ru' ? 'Ошибка создания платежа: ' : 'Payment creation error: ') + (data.error || 'Unknown error'));
+          btn.innerText = origText;
+          btn.disabled = false;
+        }
+      } catch (e) {
+        alert((lang === 'ru' ? 'Ошибка подключения: ' : 'Connection error: ') + e.message);
+        btn.innerText = origText;
+        btn.disabled = false;
+      }
+    }
+
+    async function recoverLicense() {
+      const code = document.getElementById('recoverCode').value.trim();
+      const email = document.getElementById('recoverEmail').value.trim();
+      const msg = document.getElementById('recoverMsg');
+
+      if (!code || !email || !email.includes('@')) {
+        alert('Пожалуйста, заполните код активации и E-mail!');
+        return;
+      }
+
+      const btn = document.getElementById('recoverBtn');
+      btn.innerText = 'Проверка...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/recover', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code, email: email, newDeviceId: 'web-recovery-' + Date.now() })
+        });
+        const data = await res.json();
+        msg.style.display = 'block';
+        if (data.success) {
+          msg.innerHTML = `<div class="success-box" style="color: #10b981;">✅ Лицензия подтверждена для ${email}! Введите код <b>${code}</b> в приложении.</div>`;
+        } else {
+          msg.innerHTML = `<div style="color: #ef4444; background: #0d1322; padding: 12px; border-radius: 8px; border: 1px solid #ef4444;">❌ ${data.error || 'Ошибка восстановления'}</div>`;
+        }
+      } catch (e) {
+        alert('Ошибка сервера: ' + e.message);
+      } finally {
+        btn.innerText = 'Перенести лицензию на это устройство';
+        btn.disabled = false;
+      }
+    }
+
+    function copyCode() {
+      const code = document.getElementById('resultCode').innerText;
+      navigator.clipboard.writeText(code);
+      alert('Код скопирован в буфер обмена!');
+    }
+  </script>
+</body>
+</html>

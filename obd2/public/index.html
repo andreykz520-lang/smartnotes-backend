@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBD2 SCAN AI — Автодиагностика с искусственным интеллектом (Bluetooth, Wi-Fi, USB-OTG)</title>
+  <meta name="description" content="Умная автодиагностика на базе нейросетей Gemini и GigaChat. Считывание и сброс ошибок Check Engine, АКПП, ABS, SRS. Поддержка Bluetooth, Wi-Fi и USB-OTG.">
+      <link rel="icon" type="image/png" href="/api/img?name=app_icon.png">
+  <link rel="apple-touch-icon" href="/api/img?name=app_icon.png">
+  <link rel="preload" as="image" href="/api/img?name=screen_mainmenu_pro.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_dashboard.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_antifraud.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_battery.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_dpf.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_ecotrip.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_connection.webp">
+  <link rel="preload" as="image" href="/api/img?name=screen_diagnostic.webp">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151c2c;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --cyan: #06b6d4;
+      --success: #10b981;
+      --purple: #8b5cf6;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #232d42;
+    }
+    #pricing, .pricing-section { display: none !important; }
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+        /* Header & Nav */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 15, 25, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-img {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+      object-fit: cover;
+    }
+    .logo span { color: var(--cyan); }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* Language Select */
+    .lang-select {
+      background: #131b2e;
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .lang-select:focus {
+      border-color: var(--cyan);
+    }
+    @media (max-width: 768px) {
+      .nav-link-desktop, .apk-badge-desktop {
+        display: none !important;
+      }
+      .nav-container {
+        padding: 8px 14px;
+      }
+      .logo {
+        font-size: 17px;
+      }
+      .logo-img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1140px;
+      margin: 50px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .badge-hero {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--cyan);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 46px;
+      font-weight: 800;
+      margin: 0 0 20px;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 740px;
+      margin: 0 auto 32px;
+    }
+
+    /* Real Screenshots Gallery Grid */
+    .gallery-section {
+      max-width: 1140px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .screenshot-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .screenshot-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--cyan);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.25);
+    }
+    .screenshot-img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid var(--border);
+      transition: transform 0.3s;
+    }
+    .screenshot-card:hover .screenshot-img {
+      transform: scale(1.02);
+    }
+    .screenshot-info {
+      padding: 16px;
+      text-align: left;
+    }
+    .screenshot-info h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .screenshot-info p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Fullscreen Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 11, 18, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox-content {
+      max-width: 92vw;
+      max-height: 82vh;
+      border-radius: 14px;
+      box-shadow: 0 0 50px rgba(6, 182, 212, 0.4);
+      border: 1px solid var(--cyan);
+      object-fit: contain;
+      animation: zoomIn 0.25s ease-out;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      color: #fff;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: var(--cyan); }
+    .lightbox-caption {
+      margin-top: 18px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Features Section */
+    .features-section {
+      background: #0d1322;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 20px;
+      margin-top: 60px;
+    }
+    .section-title {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+    .section-title h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
+    .section-title p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .grid-4 {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .feature-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .feature-item h4 {
+      color: var(--success);
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      max-width: 1140px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+      align-items: stretch;
+    }
+        @media (max-width: 992px) {
+      .pricing-section {
+        margin: 30px auto;
+        padding: 0 14px;
+      }
+      .pricing-cards {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        gap: 16px;
+        margin: 20px auto 0;
+      }
+      .price-card {
+        padding: 20px 16px;
+        border-radius: 16px;
+      }
+      .price-features {
+        margin: 12px 0 18px;
+      }
+      .price-features li {
+        margin-bottom: 8px;
+        font-size: 13.5px;
+      }
+      .price-val {
+        font-size: 34px;
+        margin: 8px 0;
+      }
+      .price-val span {
+        font-size: 14px;
+      }
+      .popular-tag {
+        top: -12px;
+        right: 16px;
+        font-size: 11px;
+        padding: 3px 10px;
+      }
+    }
+    .price-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+        .price-card.ai-card {
+      border-color: rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+    }
+    .popular-tag.ai-tag {
+      background: var(--purple);
+      color: #fff;
+    }
+    .price-card.featured {
+      border-color: var(--cyan);
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.2);
+    }
+    .popular-tag {
+      position: absolute;
+      top: -14px;
+      right: 24px;
+      background: var(--cyan);
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+    .price-val {
+      font-size: 42px;
+      font-weight: 800;
+      color: #fff;
+      margin: 16px 0;
+    }
+    .price-val span {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .price-features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 30px;
+      flex: 1;
+    }
+    .price-features li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+      display: block;
+      text-align: left;
+    }
+    
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      background: #080b12;
+    }
+    .legal-box {
+      max-width: 600px;
+      margin: 16px auto 0;
+      padding: 16px;
+      background: #0d1322;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+    <header>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <img src="/api/img?name=app_icon.png" alt="OBD2 SCAN AI" class="logo-img">
+        <span>OBD2 SCAN <b>AI</b></span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="#screens" class="nav-link-desktop" data-i18n="nav_screens">Скриншоты</a>
+        <a href="#features" class="nav-link-desktop" data-i18n="nav_features">Возможности</a>
+        <a href="/obd2scanai.apk" download class="apk-badge-desktop" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.4); padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+          📲 Android APK
+        </a>
+        <a href="/obd2scanai-windows.zip" download class="apk-badge-desktop" style="background: rgba(0, 240, 255, 0.15); color: #00F0FF; border: 1px solid rgba(0, 240, 255, 0.4); padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+          💻 Windows EXE
+        </a>
+        <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
+          <option value="ru">🇷🇺 RU</option>
+          <option value="en">🇬🇧 EN</option>
+          <option value="de">🇩🇪 DE</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="ar">🇸🇦 AR</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="badge-hero" data-i18n="hero_badge">🤖 Android & Windows 10/11 • ИИ Gemini & GigaChat • Bluetooth, Wi-Fi & USB COM</div>
+      <h1 data-i18n="hero_title">Профессиональная автодиагностика для Android & Windows</h1>
+      <p data-i18n="hero_sub">Считывайте и сбрасывайте ошибки всех блоков (ECU, АКПП, ABS, SRS), анализируйте параметры датчиков в реальном времени через Bluetooth, Wi-Fi или проводной USB-OTG и получайте экспертные рекомендации ИИ по ремонту.</p>
+      
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center;">
+        <a href="/obd2scanai.apk" download class="btn-primary" style="background: var(--success); padding: 15px 26px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);" data-i18n="hero_btn_download">
+          📲 Скачать для Android (11.7 МБ)
+        </a>
+        <a href="/obd2scanai-windows.zip" download class="btn-primary" style="background: linear-gradient(135deg, #0070F3, #00DFD8); color: #000; padding: 15px 26px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0, 223, 216, 0.4);" data-i18n="hero_btn_download_win">
+          💻 Скачать для Windows (ZIP 9.5 МБ)
+        </a>
+        <a href="/buy" class="btn-primary" style="padding: 15px 26px; font-size: 15px;" data-i18n="hero_btn_buy">💳 Купить PRO версию (500 ₽)</a>
+        <a href="/buy?tab=recover" class="btn-primary" style="background: transparent; border: 1px solid var(--border); padding: 15px 22px; font-size: 15px;" data-i18n="hero_btn_recover">🔑 Восстановить лицензию</a>
+      </div>
+    </section>
+
+    <!-- Real App Screenshots -->
+    <section class="gallery-section" id="screens">
+      <div class="section-title">
+        <h2 data-i18n="screens_title">Интерфейс приложения OBD2 SCAN AI</h2>
+        <p data-i18n="screens_sub">Живые скриншоты работы автосканера на Android</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_mainmenu_pro.webp" alt="Главный экран PRO" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen1_title">🏆 Главный экран PRO</h4>
+            <p data-i18n="screen1_desc">Доступ к быстрому подсоединению, приборной панели, дилерской диагностике и спец-мониторам.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_dashboard.webp" alt="Приборная панель" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen2_title">🏎️ Приборная панель</h4>
+            <p data-i18n="screen2_desc">Живые датчики в реальном времени: Обороты, Скорость, ОЖ, Напряжение, Нагрузка ДВС.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_antifraud.webp" alt="Проверка реального пробега" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen3_title">🕵️ Anti-Fraud Пробег</h4>
+            <p data-i18n="screen3_desc">Сравнение одометра в блоках управления, моточасы, определение факта скрутки пробега.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_battery.webp" alt="Батарея гибридов" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen4_title">🔋 Гибридная Батарея</h4>
+            <p data-i18n="screen4_desc">Поячеечный мониторинг напряжений 1-14 ячеек (Toyota Prius, Nissan Leaf, Honda IMA).</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_dpf.webp" alt="DPF сажевый фильтр" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen5_title">💨 DPF-Монитор</h4>
+            <p data-i18n="screen5_desc">Уровень заполнения сажей (Soot Mass), золы (Ash Mass) и статус прожига для дизелей.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_ecotrip.webp" alt="Бортовой журнал Эко-Поездка" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen6_title">📊 Эко Поездка</h4>
+            <p data-i18n="screen6_desc">Точный расчет расхода топлива по MAF/MAP, пробег и расчет стоимости поездки в ₽.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_connection.webp" alt="Подключение адаптера" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen7_title">📡 Bluetooth, Wi-Fi & USB-OTG</h4>
+            <p data-i18n="screen7_desc">Поддержка беспроводных ELM327 адаптеров и проводных USB-сканеров через OTG-переходник.</p>
+          </div>
+        </div>
+
+        <div class="screenshot-card" onclick="openScreenshot(this)">
+          <img src="/api/img?name=screen_diagnostic.webp" alt="Диагностический отчет" class="screenshot-img">
+          <div class="screenshot-info">
+            <h4 data-i18n="screen8_title">🔍 Сканер Ошибок</h4>
+            <p data-i18n="screen8_desc">Сброс Check Engine, проверка Health Check и нейросетевая расшифровка поломок ИИ.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section" id="features">
+      <div class="section-title">
+        <h2 data-i18n="feat_title">Всё необходимое для автодиагностики</h2>
+        <p data-i18n="feat_sub">Совместим со всеми сканерами ELM327 Bluetooth, Wi-Fi и проводными USB-OTG (FTDI, CH340, CP2102, PL2303)</p>
+      </div>
+
+      <div class="grid-4">
+        <div class="feature-item">
+          <h4 data-i18n="feat1_title">✅ Чтение скрытых DTC</h4>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;" data-i18n="feat1_desc">Сканирование блоков управления двигателем, коробкой передач, тормозной системой и подушками.</p>
+        </div>
+        <div class="feature-item">
+          <h4 data-i18n="feat2_title">✅ Live Data Графика</h4>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;" data-i18n="feat2_desc">Отображение графиков оборотов, температуры ОЖ, давления наддува, лямбда-зондов и расхода топлива.</p>
+        </div>
+        <div class="feature-item">
+          <h4 data-i18n="feat3_title">✅ Поддержка К-Line, CAN & USB</h4>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;" data-i18n="feat3_desc">Работа по протоколам KWP2000, ISO 14230, CAN и прямое подключение через кабель USB-OTG.</p>
+        </div>
+        <div class="feature-item">
+          <h4 data-i18n="feat4_title">✅ Готовые авто-профили</h4>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;" data-i18n="feat4_desc">Специализированные детекторы для Peugeot 307/408/3008, AL4/DP0, Nissan Qashqai, VAG UDS и др.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing-section" id="pricing">
+      <div class="section-title">
+        <h2 data-i18n="price_title">Выберите ваш вариант доступа</h2>
+        <p data-i18n="price_sub">Без обязательных подписок для базовой версии — бессрочный доступ по однократной оплате</p>
+      </div>
+
+      <div class="pricing-cards">
+        <!-- Карточка FREE -->
+        <div class="price-card">
+          <h3 style="margin: 0;" data-i18n="p0_title">FREE Базовый</h3>
+          <p style="color: var(--muted); font-size: 13px;" data-i18n="p0_sub">Базовый доступ + 7 дней PRO</p>
+          <div class="price-val" id="indexFreePrice">0 ₽ <span data-i18n="p0_val">/ бесплатно</span></div>
+          <ul class="price-features">
+            <li data-i18n="p0_f1">✅ Базовое чтение ошибок двигателя (Check Engine)</li>
+            <li data-i18n="p0_f2">✅ Основные датчики Live Data (Обороты, Скорость, ОЖ)</li>
+            <li data-i18n="p0_f_conn">✅ Подключение по Bluetooth, Wi-Fi и USB-OTG</li>
+            <li data-i18n="p0_f3">🎁 <b>7 дней полного PRO доступа бесплатно</b> по E-mail в приложении</li>
+          </ul>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <a href="/obd2scanai.apk" download class="btn-primary" style="background: #10b981; text-align: center; font-weight: 700; display: block; width: 100%; font-size: 15px; padding: 14px 16px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);" data-i18n="btn_try_free">📲 Скачать для Android (11.7 МБ)</a>
+            <a href="/obd2scanai-windows.zip" download class="btn-primary" style="background: linear-gradient(135deg, #0070F3, #00DFD8); color: #000; text-align: center; font-weight: 700; display: block; width: 100%; font-size: 15px; padding: 14px 16px; box-shadow: 0 4px 20px rgba(0, 223, 216, 0.4);" data-i18n="btn_download_win_card">💻 Скачать для Windows (ZIP)</a>
+          </div>
+        </div>
+
+        <!-- Карточка PRO Навсегда -->
+        <div class="price-card featured">
+          <div class="popular-tag" data-i18n="tag_recommended">Рекомендуем</div>
+          <h3 style="margin: 0;" data-i18n="p1_title">PRO Навсегда</h3>
+          <p style="color: var(--muted); font-size: 13px;" data-i18n="p1_sub">Вечная активация программы</p>
+          <div class="price-val" id="indexProPrice">500 ₽ <span data-i18n="p1_val">/ навсегда</span></div>
+          <ul class="price-features">
+            <li data-i18n="p1_f1">✅ Бессрочная активация на устройстве</li>
+            <li data-i18n="p1_f_conn">✅ Подключение через Bluetooth, Wi-Fi и USB-OTG</li>
+            <li data-i18n="p1_f2">✅ Сканирование и сброс ошибок всех блоков (ECU, АКПП, ABS, SRS)</li>
+            <li data-i18n="p1_f3">✅ Расширенные параметры дилеров (Peugeot, VAG, Nissan)</li>
+            <li data-i18n="p1_f4">✅ Проверка реального одометра и моточасов</li>
+            <li data-i18n="p1_f5">✅ ИИ-Диагност (свой API ключ — безлимитно навсегда!)</li>
+            <li data-i18n="p1_f6">✅ Привязка к E-mail для переноса на новый телефон</li>
+          </ul>
+          <a href="/buy" class="btn-primary" style="text-align: center;" data-i18n="btn_buy_code">💳 Купить PRO Код (500 ₽)</a>
+        </div>
+
+        <!-- Карточка PRO+ ИИ -->
+        <div class="price-card ai-card">
+          <div class="popular-tag ai-tag" data-i18n="tag_ai">ИИ-Диагност</div>
+          <h3 style="margin: 0;" data-i18n="p2_title">Подписка ИИ (PRO+)</h3>
+          <p style="color: var(--muted); font-size: 13px;" data-i18n="p2_sub">Расширенные токены нейросетей</p>
+          <div class="price-val" id="indexAiPrice">150 ₽ <span data-i18n="p2_val">/ месяц</span></div>
+          <div style="font-size: 11px; color: #a78bfa; margin-bottom: 12px; font-weight: 600;">1 мес — 150 ₽ | 3 мес — 390 ₽ | 6 мес + Вечный PRO в подарок — 790 ₽ 🎁</div>
+          <ul class="price-features">
+            <li data-i18n="p2_f1">✅ Безлимитные нейросетевые запросы Gemini & GigaChat</li>
+            <li data-i18n="p2_f2">✅ Детальный разбор симптомов и пошаговые схемы ремонта</li>
+            <li data-i18n="p2_f3">✅ Помощь ИИ в подборе оригинальных запчастей</li>
+            <li data-i18n="p2_f4">✅ Работает со всеми типами сканеров (BT/Wi-Fi/USB OTG)</li>
+            <li data-i18n="p2_f5">✅ Отмена подписки в любое время</li>
+          </ul>
+          <a href="/buy?tab=ai" class="btn-primary" style="background: var(--purple); text-align: center; display: block; width: 100%; font-size: 16px; font-weight: 700; padding: 16px 20px; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);" data-i18n="btn_subscribe">💳 Выбрать тариф PRO+ (150 ₽)</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 OBD2 SCAN AI. All rights reserved.</p>
+    <div class="legal-box">
+      <strong data-i18n="footer_seller_info">Информация о продавце:</strong><br>
+      <span>Самозанятый плательщик НПД: <strong>Чемарев Андрей Владимирович</strong></span><br>
+      <span>ИНН: <strong>540314274724</strong></span><br>
+      <span>Служба поддержки и вопросов: <a href="mailto:autoneuro24@gmail.com" style="color: var(--cyan);">autoneuro24@gmail.com</a> | <a href="mailto:support@obd2scanai.ru" style="color: var(--cyan);">support@obd2scanai.ru</a></span><br>
+      
+      <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 13px;">
+        <a href="/privacy" style="color: #9ca3af; text-decoration: underline;" data-i18n="legal_privacy">🔒 Политика конфиденциальности</a>
+        <a href="/terms" style="color: #9ca3af; text-decoration: underline;" data-i18n="legal_terms">📄 Публичная оферта</a>
+        <a href="/refund" style="color: #9ca3af; text-decoration: underline;" data-i18n="legal_refund">💳 Оплата и условия возврата</a>
+        <a href="/admin" style="color: #06b6d4; text-decoration: none; font-weight: 600;" data-i18n="nav_admin">🔑 Панель администратора</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const translations = {
+      "ru": {
+            "nav_screens": "Скриншоты",
+            "nav_features": "Возможности",
+            "nav_pricing": "Тарифы",
+            "nav_admin": "🔑 Админка",
+            "nav_buy": "💳 PRO (500 ₽)",
+            "hero_badge": "🤖 Искусственный интеллект Gemini AI & GigaChat • Bluetooth, Wi-Fi & USB OTG",
+            "hero_title": "Профессиональная автодиагностика в вашем смартфоне",
+            "hero_sub": "Считывайте и сбрасывайте ошибки всех блоков (ECU, АКПП, ABS, SRS), анализируйте параметры датчиков в реальном времени через Bluetooth, Wi-Fi или проводной USB-OTG и получайте экспертные рекомендации ИИ по ремонту.",
+            "hero_btn_download": "📲 Скачать для Android (11.7 МБ)",
+            "hero_btn_download_win": "💻 Скачать для Windows (ZIP)",
+            "hero_btn_buy": "💳 Купить PRO версию (500 ₽)",
+            "hero_btn_recover": "🔑 Восстановить лицензию",
+            "screens_title": "Интерфейс приложения OBD2 SCAN AI",
+            "screens_sub": "Живые скриншоты работы автосканера на Android",
+            "screen1_title": "🏆 Главный экран PRO",
+            "screen1_desc": "Доступ к быстрому подсоединению, приборной панели, дилерской диагностике и спец-мониторам.",
+            "screen2_title": "🏎️ Приборная панель",
+            "screen2_desc": "Живые датчики в реальном времени: Обороты, Скорость, ОЖ, Напряжение, Нагрузка ДВС.",
+            "screen3_title": "🕵️ Anti-Fraud Пробег",
+            "screen3_desc": "Сравнение одометра в блоках управления, моточасы, определение факта скрутки пробега.",
+            "screen4_title": "🔋 Гибридная Батарея",
+            "screen4_desc": "Поячеечный мониторинг напряжений 1-14 ячеек (Toyota Prius, Nissan Leaf, Honda IMA).",
+            "screen5_title": "💨 DPF-Монитор",
+            "screen5_desc": "Уровень заполнения сажей (Soot Mass), золы (Ash Mass) и статус прожига для дизелей.",
+            "screen6_title": "📊 Эко Поездка",
+            "screen6_desc": "Точный расчет расхода топлива по MAF/MAP, пробег и расчет стоимости поездки в ₽.",
+            "screen7_title": "📡 Bluetooth, Wi-Fi & USB-OTG",
+            "screen7_desc": "Поддержка беспроводных ELM327 адаптеров и проводных USB-сканеров через OTG-переходник.",
+            "screen8_title": "🔍 Сканер Ошибок",
+            "screen8_desc": "Сброс Check Engine, проверка Health Check и нейросетевая расшифровка поломок ИИ.",
+            "feat_title": "Всё необходимое для автодиагностики",
+            "feat_sub": "Совместим со всеми сканерами ELM327 Bluetooth, Wi-Fi и проводными USB-OTG (FTDI, CH340, CP2102, PL2303)",
+            "feat1_title": "✅ Чтение скрытых DTC",
+            "feat1_desc": "Сканирование блоков управления двигателем, коробкой передач, тормозной системой и подушками.",
+            "feat2_title": "✅ Live Data Графика",
+            "feat2_desc": "Отображение графиков оборотов, температуры ОЖ, давления наддува, лямбда-зондов и расхода топлива.",
+            "feat3_title": "✅ Поддержка К-Line, CAN & USB",
+            "feat3_desc": "Работа по протоколам KWP2000, ISO 14230, CAN и прямое подключение через кабель USB-OTG.",
+            "feat4_title": "✅ Готовые авто-профили",
+            "feat4_desc": "Специализированные детекторы для Peugeot 307/408/3008, AL4/DP0, Nissan Qashqai, VAG UDS и др.",
+            "price_title": "Выберите ваш вариант доступа",
+            "price_sub": "Без обязательных подписок для базовой версии — бессрочный доступ по однократной оплате",
+            "tag_recommended": "Рекомендуем",
+            "tag_ai": "🤖 ИИ-Диагност",
+            "p0_title": "FREE Базовый",
+            "p0_sub": "Базовый доступ + 7 дней PRO",
+            "p0_val": "/ бесплатно",
+            "p0_f1": "✅ Базовое чтение ошибок двигателя (Check Engine)",
+            "p0_f2": "✅ Основные датчики Live Data (Обороты, Скорость, ОЖ)",
+            "p0_f_conn": "✅ Подключение по Bluetooth, Wi-Fi и USB-OTG",
+            "p0_f3": "🎁 7 дней полного PRO доступа бесплатно по E-mail в приложении",
+            "btn_try_free": "📲 Скачать APK (11.7 МБ)",
+            "btn_download_win_card": "💻 Скачать для Windows (ZIP)",
+            "p1_title": "PRO Навсегда",
+            "p1_sub": "Вечная активация программы",
+            "p1_val": "/ навсегда",
+            "p1_f1": "✅ Бессрочная активация на устройстве",
+            "p1_f_conn": "✅ Подключение через Bluetooth, Wi-Fi и USB-OTG",
+            "p1_f2": "✅ Сканирование и сброс ошибок всех блоков (ECU, АКПП, ABS, SRS)",
+            "p1_f3": "✅ Расширенные параметры дилеров (Peugeot, VAG, Nissan)",
+            "p1_f4": "✅ Проверка реального одометра и моточасов",
+            "p1_f5": "✅ ИИ-Диагност (свой API ключ — безлимитно навсегда!)",
+            "p1_f6": "✅ Привязка к E-mail для переноса на новый телефон",
+            "btn_buy_code": "💳 Купить PRO Код (500 ₽)",
+            "p2_title": "Подписка ИИ (PRO+)",
+            "p2_sub": "Расширенные токены нейросетей",
+            "p2_val": "/ месяц",
+            "p2_f1": "✅ Безлимитные нейросетевые запросы Gemini & GigaChat",
+            "p2_f2": "✅ Детальный разбор симптомов и пошаговые схемы ремонта",
+            "p2_f3": "✅ Помощь ИИ в подборе оригинальных запчастей",
+            "p2_f4": "✅ Работает со всеми типами сканеров (BT/Wi-Fi/USB OTG)",
+            "p2_f5": "✅ Отмена подписки в любое время",
+            "btn_subscribe": "💳 Оплатить PRO+ (150 ₽)",
+            "footer_seller_info": "Информация о продавце:",
+            "legal_privacy": "🔒 Политика конфиденциальности",
+            "legal_terms": "📄 Публичная оферта",
+            "legal_refund": "💳 Оплата и условия возврата"
+      },
+      "en": {
+            "nav_screens": "Screenshots",
+            "nav_features": "Features",
+            "nav_pricing": "Pricing",
+            "nav_admin": "🔑 Admin",
+            "nav_buy": "💳 PRO ($10)",
+            "hero_badge": "🤖 Artificial Intelligence Gemini & GigaChat • Bluetooth, Wi-Fi & USB OTG",
+            "hero_title": "Professional Car Diagnostics on Your Smartphone",
+            "hero_sub": "Read and clear fault codes across all ECUs (Engine, AT, ABS, Airbag), monitor live sensor telemetry in real time via Bluetooth, Wi-Fi, or wired USB-OTG, and get AI repair instructions.",
+            "hero_btn_download": "📲 Download Free APK (11.7 MB)",
+            "hero_btn_download_win": "💻 Download for Windows (ZIP)",
+            "hero_btn_buy": "💳 Buy PRO Version ($10 USD)",
+            "hero_btn_recover": "🔑 Recover License",
+            "screens_title": "OBD2 SCAN AI App Interface",
+            "screens_sub": "Real screenshots of the Android automotive scanner in action",
+            "screen1_title": "🏆 Main PRO Screen",
+            "screen1_desc": "Fast adapter connection, digital dashboard, dealer-level diagnostic routines and monitors.",
+            "screen2_title": "🏎️ Digital Dashboard",
+            "screen2_desc": "Live real-time telemetry gauges: RPM, Speed, Coolant Temp, Voltage, Engine Load.",
+            "screen3_title": "🕵️ Anti-Fraud Odometer",
+            "screen3_desc": "ECU mileage verification, engine operational hours audit, odometer rollback detection.",
+            "screen4_title": "🔋 Hybrid Battery Health",
+            "screen4_desc": "Cell-by-cell voltage analysis 1-14 (Toyota Prius, Nissan Leaf, Honda IMA).",
+            "screen5_title": "💨 DPF Filter Monitor",
+            "screen5_desc": "Soot & ash accumulation levels, regeneration triggers and history for diesel engines.",
+            "screen6_title": "📊 Eco Trip Computer",
+            "screen6_desc": "Accurate MAF/MAP fuel consumption calculations, distance and trip cost estimation.",
+            "screen7_title": "📡 Bluetooth, Wi-Fi & USB-OTG",
+            "screen7_desc": "Full support for wireless ELM327 dongles and wired USB OBD2 adapters via OTG.",
+            "screen8_title": "🔍 DTC Fault Scanner",
+            "screen8_desc": "Clear Check Engine, complete Health Check audit and instant AI failure decoding.",
+            "feat_title": "Everything You Need for Vehicle Diagnostics",
+            "feat_sub": "Compatible with all ELM327 Bluetooth, Wi-Fi and wired USB-OTG chips (FTDI, CH340, CP2102, PL2303)",
+            "feat1_title": "✅ Deep DTC Diagnostics",
+            "feat1_desc": "Scan Engine, Transmission, ABS, and Airbag modules with clear descriptions.",
+            "feat2_title": "✅ Live Data Graphics",
+            "feat2_desc": "Real-time graphs of RPM, coolant temperature, boost pressure, O2 sensors, and fuel trim.",
+            "feat3_title": "✅ K-Line, CAN & USB-OTG",
+            "feat3_desc": "Works with KWP2000, ISO 14230, CAN protocols and direct USB OTG connection cables.",
+            "feat4_title": "✅ Preconfigured Profiles",
+            "feat4_desc": "Dedicated OEM profiles for Peugeot/Citroën, AL4/DP0, Nissan Qashqai, VAG UDS and more.",
+            "price_title": "Choose Your Access Plan",
+            "price_sub": "No mandatory subscriptions for core features — pay once for lifetime PRO access",
+            "tag_recommended": "Recommended",
+            "tag_ai": "🤖 AI-Diagnostic",
+            "p0_title": "FREE Basic",
+            "p0_sub": "Basic Access + 7 Days PRO",
+            "p0_val": "/ free",
+            "p0_f1": "✅ Basic Check Engine DTC reading",
+            "p0_f2": "✅ Core Live Data telemetry (RPM, Speed, Coolant)",
+            "p0_f_conn": "✅ Supports Bluetooth, Wi-Fi & USB-OTG",
+            "p0_f3": "🎁 7 days full PRO access free via E-mail in app",
+            "btn_try_free": "📲 Download APK (11.7 MB)",
+            "btn_download_win_card": "💻 Download for Windows (ZIP)",
+            "p1_title": "PRO Lifetime",
+            "p1_sub": "Perpetual app license",
+            "p1_val": "/ lifetime",
+            "p1_f1": "✅ Lifetime license on device",
+            "p1_f_conn": "✅ Supports Bluetooth, Wi-Fi and USB-OTG adapters",
+            "p1_f2": "✅ Full ECU scan & Clear Check Engine / ABS / SRS",
+            "p1_f3": "✅ OEM Dealer parameters (Peugeot, VAG, Nissan)",
+            "p1_f4": "✅ True Odometer audit & Engine hours check",
+            "p1_f5": "✅ AI Diagnostic (bring your own API key — unlimited)",
+            "p1_f6": "✅ Email binding for smooth transfer to new phones",
+            "btn_buy_code": "💳 Buy PRO Code ($10 USD)",
+            "p2_title": "PRO+ AI Subscription",
+            "p2_sub": "Extended neural network tokens",
+            "p2_val": "/ month",
+            "p2_f1": "✅ Unlimited AI queries to Gemini & GigaChat",
+            "p2_f2": "✅ Deep symptom analysis & step-by-step repair guides",
+            "p2_f3": "✅ AI-powered OEM spare parts finder",
+            "p2_f4": "✅ Works with Bluetooth, Wi-Fi & USB OTG",
+            "p2_f5": "✅ Cancel subscription anytime",
+            "btn_subscribe": "💳 Subscribe to PRO+ ($3 USD)",
+            "footer_seller_info": "Seller Information:",
+            "legal_privacy": "🔒 Privacy Policy",
+            "legal_terms": "📄 Public Offer & Terms",
+            "legal_refund": "💳 Payment & Refund Policy"
+      },
+      "de": {
+            "nav_screens": "Screenshots",
+            "nav_features": "Funktionen",
+            "nav_pricing": "Preise",
+            "nav_admin": "🔑 Admin",
+            "nav_buy": "💳 PRO (€10)",
+            "hero_badge": "🤖 Künstliche Intelligenz Gemini & GigaChat • Bluetooth, Wi-Fi & USB OTG",
+            "hero_title": "Professionelle Fahrzeugdiagnose auf Ihrem Smartphone",
+            "hero_sub": "Fehlercodes aller Steuergeräte auslesen und löschen (Motor, Automatik, ABS, Airbag), Live-Sensorwerte über Bluetooth, Wi-Fi oder USB-OTG überwachen und KI-Reparaturanleitungen erhalten.",
+            "hero_btn_download": "📲 Kostenlose APK herunterladen (11.7 MB)",
+            "hero_btn_download_win": "💻 Für Windows herunterladen (.EXE)",
+            "hero_btn_buy": "💳 PRO Version kaufen (€10 EUR)",
+            "hero_btn_recover": "🔑 Lizenz wiederherstellen",
+            "screens_title": "OBD2 SCAN AI Benutzeroberfläche",
+            "screens_sub": "Echte Screenshots der Android OBD2 Diagnose-App",
+            "screen1_title": "🏆 Hauptbildschirm PRO",
+            "screen1_desc": "Schnellverbindung, digitales Dashboard, Herstellertests und Spezialmonitore.",
+            "screen2_title": "🏎️ Digitales Cockpit",
+            "screen2_desc": "Echtzeit-Telemetrie: Drehzahl, Geschwindigkeit, Kühlmitteltemperatur, Batteriespannung.",
+            "screen3_title": "🕵️ Anti-Fraud Tachocheck",
+            "screen3_desc": "Überprüfung des realen Kilometerstands in Steuergeräten und Betriebsstunden.",
+            "screen4_title": "🔋 Hybrid-Batterie Monitor",
+            "screen4_desc": "Zellgenaue Spannungsüberwachung 1-14 (Toyota Prius, Nissan Leaf, Honda IMA).",
+            "screen5_title": "💨 DPF-Partikelfilter",
+            "screen5_desc": "Ruß- und Aschemasse, Regenerationsstatus und Fahrleistung seit Regeneration.",
+            "screen6_title": "📊 Eco-Bordcomputer",
+            "screen6_desc": "Präzise Berechnung des Kraftstoffverbrauchs nach MAF/MAP und Fahrtkosten.",
+            "screen7_title": "📡 Bluetooth, Wi-Fi & USB-OTG",
+            "screen7_desc": "Unterstützung für kabellose ELM327 Adapter und kabelgebundene USB-Scanner via OTG.",
+            "screen8_title": "🔍 Fehlerspeicher & KI",
+            "screen8_desc": "Check Engine zurücksetzen, vollständiger Health Check und KI-Pannenhilfe.",
+            "feat_title": "Alles für die professionelle Fahrzeugdiagnose",
+            "feat_sub": "Kompatibel mit allen ELM327 Bluetooth-, Wi-Fi- und USB-OTG-Adaptern",
+            "feat1_title": "✅ Tiefendiagnose aller Steuergeräte",
+            "feat1_desc": "Diagnose von Motor-, Getriebe-, ABS- und Airbag-Steuergeräten mit Klartext.",
+            "feat2_title": "✅ Live-Daten Grafiken",
+            "feat2_desc": "Echtzeit-Graphen für Drehzahl, Temperatur, Ladedruck und Lambdasonden.",
+            "feat3_title": "✅ K-Line, CAN & USB",
+            "feat3_desc": "KWP2000, ISO 14230, CAN-Protokolle und direkte USB-OTG-Kabelverbindung.",
+            "feat4_title": "✅ OEM Fahrzeugprofile",
+            "feat4_desc": "Spezifische Profile für Peugeot/Citroën, AL4/DP0, Nissan, VAG UDS u.v.m.",
+            "price_title": "Wählen Sie Ihren Zugang",
+            "price_sub": "Keine Zwangsabos für die Basisversion — einmalige Zahlung für dauerhaften Zugang",
+            "tag_recommended": "Empfohlen",
+            "tag_ai": "🤖 KI-Diagnose",
+            "p0_title": "FREE Basis",
+            "p0_sub": "Basiszugang + 7 Tage PRO",
+            "p0_val": "/ kostenlos",
+            "p0_f1": "✅ Basis-Fehlerauslese Motor (Check Engine)",
+            "p0_f2": "✅ Live-Daten Sensoren (Drehzahl, Tempo, Temperatur)",
+            "p0_f_conn": "✅ Verbindung über Bluetooth, Wi-Fi & USB-OTG",
+            "p0_f3": "🎁 7 Tage voller PRO-Zugang kostenlos per E-Mail in der App",
+            "btn_try_free": "📲 APK herunterladen (11.7 MB)",
+            "btn_download_win_card": "💻 Für Windows herunterladen (.EXE)",
+            "p1_title": "PRO Dauerlizenz",
+            "p1_sub": "Lebenslange Freischaltung",
+            "p1_val": "/ lebenslang",
+            "p1_f1": "✅ Dauerhafte Lizenz auf Ihrem Gerät",
+            "p1_f_conn": "✅ Verbindung über Bluetooth, Wi-Fi & USB-OTG",
+            "p1_f2": "✅ Vollscan aller Steuergeräte & Fehlerspeicher löschen",
+            "p1_f3": "✅ Erweiterte OEM-Herstellerparameter",
+            "p1_f4": "✅ Reale Kilometerstand- und Betriebsstundenprüfung",
+            "p1_f5": "✅ KI-Diagnose (eigener API-Schlüssel — unbegrenzt)",
+            "p1_f6": "✅ E-Mail-Bindung für Gerätewechsel",
+            "btn_buy_code": "💳 PRO Code kaufen (€10 EUR)",
+            "p2_title": "PRO+ KI-Abonnement",
+            "p2_sub": "Erweiterte KI-Tokens",
+            "p2_val": "/ Monat",
+            "p2_f1": "✅ Unbegrenzte KI-Abfragen an Gemini & GigaChat",
+            "p2_f2": "✅ Detaillierte Symptomanalyse und Reparaturanleitungen",
+            "p2_f3": "✅ KI-Ersatzteilsuche nach OEM-Nummern",
+            "p2_f4": "✅ Funktioniert mit allen Adaptern (BT/Wi-Fi/USB)",
+            "p2_f5": "✅ Jederzeit kündbar",
+            "btn_subscribe": "💳 PRO+ Abonnieren (€3 EUR)",
+            "footer_seller_info": "Verkäuferinformationen:",
+            "legal_privacy": "🔒 Datenschutzerklärung",
+            "legal_terms": "📄 AGB & Nutzungsbedingungen",
+            "legal_refund": "💳 Zahlung & Rückgabe"
+      },
+      "fr": {
+            "nav_screens": "Captures",
+            "nav_features": "Fonctions",
+            "nav_pricing": "Tarifs",
+            "nav_admin": "🔑 Admin",
+            "nav_buy": "💳 PRO (€10)",
+            "hero_badge": "🤖 Intelligence Artificielle Gemini & GigaChat • Bluetooth, Wi-Fi & USB OTG",
+            "hero_title": "Diagnostic Automobile Professionnel sur Smartphone",
+            "hero_sub": "Lisez et effacez les codes défauts de tous les calculateurs (Moteur, BVA, ABS, Airbag), suivez les capteurs en temps réel par Bluetooth, Wi-Fi ou USB-OTG et obtenez l'assistance de l'IA pour la réparation.",
+            "hero_btn_download": "📲 Télécharger l'APK gratuite (11.7 Mo)",
+            "hero_btn_download_win": "💻 Télécharger pour Windows (ZIP)",
+            "hero_btn_buy": "💳 Acheter la version PRO (€10 EUR)",
+            "hero_btn_recover": "🔑 Restaurer la licence",
+            "screens_title": "Interface de l'application OBD2 SCAN AI",
+            "screens_sub": "Captures d'écran réelles du scanner de diagnostic Android",
+            "screen1_title": "🏆 Écran Principal PRO",
+            "screen1_desc": "Connexion rapide, tableau de bord, tests de niveau constructeur et moniteurs dédiés.",
+            "screen2_title": "🏎️ Tableau de Bord Digital",
+            "screen2_desc": "Télémétrie en temps réel : Régime, Vitesse, Température LDR, Tension, Charge moteur.",
+            "screen3_title": "🕵️ Anti-Fraude Kilométrique",
+            "screen3_desc": "Contrôle du kilométrage réel dans les calculateurs, heures moteur, détection de fraude.",
+            "screen4_title": "🔋 Batterie Hybride",
+            "screen4_desc": "Surveillance cellule par cellule 1-14 (Toyota Prius, Nissan Leaf, Honda IMA).",
+            "screen5_title": "💨 Filtre à Particules DPF",
+            "screen5_desc": "Masse de suie et de cendre, statut de régénération et distance depuis régénération.",
+            "screen6_title": "📊 Ordinateur de Bord Éco",
+            "screen6_desc": "Calcul précis de la consommation par MAF/MAP, statistiques et coût du trajet.",
+            "screen7_title": "📡 Bluetooth, Wi-Fi & USB-OTG",
+            "screen7_desc": "Support des adaptateurs sans fil ELM327 et des scanners USB filaires via câble OTG.",
+            "screen8_title": "🔍 Scanner de Défauts & IA",
+            "screen8_desc": "Effacement Check Engine, bilan de santé complet et décodage IA des pannes.",
+            "feat_title": "Tout pour le diagnostic automobile complet",
+            "feat_sub": "Compatible avec tous les adaptateurs ELM327 Bluetooth, Wi-Fi et USB-OTG",
+            "feat1_title": "✅ Diagnostic approfondi des DTC",
+            "feat1_desc": "Lecture des calculateurs Moteur, Transmission, Freinage ABS et Airbags.",
+            "feat2_title": "✅ Graphiques en direct",
+            "feat2_desc": "Courbes en temps réel du régime, température, pression turbo et sondes lambda.",
+            "feat3_title": "✅ K-Line, CAN & USB",
+            "feat3_desc": "Protocoles KWP2000, ISO 14230, CAN et liaison directe USB OTG.",
+            "feat4_title": "✅ Profils Constructeurs",
+            "feat4_desc": "Profils spécialisés Peugeot/Citroën, AL4/DP0, Nissan Qashqai, VAG UDS, etc.",
+            "price_title": "Choisissez votre formule",
+            "price_sub": "Sans abonnement obligatoire — payez une seule fois pour un accès à vie",
+            "tag_recommended": "Recommandé",
+            "tag_ai": "🤖 Diagnostic IA",
+            "p0_title": "FREE Gratuit",
+            "p0_sub": "Accès de base + 7 jours PRO",
+            "p0_val": "/ gratuit",
+            "p0_f1": "✅ Lecture basique des erreurs moteur (Check Engine)",
+            "p0_f2": "✅ Données capteurs Live Data (Régime, Vitesse, T° LDR)",
+            "p0_f_conn": "✅ Connexion Bluetooth, Wi-Fi et USB-OTG",
+            "p0_f3": "🎁 7 jours d'accès PRO complet gratuit par E-mail dans l'application",
+            "btn_try_free": "📲 Télécharger APK (11.7 Mo)",
+            "btn_download_win_card": "💻 Télécharger pour Windows (ZIP)",
+            "p1_title": "PRO à Vie",
+            "p1_sub": "Licence perpétuelle",
+            "p1_val": "/ à vie",
+            "p1_f1": "✅ Licence perpétuelle sur l'appareil",
+            "p1_f_conn": "✅ Connexion Bluetooth, Wi-Fi et USB-OTG",
+            "p1_f2": "✅ Diagnostic complet & effacement des voyants (Moteur/ABS/Airbag)",
+            "p1_f3": "✅ Paramètres concessionnaire constructeurs",
+            "p1_f4": "✅ Vérification du kilométrage réel et heures moteur",
+            "p1_f5": "✅ Diagnostic IA (avec votre propre clé API — illimité)",
+            "p1_f6": "✅ Liaison E-mail pour transfert sur un nouveau téléphone",
+            "btn_buy_code": "💳 Acheter code PRO (€10 EUR)",
+            "p2_title": "Abonnement PRO+ IA",
+            "p2_sub": "Tokens IA étendus",
+            "p2_val": "/ mois",
+            "p2_f1": "✅ Requêtes IA illimitées vers Gemini & GigaChat",
+            "p2_f2": "✅ Analyse détaillée des pannes et guides de réparation",
+            "p2_f3": "✅ Recherche de pièces détachées OEM par IA",
+            "p2_f4": "✅ Compatible tous scanners (BT/Wi-Fi/USB)",
+            "p2_f5": "✅ Résiliation à tout moment",
+            "btn_subscribe": "💳 S'abonner à PRO+ (€3 EUR)",
+            "footer_seller_info": "Informations sur le vendeur :",
+            "legal_privacy": "🔒 Politique de confidentialité",
+            "legal_terms": "📄 Conditions Générales de Vente",
+            "legal_refund": "💳 Paiement et Remboursement"
+      },
+      "es": {
+            "nav_screens": "Capturas",
+            "nav_features": "Funciones",
+            "nav_pricing": "Precios",
+            "nav_admin": "🔑 Admin",
+            "nav_buy": "💳 PRO ($10)",
+            "hero_badge": "🤖 Inteligencia Artificial Gemini & GigaChat • Bluetooth, Wi-Fi & USB OTG",
+            "hero_title": "Diagnóstico Automotriz Profesional en tu Smartphone",
+            "hero_sub": "Lee y borra códigos de avería de todas las centralitas (Motor, Caja Automática, ABS, Airbag), monitorea sensores en tiempo real vía Bluetooth, Wi-Fi o USB-OTG y recibe instrucciones de reparación con IA.",
+            "hero_btn_download": "📲 Descargar para Android (11.7 MB)",
+            "hero_btn_download_win": "💻 Descargar para Windows (ZIP)",
+            "hero_btn_buy": "💳 Comprar versión PRO ($10 USD)",
+            "hero_btn_recover": "🔑 Recuperar Licencia",
+            "screens_title": "Interfaz de la aplicación OBD2 SCAN AI",
+            "screens_sub": "Capturas reales del escáner de diagnóstico Android",
+            "screen1_title": "🏆 Pantalla Principal PRO",
+            "screen1_desc": "Conexión rápida, panel de instrumentos, pruebas de nivel de agencia y monitores.",
+            "screen2_title": "🏎️ Panel Digital",
+            "screen2_desc": "Telemetría en tiempo real: RPM, Velocidad, Temperatura de Refrigerante, Voltaje, Carga.",
+            "screen3_title": "🕵️ Anti-Fraude de Kilometraje",
+            "screen3_desc": "Auditoría de odómetro real en módulos ECU, horas de motor, detección de alteración.",
+            "screen4_title": "🔋 Salud de Batería Híbrida",
+            "screen4_desc": "Monitoreo celda por celda 1-14 (Toyota Prius, Nissan Leaf, Honda IMA).",
+            "screen5_title": "💨 Filtro de Partículas DPF",
+            "screen5_desc": "Nivel de hollín y ceniza, estado de regeneración y distancia desde última limpieza.",
+            "screen6_title": "📊 Ordenador de Viaje Eco",
+            "screen6_desc": "Cálculo exacto del consumo de combustible por MAF/MAP y costo del trayecto.",
+            "screen7_title": "📡 Bluetooth, Wi-Fi & USB-OTG",
+            "screen7_desc": "Compatibilidad con adaptadores inalámbricos ELM327 y escáneres USB vía cable OTG.",
+            "screen8_title": "🔍 Escáner de Fallas con IA",
+            "screen8_desc": "Borrado de Check Engine, reporte de salud general e interpretación de averías con IA.",
+            "feat_title": "Todo lo que necesitas para el diagnóstico vehicular",
+            "feat_sub": "Compatible con todos los adaptadores ELM327 Bluetooth, Wi-Fi y USB-OTG",
+            "feat1_title": "✅ Diagnóstico profundo de códigos DTC",
+            "feat1_desc": "Escaneo de módulos de Motor, Transmisión, Frenos ABS y Airbags.",
+            "feat2_title": "✅ Gráficas en tiempo real",
+            "feat2_desc": "Visualización de RPM, temperatura, presión de turbo y sensores de oxígeno.",
+            "feat3_title": "✅ K-Line, CAN & USB",
+            "feat3_desc": "Protocolos KWP2000, ISO 14230, CAN y conexión directa mediante cable USB OTG.",
+            "feat4_title": "✅ Perfiles de fabricante OEM",
+            "feat4_desc": "Perfiles específicos para Peugeot/Citroën, AL4/DP0, Nissan Qashqai, VAG UDS y más.",
+            "price_title": "Elige tu plan de acceso",
+            "price_sub": "Sin suscripciones obligatorias — pago único para acceso ilimitado de por vida",
+            "tag_recommended": "Recomendado",
+            "tag_ai": "🤖 Diagnóstico IA",
+            "p0_title": "FREE Básico",
+            "p0_sub": "Acceso básico + 7 días PRO",
+            "p0_val": "/ gratis",
+            "p0_f1": "✅ Lectura básica de códigos de motor (Check Engine)",
+            "p0_f2": "✅ Sensores Live Data esenciales (RPM, Velocidad, Temp)",
+            "p0_f_conn": "✅ Conexión Bluetooth, Wi-Fi y USB-OTG",
+            "p0_f3": "🎁 7 días de acceso PRO completo gratis por E-mail в app",
+            "btn_try_free": "📲 Descargar APK (11.7 MB)",
+            "btn_download_win_card": "💻 Descargar para Windows (ZIP)",
+            "p1_title": "PRO de por Vida",
+            "p1_sub": "Licencia permanente",
+            "p1_val": "/ para siempre",
+            "p1_f1": "✅ Licencia permanente en tu dispositivo",
+            "p1_f_conn": "✅ Compatible con Bluetooth, Wi-Fi y USB-OTG",
+            "p1_f2": "✅ Escaneo total y borrado de Check Engine / ABS / SRS",
+            "p1_f3": "✅ Parámetros avanzados de agencia",
+            "p1_f4": "✅ Verificación de kilometraje real y horas de uso",
+            "p1_f5": "✅ Diagnóstico IA (con tu propia clave API — ilimitado)",
+            "p1_f6": "✅ Vinculación con E-mail para cambiar de smartphone",
+            "btn_buy_code": "💳 Comprar código PRO ($10 USD)",
+            "p2_title": "Suscripción PRO+ IA",
+            "p2_sub": "Tokens de IA extendidos",
+            "p2_val": "/ mes",
+            "p2_f1": "✅ Consultas ilimitadas a Gemini AI y GigaChat",
+            "p2_f2": "✅ Análisis de fallas y guías paso a paso de reparación",
+            "p2_f3": "✅ Localizador inteligente de refacciones OEM con IA",
+            "p2_f4": "✅ Funciona con cualquier escáner (BT/Wi-Fi/USB)",
+            "p2_f5": "✅ Cancela tu suscripción cuando quieras",
+            "btn_subscribe": "💳 Suscribirse a PRO+ ($3 USD)",
+            "footer_seller_info": "Información del vendedor:",
+            "legal_privacy": "🔒 Política de Privacidad",
+            "legal_terms": "📄 Términos y Condiciones",
+            "legal_refund": "💳 Pago y Reembolsos"
+      },
+      "ar": {
+            "nav_screens": "لقطات الشاشة",
+            "nav_features": "المميزات",
+            "nav_pricing": "الأسعار",
+            "nav_admin": "🔑 لوحة التحكم",
+            "nav_buy": "💳 PRO ($10)",
+            "hero_badge": "🤖 الذكاء الاصطناعي Gemini و GigaChat • يدعم بلوتوث، واي فاي و USB OTG",
+            "hero_title": "تشخيص احترافي للسيارات على هاتفك الذكي",
+            "hero_sub": "قراءة ومسح أكواد الأعطال لجميع وحدات التحكم (المحرك، القير، الفرامل ABS، الوسائد الهوائية)، مراقبة الحساسات مباشرة عبر Bluetooth أو Wi-Fi أو كابل USB-OTG مع إرشادات إصلاح ذكية.",
+            "hero_btn_download": "📲 تحميل APK مجاناً (11.7 ميغابايت)",
+            "hero_btn_download_win": "💻 تنزيل لنظام Windows (ZIP)",
+            "hero_btn_buy": "💳 شراء نسخة PRO ($10 USD)",
+            "hero_btn_recover": "🔑 استعادة الترخيص",
+            "screens_title": "واجهة تطبيق OBD2 SCAN AI",
+            "screens_sub": "لقطات شاشة حية لتطبيق الفحص على أندرويد",
+            "screen1_title": "🏆 الشاشة الرئيسية PRO",
+            "screen1_desc": "اتصال سريع بالمحول، لوحة القيادة، فحص الوكالة والمراقبات الخاصة.",
+            "screen2_title": "🏎️ لوحة العدادات الرقمية",
+            "screen2_desc": "بيانات حية وفورية: دورات المحرك، السرعة، حرارة المحرك، الجهد، الحمل.",
+            "screen3_title": "🕵️ كشف التلاعب بالعداد",
+            "screen3_desc": "تدقيق الممشى الحقيقي عبر وحدات التحكم وساعات تشغيل المحرك.",
+            "screen4_title": "🔋 فحص بطارية الهايبرد",
+            "screen4_desc": "مراقبة جهد خلايا البطارية 1-14 بدقة (تويوتا بريوس، نيسان ليف، هوندا).",
+            "screen5_title": "💨 مراقبة فلتر الديزل DPF",
+            "screen5_desc": "مستوى الكربون والرماد، حالة التجديد والمسافة المقطوعة.",
+            "screen6_title": "📊 حاسبة استهلاك الوقود",
+            "screen6_desc": "حساب دقيق لاستهلاك الوقود وتكلفة الرحلة عبر حساسات الهواء.",
+            "screen7_title": "📡 بلوتوث، واي فاي و USB-OTG",
+            "screen7_desc": "دعم كامل لمحولات ELM327 اللاسلكية والوصلات السلكية عبر OTG.",
+            "screen8_title": "🔍 فحص الأعطال والذكاء الاصطناعي",
+            "screen8_desc": "مسح لمبة المكينة Check Engine، تقرير شامل وتحليل الأعطال بالذكاء الاصطناعي.",
+            "feat_title": "كل ما تحتاجه لفحص وتشخيص سيارتك",
+            "feat_sub": "متوافق مع محولات ELM327 Bluetooth و Wi-Fi و USB OTG",
+            "feat1_title": "✅ قراءة أعطال DTC العميقة",
+            "feat1_desc": "فحص المحرك وناقل الحركة ونظام الفرامل والوسائد الهوائية.",
+            "feat2_title": "✅ رسوم بيانية حية",
+            "feat2_desc": "عرض فوري لحرارة المحرك، ضغط التوربو، حساسات الأكسجين والمزيد.",
+            "feat3_title": "✅ K-Line, CAN & USB",
+            "feat3_desc": "يدعم بروتوكولات KWP2000 و ISO 14230 و CAN والربط المباشر عبر USB.",
+            "feat4_title": "✅ بروفايلات المصنعين",
+            "feat4_desc": "بروفايلات مخصصة لسيارات بيجو، نيسان، فولكس فاجن وغيرها.",
+            "price_title": "اختر خطة الوصول المناسبة",
+            "price_sub": "بدون اشتراكات إجبارية — دفعة واحدة لترخيص دائم مدى الحياة",
+            "tag_recommended": "موصى به",
+            "tag_ai": "🤖 مساعد ذكي",
+            "p0_title": "FREE مجاني",
+            "p0_sub": "وصول أساسي + 7 أيام تجربة PRO",
+            "p0_val": "/ مجاناً",
+            "p0_f1": "✅ قراءة أعطال المحرك الأساسية (Check Engine)",
+            "p0_f2": "✅ مراقبة الحساسات الحية (السرعة، الحرارة، RPM)",
+            "p0_f_conn": "✅ اتصال عبر Bluetooth و Wi-Fi و USB-OTG",
+            "p0_f3": "🎁 7 أيام وصول PRO كامل مجاناً عبر البريد في التطبيق",
+            "btn_try_free": "📲 تحميل APK (11.7 ميغابايت)",
+            "btn_download_win_card": "💻 تنزيل لنظام Windows (ZIP)",
+            "p1_title": "PRO مدى الحياة",
+            "p1_sub": "ترخيص دائم للتطبيق",
+            "p1_val": "/ مدى الحياة",
+            "p1_f1": "✅ ترخيص دائم مدى الحياة على هاتفك",
+            "p1_f_conn": "✅ دعم Bluetooth و Wi-Fi و USB-OTG",
+            "p1_f2": "✅ فحص شامل ومسح لمبات المحرك / ABS / SRS",
+            "p1_f3": "✅ قراءة معايير وبروتوكولات الوكالة",
+            "p1_f4": "✅ كشف التلاعب بالعداد وساعات العمل",
+            "p1_f5": "✅ تشخيص بالذكاء الاصطناعي (مفتاحك الخاص — بلا حدود)",
+            "p1_f6": "✅ ربط بالبريد الإلكتروني لنقل الترخيص لهاتف جديد",
+            "btn_buy_code": "💳 شراء كود PRO ($10 USD)",
+            "p2_title": "اشتراك PRO+ الذكاء الاصطناعي",
+            "p2_sub": "رموز شبكات عصبية موسعة",
+            "p2_val": "/ شهرياً",
+            "p2_f1": "✅ استعلامات غير محدودة للذكاء الاصطناعي Gemini & GigaChat",
+            "p2_f2": "✅ تحليل الأعطال وإرشادات الإصلاح خطوة بخطوة",
+            "p2_f3": "✅ بحث ذكي عن أرقام قطع الغيار الأصلية",
+            "p2_f4": "✅ يعمل مع BT و Wi-Fi و USB OTG",
+            "p2_f5": "✅ إلغاء الاشتراك في أي وقت",
+            "btn_subscribe": "💳 الاشتراك في PRO+ ($3 USD)",
+            "footer_seller_info": "معلومات البائع:",
+            "legal_privacy": "🔒 سياسة الخصوصية",
+            "legal_terms": "📄 الشروط والأحكام",
+            "legal_refund": "💳 الدفع وشروط الاسترجاع"
+      }
+};
+
+    function changeLang(lang) {
+      localStorage.setItem('obd2_lang', lang);
+      const dict = translations[lang] || translations.ru;
+
+      if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
+
+      // Update dynamic price tags on cards
+      const proPrice = document.getElementById('indexProPrice');
+      const aiPrice = document.getElementById('indexAiPrice');
+      if (proPrice && aiPrice) {
+        if (lang === 'ru') {
+          proPrice.innerHTML = '500 ₽ <span>/ навсегда</span>';
+          aiPrice.innerHTML = '150 ₽ <span>/ месяц</span>';
+        } else if (lang === 'de' || lang === 'fr') {
+          proPrice.innerHTML = '€10 EUR <span>' + dict.p1_val + '</span>';
+          aiPrice.innerHTML = '€3 EUR <span>' + dict.p2_val + '</span>';
+        } else {
+          proPrice.innerHTML = '$10 USD <span>' + dict.p1_val + '</span>';
+          aiPrice.innerHTML = '$3 USD <span>' + dict.p2_val + '</span>';
+        }
+      }
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerText = dict[key];
+      });
+    }
+
+    // Lightbox modal logic
+    function openScreenshot(card) {
+      const img = card.querySelector('.screenshot-img');
+      const title = card.querySelector('h4')?.innerText || '';
+      const lightbox = document.getElementById('imageLightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxCap = document.getElementById('lightboxCaption');
+      
+      if (img && lightbox && lightboxImg) {
+        lightboxImg.src = img.src;
+        if (lightboxCap) lightboxCap.innerText = title;
+        lightbox.classList.add('active');
+      }
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('imageLightbox');
+      if (lightbox) {
+        lightbox.classList.remove('active');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('obd2_lang');
+      const userLang = (navigator.language || 'ru').substring(0, 2).toLowerCase();
+      const targetLang = savedLang || (translations[userLang] ? userLang : 'ru');
+      
+      document.getElementById('langSelect').value = targetLang;
+      changeLang(targetLang);
+    });
+  </script>
+
+  <!-- Lightbox Modal Viewer -->
+  <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+    <img id="lightboxImg" class="lightbox-content" alt="Скриншот приложения">
+    <div id="lightboxCaption" class="lightbox-caption"></div>
+  </div>
+</body>
+</html>

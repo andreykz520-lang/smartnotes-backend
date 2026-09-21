@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBD2 SCAN AI — Панель Администратора</title>
+  <link rel="icon" type="image/png" href="/img/app_icon.png">
+  <link rel="apple-touch-icon" href="/img/app_icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #151c2c;
+      --card-inner: #0d1322;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #232d42;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 60px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1560px;
+      margin: 0 auto;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: var(--card);
+      padding: 16px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+      object-fit: cover;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+    .brand-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 2px 0 0;
+    }
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .header-links a:hover { color: #fff; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    h2, h3 { margin-top: 0; }
+    
+    /* KPI Stats Grid (4 columns) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+    .stat-card.pro-plus {
+      border-color: rgba(6, 182, 212, 0.4);
+      background: linear-gradient(145deg, #151c2c 0%, #0d2238 100%);
+    }
+    .stat-card.pro {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(145deg, #151c2c 0%, #0d2a22 100%);
+    }
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .stat-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+    .stat-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .badge-cyan { background: rgba(6, 182, 212, 0.2); color: var(--cyan); }
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .badge-purple { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+    .stat-val {
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      margin: 4px 0 8px;
+    }
+    .stat-meta {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* 2 Columns Section Grid */
+    .admin-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1080px) {
+      .admin-row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Generator Controls */
+    .gen-form-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 14px;
+      align-items: flex-end;
+    }
+    @media (max-width: 720px) {
+      .gen-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    select, input[type="password"], input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    select:focus, input:focus {
+      border-color: var(--accent);
+    }
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    button:hover { background: var(--accent-hover); }
+    .btn-success { background: var(--success); }
+    .btn-success:hover { background: #059669; }
+    .btn-cyan { background: var(--cyan); color: #000; font-weight: 700; }
+    .btn-cyan:hover { background: #0891b2; color: #fff; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #dc2626; }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 16px;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--card-inner);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .search-box {
+      min-width: 280px;
+      flex: 1;
+      max-width: 450px;
+    }
+
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-inner);
+      min-width: 800px;
+    }
+    th, td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    th {
+      background: #111726;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .badge-used { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .badge-sub { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+
+    /* Action Buttons in Table */
+    .action-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      margin-right: 6px;
+      font-weight: 500;
+    }
+    .btn-reset {
+      background: #1e293b;
+      color: #94a3b8;
+    }
+    .btn-reset:hover {
+      background: #334155;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Шапка панели -->
+    <div class="header-bar">
+      <div class="brand">
+        <img src="/img/app_icon.png" alt="OBD2 SCAN AI" class="brand-logo">
+        <div>
+          <h1 class="brand-title">OBD2 SCAN AI — Управление Сервером</h1>
+          <p class="brand-sub">Лицензии, Подписки ИИ (PRO+), Триалы и Аналитика</p>
+        </div>
+      </div>
+      <div class="header-links">
+        <a href="/" target="_blank">🌐 Сайт</a>
+        <a href="/buy" target="_blank">💳 Страница оплаты</a>
+        <button onclick="logout()" style="background: transparent; border: 1px solid var(--border); padding: 8px 16px; font-size: 13px;">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Форма входа -->
+    <div id="loginCard" class="card" style="max-width: 480px; margin: 60px auto;">
+      <h2 style="text-align: center; margin-bottom: 8px;">🔐 Вход в Админ-панель</h2>
+      <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;">Введите мастер-пароль администратора (ADMIN_PASSWORD):</p>
+      <input type="password" id="adminPassword" placeholder="Пароль администратора" onkeydown="if(event.key==='Enter') login()">
+      <button onclick="login()" style="width: 100%; margin-top: 14px; padding: 14px; font-size: 15px;">Войти в систему</button>
+      <p id="loginError" style="color: var(--danger); display: none; margin-top: 12px; text-align: center; font-size: 13px;"></p>
+    </div>
+
+    <!-- Основной дашборд -->
+    <div id="adminContent" style="display: none;">
+      
+      <!-- 1. KPI Карточки Статистики (4 в ряд) -->
+      <div class="stats-grid">
+        
+        <!-- Карточка PRO+ (ИИ Подписка) -->
+        <div class="stat-card pro-plus">
+          <div>
+            <div class="stat-header">
+              <span class="stat-title">💎 PRO+ (ИИ Подписка)</span>
+              <span class="stat-badge badge-cyan">150 ₽ / $3</span>
+            </div>
+            <div class="stat-val" id="statProPlusTotal">0</div>
+          </div>
+          <div class="stat-meta">
+            <span>Активировано: <b id="statProPlusUsed" style="color: #fff;">0</b></span>
+            <span>Свободно: <b id="statProPlusAvail" style="color: var(--cyan);">0</b></span>
+          </div>
+        </div>
+
+        <!-- Карточка PRO Навсегда -->
+        <div class="stat-card pro">
+          <div>
+            <div class="stat-header">
+              <span class="stat-title">🏆 PRO Навсегда</span>
+              <span class="stat-badge badge-green">500 ₽ / $10</span>
+            </div>
+            <div class="stat-val" id="statProTotal">0</div>
+          </div>
+          <div class="stat-meta">
+            <span>Активировано: <b id="statProUsed" style="color: #fff;">0</b></span>
+            <span>Свободно: <b id="statProAvail" style="color: var(--success);">0</b></span>
+          </div>
+        </div>
+
+        <!-- Карточка Триалов -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-header">
+              <span class="stat-title">🛡️ 7-Дневные Триалы</span>
+              <span class="stat-badge badge-purple">Trial</span>
+            </div>
+            <div class="stat-val" id="statTrialTotal">0</div>
+          </div>
+          <div class="stat-meta">
+            <span>Активных сейчас: <b id="statTrialActive" style="color: var(--purple);">0</b></span>
+          </div>
+        </div>
+
+        <!-- Карточка Клиенты & Выручка -->
+        <div class="stat-card">
+          <div>
+            <div class="stat-header">
+              <span class="stat-title">👥 База Клиентов</span>
+              <span class="stat-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">Email</span>
+            </div>
+            <div class="stat-val" id="statEmailsTotal">0</div>
+          </div>
+          <div class="stat-meta">
+            <span>Оценочная выручка: <b id="statRevenueRub" style="color: var(--success);">0 ₽</b></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2. Две широкие карточки: Telegram-Бот (Слева) и Генератор кодов (Справа) -->
+      <div class="admin-row-2">
+        
+        <!-- Карточка: Управление Telegram-Ботом -->
+        <div class="card" style="margin-bottom: 0; border-color: rgba(139, 92, 246, 0.4); background: linear-gradient(145deg, #151c2c 0%, #16152b 100%); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <h2 style="margin: 0 0 4px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
+                  🤖 Telegram-Бот
+                  <span id="botStatusBadge" class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger);">ВЫКЛЮЧЕН (На паузе)</span>
+                </h2>
+                <p style="color: var(--muted); font-size: 13px; margin: 0;">
+                  Продажи PRO (500 ₽) и PRO+ (150 ₽) через Telegram с отправкой чеков на E-mail
+                </p>
+              </div>
+              <button id="btnToggleBot" onclick="toggleBot()" style="background: var(--success); font-weight: 700; padding: 10px 18px;">
+                ⚡ Включить бота
+              </button>
+            </div>
+
+            <div style="background: var(--card-inner); padding: 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 14px;">
+              <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Токен Telegram-бота (от @BotFather):</label>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+                <input type="text" id="botTokenInput" placeholder="Вставьте токен вида: 123456789:ABCdefGhI..." style="flex: 1; min-width: 220px;">
+                <button onclick="saveBotToken()" style="background: var(--accent); padding: 10px 16px;">💾 Сохранить</button>
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="testBot()" style="background: #334155; padding: 8px 14px; font-size: 13px;">🧪 Проверить (@getMe)</button>
+                <button onclick="setBotWebhook()" style="background: var(--purple); padding: 8px 14px; font-size: 13px;">🔗 Привязать Webhook</button>
+              </div>
+              <div id="botTestMsg" style="display: none; font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 6px;"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--muted); padding-top: 8px;">
+            <span>🌐 Webhook: <code style="color: var(--cyan);">https://obd2scanai.ru/api/bot</code></span>
+            <span>👥 Пользователей в боте: <b id="botUsersCount" style="color: #fff;">0</b></span>
+          </div>
+        </div>
+
+        <!-- Карточка: Генератор Кодов Активации -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2 style="margin: 0 0 4px; font-size: 18px;">🔑 Генератор Кодов Активации</h2>
+            <p style="color: var(--muted); font-size: 13px; margin: 0 0 16px;">
+              Создавайте коды для ручной выдачи клиентам, блогерам или при прямой оплате
+            </p>
+            
+            <div class="gen-form-grid">
+              <div>
+                <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Тарифный план:</label>
+                <select id="genTier">
+                  <option value="plus">💎 PRO+ Подписка ИИ (150 ₽ / $3) — PLUS-</option>
+                  <option value="pro">🏆 PRO Навсегда (500 ₽ / $10) — PRO-</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Количество:</label>
+                <input type="number" id="genCount" value="1" min="1" max="100">
+              </div>
+              <div>
+                <button onclick="generateCodes()" class="btn-cyan" id="genBtn" style="padding: 12px 24px; font-size: 14px;">⚡ Сгенерировать</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="generatedBox" style="display: none; margin-top: 16px; background: var(--card-inner); padding: 14px; border-radius: 10px; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: var(--cyan); font-size: 13px;">Сгенерированные коды:</strong>
+              <button onclick="copyGeneratedCodes()" style="padding: 4px 10px; font-size: 12px;">📋 Скопировать список</button>
+            </div>
+            <pre id="generatedList" style="margin: 0; font-family: monospace; font-size: 13px; color: #10b981; max-height: 100px; overflow-y: auto;"></pre>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. Почтовый шлюз Resend (Отправка кодов и чеков) -->
+      <div class="card" style="border-color: rgba(6, 182, 212, 0.4); background: linear-gradient(145deg, #151c2c 0%, #0d2238 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <h2 style="margin: 0 0 4px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
+              ✉️ Почтовый шлюз E-mail (Resend API)
+              <span id="resendStatusBadge" class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger);">НЕТ КЛЮЧА</span>
+            </h2>
+            <p style="color: var(--muted); font-size: 13px; margin: 0;">
+              Доставка 6-значных кодов триала, чеков о покупке PRO и писем восстановления лицензии
+            </p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          
+          <!-- Ввод ключа Resend -->
+          <div style="background: var(--card-inner); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Ключ API (от resend.com/api-keys):</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="text" id="resendKeyInput" placeholder="Вставьте ключ вида: re_123456789..." style="flex: 1; min-width: 220px;">
+              <button onclick="saveResendKey()" class="btn-cyan" style="padding: 10px 16px;">💾 Сохранить</button>
+            </div>
+          </div>
+
+          <!-- Тест отправки письма -->
+          <div style="background: var(--card-inner); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Отправить проверочное письмо на E-mail:</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="email" id="testEmailInput" placeholder="ваш_email@mail.ru" style="flex: 1; min-width: 200px;">
+              <button onclick="testEmail()" style="background: var(--purple); padding: 10px 16px;">🧪 Отправить тест</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="emailTestMsg" style="display: none; font-size: 13px; margin-bottom: 14px; padding: 10px 14px; border-radius: 8px;"></div>
+
+        <!-- Активные OTP коды прямо сейчас -->
+        <div style="background: var(--card-inner); padding: 14px; border-radius: 12px; border: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: var(--cyan); font-size: 13px;">⚡ Активные коды подтверждения (OTP за последние 10 мин):</strong>
+            <span style="font-size: 12px; color: var(--muted);">Если письмо задерживается, код виден здесь:</span>
+          </div>
+          <div id="activeOtpsList" style="font-size: 13px; color: var(--muted);">Активных кодов подтверждения нет</div>
+        </div>
+
+      </div>
+
+      <!-- 4. Таблица Кодов и Лицензий (Широкая на всю страницу) -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <h2 style="margin: 0;">📋 Реестр Лицензий и Подписок</h2>
+          <button onclick="loadData()" style="padding: 8px 16px; font-size: 13px; background: #1f293d;">🔄 Обновить данные</button>
+        </div>
+
+        <!-- Фильтры и Поиск -->
+        <div class="filter-bar">
+          <div class="filter-tabs">
+            <button class="filter-btn active" onclick="setFilter('all', this)">Все (<span id="countAll">0</span>)</button>
+            <button class="filter-btn" onclick="setFilter('plus', this)">💎 PRO+ ИИ (<span id="countPlus">0</span>)</button>
+            <button class="filter-btn" onclick="setFilter('pro', this)">🏆 PRO (<span id="countPro">0</span>)</button>
+            <button class="filter-btn" onclick="setFilter('trial', this)">🛡️ Триалы (<span id="countTrials">0</span>)</button>
+          </div>
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск (код, email, deviceId)..." oninput="applySearch()">
+          </div>
+        </div>
+
+        <!-- Таблица Кодов -->
+        <div class="table-container" id="codesTableWrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Код активации</th>
+                <th>Тариф</th>
+                <th>Статус</th>
+                <th>Device ID (Android ID)</th>
+                <th>E-mail</th>
+                <th>Дата создания</th>
+                <th style="text-align: right;">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="codesTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Таблица Триалов (показывается при выборе фильтра Триалы) -->
+        <div class="table-container" id="trialsTableWrapper" style="display: none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Device ID (ANDROID_ID)</th>
+                <th>E-mail</th>
+                <th>Дата активации</th>
+                <th>Истекает</th>
+                <th>Статус</th>
+                <th style="text-align: right;">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="trialsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. Экспорт Базы Email Клиентов (Широкая на всю страницу) -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <h2 style="margin: 0 0 4px;">📧 База E-mail Клиентов (Маркетинг и Рассылки)</h2>
+            <p style="color: var(--muted); font-size: 13px; margin: 0;">
+              Все уникальные e-mail адреса покупателей PRO, подписчиков PRO+ и пользователей триала
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="copyAllEmails()" class="btn-success">📋 Скопировать все E-mail</button>
+            <button onclick="downloadEmailsCSV()" style="background: var(--purple);">📥 Скачать базу (.CSV)</button>
+          </div>
+        </div>
+        <textarea id="emailsTextarea" style="width: 100%; height: 110px; background: var(--card-inner); border: 1px solid var(--border); border-radius: 8px; color: #10b981; padding: 14px; font-family: monospace; font-size: 13px;" readonly placeholder="Список e-mail адресов появится здесь..."></textarea>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let currentPassword = localStorage.getItem('admin_pwd') || '';
+    let globalData = null;
+    let currentFilter = 'all';
+    let lastGenerated = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (currentPassword) {
+        document.getElementById('adminPassword').value = currentPassword;
+        login();
+      }
+    });
+
+    async function login() {
+      const pwd = document.getElementById('adminPassword').value.trim();
+      const err = document.getElementById('loginError');
+      err.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin', {
+          headers: { 'x-admin-password': pwd }
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentPassword = pwd;
+          localStorage.setItem('admin_pwd', pwd);
+          document.getElementById('loginCard').style.display = 'none';
+          document.getElementById('adminContent').style.display = 'block';
+          globalData = data;
+          renderDashboard(data);
+        } else {
+          err.innerText = data.error || 'Неверный пароль администратора';
+          err.style.display = 'block';
+        }
+      } catch (e) {
+        err.innerText = 'Ошибка подключения к серверу: ' + e.message;
+        err.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('admin_pwd');
+      location.reload();
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch('/api/admin', {
+          headers: { 'x-admin-password': currentPassword }
+        });
+        const data = await res.json();
+        if (data.success) {
+          globalData = data;
+          renderDashboard(data);
+        }
+      } catch (e) {
+        console.error('Data load error:', e);
+      }
+    }
+
+    function renderDashboard(data) {
+      const stats = data.stats || {};
+      
+      // KPI PRO+
+      document.getElementById('statProPlusTotal').innerText = stats.proPlus?.total || 0;
+      document.getElementById('statProPlusUsed').innerText = stats.proPlus?.used || 0;
+      document.getElementById('statProPlusAvail').innerText = stats.proPlus?.available || 0;
+
+      // KPI PRO
+      document.getElementById('statProTotal').innerText = stats.pro?.total || 0;
+      document.getElementById('statProUsed').innerText = stats.pro?.used || 0;
+      document.getElementById('statProAvail').innerText = stats.pro?.available || 0;
+
+      // KPI Trials
+      document.getElementById('statTrialTotal').innerText = stats.trials?.total || 0;
+      document.getElementById('statTrialActive').innerText = stats.trials?.active || 0;
+
+      // KPI Emails & Revenue
+      document.getElementById('statEmailsTotal').innerText = stats.totalEmails || 0;
+      document.getElementById('statRevenueRub').innerText = (stats.estimatedRevenueRub || 0).toLocaleString('ru-RU') + ' ₽';
+
+      // Counts in filter buttons
+      document.getElementById('countAll').innerText = Object.keys(data.codes || {}).length;
+      document.getElementById('countPlus').innerText = stats.proPlus?.total || 0;
+      document.getElementById('countPro').innerText = stats.pro?.total || 0;
+      document.getElementById('countTrials').innerText = stats.trials?.total || 0;
+
+      // Telegram Bot Status
+      const botStats = stats.bot || {};
+      const isBotOn = !!botStats.enabled;
+      const botBadge = document.getElementById('botStatusBadge');
+      const toggleBtn = document.getElementById('btnToggleBot');
+      if (isBotOn) {
+        botBadge.innerText = '🟢 ВКЛЮЧЕН (Работает)';
+        botBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+        botBadge.style.color = 'var(--success)';
+        botBadge.style.borderColor = 'var(--success)';
+        toggleBtn.innerText = '⏸️ Поставить на паузу';
+        toggleBtn.style.background = 'var(--danger)';
+      } else {
+        botBadge.innerText = '🔴 ВЫКЛЮЧЕН (На паузе)';
+        botBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        botBadge.style.color = 'var(--danger)';
+        botBadge.style.borderColor = 'var(--danger)';
+        toggleBtn.innerText = '⚡ Включить бота';
+        toggleBtn.style.background = 'var(--success)';
+      }
+      // Resend E-mail Status
+      const resendStats = stats.resend || {};
+      const resBadge = document.getElementById('resendStatusBadge');
+      if (resendStats.hasKey) {
+        resBadge.innerText = '🟢 КЛЮЧ ПОДКЛЮЧЕН';
+        resBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+        resBadge.style.color = 'var(--success)';
+        resBadge.style.borderColor = 'var(--success)';
+        if (resendStats.keyMasked && !document.getElementById('resendKeyInput').value) {
+          document.getElementById('resendKeyInput').placeholder = 'Текущий ключ: ' + resendStats.keyMasked;
+        }
+      } else {
+        resBadge.innerText = '🔴 НЕТ КЛЮЧА';
+        resBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        resBadge.style.color = 'var(--danger)';
+        resBadge.style.borderColor = 'var(--danger)';
+      }
+
+      // Render Active OTPs
+      const activeOtps = data.activeOtps || [];
+      const otpContainer = document.getElementById('activeOtpsList');
+      if (activeOtps.length === 0) {
+        otpContainer.innerHTML = '<span style="color: var(--muted);">Активных кодов подтверждения нет (запросите триал в приложении, чтобы увидеть код)</span>';
+      } else {
+        otpContainer.innerHTML = activeOtps.map(o => `
+          <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); padding: 6px 12px; border-radius: 8px; margin: 4px 6px 4px 0;">
+            <span style="color: #fff; font-weight: 700; font-family: monospace; font-size: 16px; letter-spacing: 2px;">${o.code}</span>
+            <span style="color: var(--cyan); font-size: 12px;">(${o.email})</span>
+            <span style="color: var(--muted); font-size: 11px;">⏳ ${o.expiresInSec} сек</span>
+          </div>
+        `).join('');
+      }
+
+      // Render Tables
+      renderFilteredTable();
+
+      // Render Emails
+      document.getElementById('emailsTextarea').value = (data.emailList || []).join('\n');
+    }
+
+    async function toggleBot() {
+      const isCurrentlyOn = globalData?.stats?.bot?.enabled;
+      const nextState = !isCurrentlyOn;
+      const confirmMsg = nextState 
+        ? 'Включить Telegram-бота для приёма заказов и выдачи кодов?' 
+        : 'Выключить Telegram-бота (перевести в режим паузы)? Бот будет сообщать, что скоро релиз.';
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'toggle_bot', enabled: nextState })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadData();
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось переключить бота'));
+        }
+      } catch (e) {
+        alert('Ошибка связи: ' + e.message);
+      }
+    }
+
+    async function saveBotToken() {
+      const token = document.getElementById('botTokenInput').value.trim();
+      if (!token) {
+        alert('Введите токен бота от @BotFather!');
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'save_bot_token', token: token })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadData();
+        } else {
+          alert('Ошибка: ' + data.error);
+        }
+      } catch (e) {
+        alert('Ошибка: ' + e.message);
+      }
+    }
+
+    async function testBot() {
+      const token = document.getElementById('botTokenInput').value.trim();
+      const msgBox = document.getElementById('botTestMsg');
+      msgBox.style.display = 'block';
+      msgBox.style.background = '#111827';
+      msgBox.style.color = '#9ca3af';
+      msgBox.innerText = 'Проверка токена через Telegram API...';
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'test_bot', token: token })
+        });
+        const data = await res.json();
+        if (data.success) {
+          msgBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          msgBox.style.color = 'var(--success)';
+          msgBox.style.border = '1px solid var(--success)';
+          msgBox.innerHTML = `✅ <b>${data.message}</b> (ID: ${data.botInfo.id})`;
+        } else {
+          msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          msgBox.style.color = 'var(--danger)';
+          msgBox.style.border = '1px solid var(--danger)';
+          msgBox.innerHTML = `❌ <b>Ошибка:</b> ${data.error}`;
+        }
+      } catch (e) {
+        msgBox.innerText = 'Ошибка запроса: ' + e.message;
+      }
+    }
+
+    async function setBotWebhook() {
+      const token = document.getElementById('botTokenInput').value.trim();
+      const msgBox = document.getElementById('botTestMsg');
+      msgBox.style.display = 'block';
+      msgBox.style.background = '#111827';
+      msgBox.style.color = '#9ca3af';
+      msgBox.innerText = 'Установка Webhook на https://obd2scanai.ru/api/bot...';
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'set_webhook', token: token, webhookUrl: 'https://obd2scanai.ru/api/bot' })
+        });
+        const data = await res.json();
+        if (data.success) {
+          msgBox.style.background = 'rgba(139, 92, 246, 0.15)';
+          msgBox.style.color = '#a78bfa';
+          msgBox.style.border = '1px solid var(--purple)';
+          msgBox.innerHTML = `✅ <b>${data.message}</b>`;
+        } else {
+          msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          msgBox.style.color = 'var(--danger)';
+          msgBox.style.border = '1px solid var(--danger)';
+          msgBox.innerHTML = `❌ <b>Ошибка:</b> ${data.error}`;
+        }
+      } catch (e) {
+        msgBox.innerText = 'Ошибка: ' + e.message;
+      }
+    }
+
+    async function saveResendKey() {
+      const key = document.getElementById('resendKeyInput').value.trim();
+      if (!key) {
+        alert('Введите API ключ Resend (начинается на re_...)');
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'save_resend_key', token: key })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadData();
+        } else {
+          alert('Ошибка: ' + data.error);
+        }
+      } catch (e) {
+        alert('Ошибка связи: ' + e.message);
+      }
+    }
+
+    async function testEmail() {
+      const email = document.getElementById('testEmailInput').value.trim();
+      const msgBox = document.getElementById('emailTestMsg');
+      if (!email || !email.includes('@')) {
+        alert('Введите корректный E-mail для тестового письма!');
+        return;
+      }
+      msgBox.style.display = 'block';
+      msgBox.style.background = '#111827';
+      msgBox.style.color = '#9ca3af';
+      msgBox.innerText = 'Отправка тестового письма через Resend API...';
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'test_email', targetEmail: email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          msgBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          msgBox.style.color = 'var(--success)';
+          msgBox.style.border = '1px solid var(--success)';
+          msgBox.innerHTML = `✅ <b>${data.message}</b>`;
+        } else {
+          msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          msgBox.style.color = 'var(--danger)';
+          msgBox.style.border = '1px solid var(--danger)';
+          msgBox.innerHTML = `❌ <b>Ошибка отправки:</b> ${data.error}`;
+        }
+      } catch (e) {
+        msgBox.innerText = 'Ошибка запроса: ' + e.message;
+      }
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderFilteredTable();
+    }
+
+    function applySearch() {
+      renderFilteredTable();
+    }
+
+    function renderFilteredTable() {
+      if (!globalData) return;
+
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const codesWrapper = document.getElementById('codesTableWrapper');
+      const trialsWrapper = document.getElementById('trialsTableWrapper');
+
+      if (currentFilter === 'trial') {
+        codesWrapper.style.display = 'none';
+        trialsWrapper.style.display = 'block';
+        renderTrialsTable(q);
+      } else {
+        codesWrapper.style.display = 'block';
+        trialsWrapper.style.display = 'none';
+        renderCodesTable(q);
+      }
+    }
+
+    function renderCodesTable(query) {
+      const tbody = document.getElementById('codesTableBody');
+      tbody.innerHTML = '';
+      const codes = globalData.codes || {};
+      const entries = Object.entries(codes);
+
+      const filtered = entries.filter(([code, item]) => {
+        // Tier filter
+        if (currentFilter === 'plus' && item.tier !== 'PRO_PLUS') return false;
+        if (currentFilter === 'pro' && item.tier !== 'PRO') return false;
+
+        // Search query
+        if (query) {
+          const codeMatch = code.toLowerCase().includes(query);
+          const emailMatch = (item.email || '').toLowerCase().includes(query);
+          const devMatch = (item.deviceId || '').toLowerCase().includes(query);
+          return codeMatch || emailMatch || devMatch;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 30px;">Кодов не найдено</td></tr>';
+        return;
+      }
+
+      filtered.forEach(([code, item]) => {
+        const tr = document.createElement('tr');
+        const isPlus = item.tier === 'PRO_PLUS';
+        const tierBadge = isPlus 
+          ? `<span class="badge badge-sub">💎 PRO+ ИИ</span>` 
+          : `<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">🏆 PRO</span>`;
+        
+        const statusBadge = item.isUsed 
+          ? `<span class="badge badge-used">ИСПОЛЬЗОВАН</span>` 
+          : `<span class="badge badge-active">АКТИВЕН</span>`;
+
+        const devId = item.deviceId 
+          ? `<span style="font-family: monospace; font-size: 11px;">${item.deviceId}</span>` 
+          : `<span style="color: var(--muted);">—</span>`;
+
+        const email = item.email 
+          ? `<span style="color: var(--cyan);">${item.email}</span>` 
+          : `<span style="color: var(--muted);">—</span>`;
+
+        const date = item.createdAt 
+          ? new Date(item.createdAt).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+          : '—';
+
+        tr.innerHTML = `
+          <td><strong style="font-family: monospace; font-size: 14px; letter-spacing: 1px; color: #fff;">${code}</strong></td>
+          <td>${tierBadge}</td>
+          <td>${statusBadge}</td>
+          <td>${devId}</td>
+          <td>${email}</td>
+          <td>${date}</td>
+          <td style="text-align: right;">
+            ${item.deviceId ? `<button onclick="resetDevice('${code}')" class="action-btn btn-reset" title="Сбросить привязку устройства">Отвязать</button>` : ''}
+            <button onclick="deleteCode('${code}')" class="action-btn btn-danger" title="Удалить код">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderTrialsTable(query) {
+      const tbody = document.getElementById('trialsTableBody');
+      tbody.innerHTML = '';
+      const trials = globalData.deviceTrials || {};
+      const entries = Object.entries(trials);
+      const now = Date.now();
+
+      const filtered = entries.filter(([deviceId, item]) => {
+        if (query) {
+          const devMatch = deviceId.toLowerCase().includes(query);
+          const emailMatch = (item.email || '').toLowerCase().includes(query);
+          return devMatch || emailMatch;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 30px;">Активных триалов не найдено</td></tr>';
+        return;
+      }
+
+      filtered.forEach(([deviceId, item]) => {
+        const tr = document.createElement('tr');
+        const actDate = item.activatedAt ? new Date(item.activatedAt).toLocaleString('ru-RU') : '—';
+        const exp = item.expiry || (item.activatedAt ? item.activatedAt + 7 * 24 * 3600 * 1000 : 0);
+        const expDate = exp ? new Date(exp).toLocaleString('ru-RU') : '—';
+        const isActive = exp > now;
+
+        tr.innerHTML = `
+          <td style="font-family: monospace; font-size: 12px;">${deviceId}</td>
+          <td style="color: var(--cyan);">${item.email || '—'}</td>
+          <td>${actDate}</td>
+          <td>${expDate}</td>
+          <td><span class="badge ${isActive ? 'badge-active' : 'badge-used'}">${isActive ? 'АКТИВЕН' : 'ИСТЁК'}</span></td>
+          <td style="text-align: right;">
+            <button onclick="deleteTrial('${deviceId}')" class="action-btn btn-danger" title="Удалить триал-профиль">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function deleteTrial(deviceId) {
+      if (!confirm(`Удалить триал-профиль устройства ${deviceId}? Пользователь сможет заново запросить триал.`)) return;
+      await fetch('/api/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': currentPassword
+        },
+        body: JSON.stringify({ action: 'delete_trial', deviceId: deviceId })
+      });
+      loadData();
+    }
+
+    async function generateCodes() {
+      const tier = document.getElementById('genTier').value;
+      const count = document.getElementById('genCount').value;
+      const btn = document.getElementById('genBtn');
+      btn.innerText = 'Создание...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'generate', tier: tier, count: parseInt(count, 10) })
+        });
+        const data = await res.json();
+        if (data.success) {
+          lastGenerated = data.codes || [];
+          document.getElementById('generatedBox').style.display = 'block';
+          document.getElementById('generatedList').innerText = lastGenerated.join('\n');
+          loadData();
+        } else {
+          alert('Ошибка генерации: ' + (data.error || 'Неизвестная ошибка'));
+        }
+      } catch (e) {
+        alert('Ошибка сервера: ' + e.message);
+      } finally {
+        btn.innerText = '⚡ Сгенерировать';
+        btn.disabled = false;
+      }
+    }
+
+    function copyGeneratedCodes() {
+      if (!lastGenerated.length) return;
+      navigator.clipboard.writeText(lastGenerated.join('\n'));
+      alert('Скопировано в буфер: ' + lastGenerated.length + ' кодов!');
+    }
+
+    async function resetDevice(code) {
+      if (!confirm(`Сбросить привязку устройства для кода ${code}? Код снова станет активен для ввода.`)) return;
+      await fetch('/api/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': currentPassword
+        },
+        body: JSON.stringify({ action: 'reset_device', code: code })
+      });
+      loadData();
+    }
+
+    async function deleteCode(code) {
+      if (!confirm(`Удалить код ${code}?`)) return;
+      await fetch('/api/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': currentPassword
+        },
+        body: JSON.stringify({ action: 'delete', code: code })
+      });
+      loadData();
+    }
+
+    function copyAllEmails() {
+      const txt = document.getElementById('emailsTextarea');
+      txt.select();
+      navigator.clipboard.writeText(txt.value);
+      alert('Все E-mail адреса скопированы в буфер обмена!');
+    }
+
+    function downloadEmailsCSV() {
+      const txt = document.getElementById('emailsTextarea').value;
+      const blob = new Blob([txt], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'obd2_emails_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+    }
+  </script>
+</body>
+</html>

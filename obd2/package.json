@@ -1,0 +1,11 @@
+{
+  "name": "obd2-activation-server",
+  "version": "2.0.0",
+  "description": "OBD2 SCAN AI Website & Activation Backend",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "resend": "^3.2.0"
+  }
+}

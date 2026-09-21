@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Купить PRO версию — OBD2 SCAN AI</title>
+  <link rel="icon" type="image/png" href="/img/app_icon.png">
+  <link rel="apple-touch-icon" href="/img/app_icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0b0f19;
+      color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #151c2c;
+      border: 1px solid #232d42;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .logo-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+      margin-bottom: 12px;
+      object-fit: cover;
+    }
+    h1 { color: #3b82f6; margin: 0 0 8px; font-size: 24px; }
+    .price { font-size: 34px; font-weight: 800; color: #10b981; margin: 16px 0; }
+    .price span { font-size: 14px; color: #9ca3af; font-weight: 400; }
+    .features { text-align: left; background: #0d1322; padding: 16px; border-radius: 8px; margin: 20px 0; list-style: none; }
+    .features li { margin-bottom: 8px; font-size: 13px; line-height: 1.4; }
+    .features li:last-child { margin-bottom: 0; }
+    input[type="email"] {
+      width: 100%;
+      padding: 14px;
+      background: #0d1322;
+      border: 1px solid #232d42;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    input:focus { border-color: #3b82f6; }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: #3b82f6;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-sizing: border-box;
+    }
+    .btn:hover { background: #2563eb; }
+    .success-box {
+      background: #0d1322;
+      border: 2px solid #10b981;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .code-display {
+      font-size: 22px;
+      font-weight: bold;
+      color: #10b981;
+      letter-spacing: 2px;
+      margin: 12px 0;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/img/app_icon.png" alt="OBD2 SCAN AI" class="logo-img">
+    <h1>OBD2 SCAN AI PRO</h1>
+    <p style="color: #9ca3af; font-size: 13px; margin: 0;">Полный доступ без ограничений навсегда</p>
+    <div class="price">500 ₽ <span>/ навсегда</span></div>
+
+    <!-- БЛОК ДЛЯ ТЕСТИРОВЩИКОВ (ОПЛАТА СКРЫТА) -->
+    <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0;">
+      <div style="font-size: 32px; margin-bottom: 8px;">🧪</div>
+      <h3 style="color: #fff; margin: 0 0 8px 0; font-size: 18px;">Идёт открытое тестирование!</h3>
+      <p style="font-size: 14px; color: #9ca3af; line-height: 1.5; margin: 0 0 16px 0;">
+        Прямая оплата временно отключена. Мы бесплатно выдаём <strong style="color: #fff;">PRO-версию</strong> всем, кто тестирует приложение на своих авто!
+      </p>
+      <a href="https://t.me/obd2_scan_test_bot" target="_blank" class="btn" style="background: #229ED9; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 700;">
+        💬 Написать в Telegram и получить PRO
+      </a>
+    </div>
+
+    <div id="buyForm" style="display: none;">
+      <ul class="features">
+        <li>✅ Бессрочная лицензия PRO (однократная оплата)</li>
+        <li>✅ Подключение по Bluetooth, Wi-Fi и USB-OTG кабелю</li>
+        <li>✅ Расширенные параметры Peugeot/Citroën, Nissan, VAG</li>
+        <li>✅ Сброс ошибок двигателя, АКПП, ABS и SRS</li>
+        <li>✅ Проверка реального одометра и моточасов</li>
+        <li>✅ ИИ-Диагност (свой API ключ — безлимитно)</li>
+      </ul>
+      <input type="email" id="buyerEmail" placeholder="Введите ваш E-mail (для получения кода)">
+      <button onclick="startPayment()" class="btn" id="payBtn">Оплатить 500 ₽ (ЮKassa / СБП / Карты)</button>
+      <p style="font-size: 12px; color: #9ca3af; margin-top: 16px;">После оплаты код активации покажется здесь и уйдёт на ваш E-mail.</p>
+    </div>
+
+    <div id="successCard" style="display: none;">
+      <div class="success-box">
+        <h2 style="color: #10b981; margin-top: 0;">🎉 Оплата успешна!</h2>
+        <p style="font-size: 14px;">Ваш личный код активации PRO:</p>
+        <div id="resultCode" class="code-display">PRO1-XXXX-XXXX-XXXX</div>
+        <button onclick="copyCode()" class="btn" style="background: #10b981;">Скопировать код</button>
+      </div>
+      <p style="font-size: 13px; color: #9ca3af; margin-top: 16px;">Откройте приложение OBD2 SCAN AI ➔ перейдите в Активация PRO ➔ вставьте этот код!</p>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromUrl = urlParams.get('code');
+    const statusFromUrl = urlParams.get('status');
+
+    if (statusFromUrl === 'success' && codeFromUrl) {
+      document.getElementById('buyForm').style.display = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      document.getElementById('resultCode').innerText = codeFromUrl;
+    }
+
+    async function startPayment() {
+      const email = document.getElementById('buyerEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Пожалуйста, введите ваш корректный E-mail!');
+        return;
+      }
+
+      const btn = document.getElementById('payBtn');
+      btn.innerText = 'Создаем платёж...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, plan: 'pro', currency: 'RUB' })
+        });
+        const data = await res.json();
+        if (data.confirmationUrl) {
+          window.location.href = data.confirmationUrl;
+        } else {
+          alert('Ошибка создания платежа: ' + (data.error || 'Неизвестная ошибка'));
+          btn.innerText = 'Оплатить 500 ₽ (ЮKassa / СБП / Карты)';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        alert('Ошибка подключения: ' + e.message);
+        btn.innerText = 'Оплатить 500 ₽ (ЮKassa / СБП / Карты)';
+        btn.disabled = false;
+      }
+    }
+
+    function copyCode() {
+      const code = document.getElementById('resultCode').innerText;
+      navigator.clipboard.writeText(code);
+      alert('Код скопирован в буфер обмена!');
+    }
+  </script>
+</body>
+</html>
