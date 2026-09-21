@@ -1,10 +1,14 @@
 {
-  "resource": "https://automechanic.obd2scanai.ru/api",
+  "resource": "https://automechanic.obd2scanai.ru",
   "authorization_servers": [
     "https://automechanic.obd2scanai.ru"
   ],
   "scopes_supported": [
     "read:vehicle",
     "write:diagnosis"
-  ]
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://automechanic.obd2scanai.ru/llms.txt"
 }

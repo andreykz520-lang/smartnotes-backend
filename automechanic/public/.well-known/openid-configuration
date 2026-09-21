@@ -3,11 +3,40 @@
   "authorization_endpoint": "https://automechanic.obd2scanai.ru/auth/authorize",
   "token_endpoint": "https://automechanic.obd2scanai.ru/api/auth/token",
   "jwks_uri": "https://automechanic.obd2scanai.ru/.well-known/jwks.json",
-  "response_types_supported": ["code", "token"],
-  "grant_types_supported": ["authorization_code", "client_credentials"],
+  "response_types_supported": [
+    "code",
+    "token"
+  ],
+  "grant_types_supported": [
+    "authorization_code",
+    "client_credentials"
+  ],
+  "scopes_supported": [
+    "read:vehicle",
+    "write:diagnosis"
+  ],
   "agent_auth": {
-    "register_uri": "https://automechanic.obd2scanai.ru/auth.md",
-    "supported_identity_types": ["agent", "user"],
-    "supported_credential_types": ["bearer"]
+    "skill": "https://isitagentready.com/.well-known/agent-skills/auth-md/SKILL.md",
+    "register_uri": "https://automechanic.obd2scanai.ru/api/agent/register",
+    "identity_types_supported": [
+      "anonymous",
+      "identity_assertion"
+    ],
+    "anonymous": {
+      "credential_types_supported": [
+        "bearer"
+      ],
+      "claim_uri": "https://automechanic.obd2scanai.ru/api/agent/claim"
+    },
+    "identity_assertion": {
+      "assertion_types_supported": [
+        "verified_email",
+        "urn:ietf:params:oauth:token-type:id-jag"
+      ],
+      "credential_types_supported": [
+        "bearer"
+      ],
+      "claim_uri": "https://automechanic.obd2scanai.ru/api/agent/claim"
+    }
   }
 }

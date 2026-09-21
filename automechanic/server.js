@@ -114,17 +114,31 @@ module.exports = function handleAutomechanic(req, res) {
   }
 
   // 9. OpenID & OAuth Discovery
-  if (pathname === '/.well-known/openid-configuration') {
-    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'openid-configuration'), 'application/json');
+  if (pathname === '/.well-known/openid-configuration' || pathname === '/.well-known/openid-configuration.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'openid-configuration'), 'application/json; charset=utf-8');
   }
-  if (pathname === '/.well-known/oauth-authorization-server') {
-    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-authorization-server'), 'application/json');
+  if (pathname === '/.well-known/oauth-authorization-server' || pathname === '/.well-known/oauth-authorization-server.json') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-authorization-server'), 'application/json; charset=utf-8');
   }
-  if (pathname === '/.well-known/oauth-protected-resource') {
-    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-protected-resource'), 'application/json');
+  if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource.json' || pathname === '/.well-known/oauth-protected-resource/') {
+    return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-protected-resource'), 'application/json; charset=utf-8');
   }
 
-  // 10. API Health and OpenAPI spec
+  // 10. Agent Registration endpoints (auth.md discovery)
+  if (pathname === '/api/agent/register') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'registered',
+      client_id: 'agent_' + Date.now().toString(36),
+      token_endpoint: 'https://automechanic.obd2scanai.ru/api/auth/token'
+    }));
+  }
+  if (pathname === '/api/agent/claim') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', claimed: true }));
+  }
+
+  // 11. API Health and OpenAPI spec
   if (pathname === '/api/health') {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify({ status: 'ok', service: 'automechanic-ai' }));
