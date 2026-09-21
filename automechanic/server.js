@@ -124,7 +124,7 @@ module.exports = function handleAutomechanic(req, res) {
     return serveFile(res, path.join(__dirname, 'public', '.well-known', 'oauth-protected-resource'), 'application/json; charset=utf-8');
   }
 
-  // 10. Agent Registration endpoints (auth.md discovery)
+  // 10. Agent Registration & Auth endpoints (WorkOS auth.md discovery)
   if (pathname === '/api/agent/register') {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify({
@@ -133,9 +133,32 @@ module.exports = function handleAutomechanic(req, res) {
       token_endpoint: 'https://automechanic.obd2scanai.ru/api/auth/token'
     }));
   }
+  if (pathname === '/api/agent/identity') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'ok',
+      identity_assertion: 'mock_assertion_' + Date.now().toString(36)
+    }));
+  }
   if (pathname === '/api/agent/claim') {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify({ status: 'ok', claimed: true }));
+  }
+  if (pathname === '/api/agent/event' || pathname === '/api/agent/event/notify') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'received' }));
+  }
+  if (pathname === '/api/auth/token') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      access_token: 'agent_tok_' + Date.now().toString(36),
+      token_type: 'Bearer',
+      expires_in: 86400
+    }));
+  }
+  if (pathname === '/api/auth/revoke') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'revoked' }));
   }
 
   // 11. API Health and OpenAPI spec
