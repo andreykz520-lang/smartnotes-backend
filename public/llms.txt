@@ -19,6 +19,7 @@
 - Windows: https://smartnotes-ai.ru/SmartNotes-Setup.exe
 - Linux (.AppImage): https://smartnotes-ai.ru/SmartNotes-Linux.AppImage
 - Linux (.deb): https://smartnotes-ai.ru/SmartNotes-Linux.deb
+- Linux (.tar.gz): https://smartnotes-ai.ru/SmartNotes-Linux.tar.gz
 - Privacy Policy: https://smartnotes-ai.ru/privacy
 - Terms of Service: https://smartnotes-ai.ru/terms
 - Refund Policy: https://smartnotes-ai.ru/refund
@@ -41,6 +42,7 @@
 - Скачать для Windows: https://smartnotes-ai.ru/SmartNotes-Setup.exe
 - Скачать для Linux (.AppImage): https://smartnotes-ai.ru/SmartNotes-Linux.AppImage
 - Скачать для Linux (.deb): https://smartnotes-ai.ru/SmartNotes-Linux.deb
+- Скачать для Linux (.tar.gz): https://smartnotes-ai.ru/SmartNotes-Linux.tar.gz
 - Политика конфиденциальности: https://smartnotes-ai.ru/privacy
 - Условия использования: https://smartnotes-ai.ru/terms
 - Правила возврата: https://smartnotes-ai.ru/refund

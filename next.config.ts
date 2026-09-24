@@ -24,22 +24,27 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/SmartNotes-Setup.exe',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI.Setup.1.0.3.exe',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/SmartNotes.AI.Setup.1.0.4.exe',
         permanent: false,
       },
       {
         source: '/download/windows',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI.Setup.1.0.3.exe',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/SmartNotes.AI.Setup.1.0.4.exe',
         permanent: false,
       },
       {
         source: '/SmartNotes-Linux.deb',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/smartnotesapp_1.0.3_amd64.deb',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/smartnotesapp_1.0.4_amd64.deb',
         permanent: false,
       },
       {
         source: '/SmartNotes-Linux.AppImage',
-        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.3/SmartNotes.AI-1.0.3.AppImage',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/SmartNotes.AI-1.0.4.AppImage',
+        permanent: false,
+      },
+      {
+        source: '/SmartNotes-Linux.tar.gz',
+        destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/smartnotesapp-1.0.4.tar.gz',
         permanent: false,
       },
     ];

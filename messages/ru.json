@@ -93,6 +93,7 @@
     "footer": "© 2026 SmartNotes AI. Все права защищены.",
     "download_linux": "Скачать для Linux",
     "download_linux_deb": "Linux (.deb)",
-    "download_linux_appimage": "Linux (.AppImage)"
+    "download_linux_appimage": "Linux (.AppImage)",
+    "download_linux_tar": "Linux (.tar.gz)"
   }
 }
