@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/agent-skills-discovery-rfc/main/schema/v0.2.0.json",
+  "skills": [
+    {
+      "name": "ai-content-factory",
+      "type": "tools",
+      "description": "Discover 4-day intensive details and access AI content creation tutorials",
+      "url": "https://kontent.smartnotes-ai.ru/llms.txt",
+      "sha256": "8c6b7389a9f243178c7f3918b95886d99a1cb1c7df0e3d6e5d2ec75d65c3bb91"
+    }
+  ]
+}

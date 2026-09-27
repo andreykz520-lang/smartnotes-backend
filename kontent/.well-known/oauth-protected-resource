@@ -1,0 +1,15 @@
+{
+  "resource": "https://kontent.smartnotes-ai.ru",
+  "resource_name": "АВТОКОНТЕНТ 2026",
+  "authorization_servers": [
+    "https://kontent.smartnotes-ai.ru"
+  ],
+  "scopes_supported": [
+    "webinar:read",
+    "webinar:register"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://kontent.smartnotes-ai.ru/llms.txt"
+}

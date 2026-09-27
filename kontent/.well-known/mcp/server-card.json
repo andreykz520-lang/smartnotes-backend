@@ -1,0 +1,23 @@
+{
+  "serverInfo": {
+    "name": "kontent-ai",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://kontent.smartnotes-ai.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "getWebinarInfo",
+        "description": "Get curriculum, speaker details, and registration link for the 4-day AI content intensive",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    ]
+  }
+}

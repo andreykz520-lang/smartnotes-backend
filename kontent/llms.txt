@@ -1,0 +1,25 @@
+# АВТОКОНТЕНТ 2026: ИИ Контент-Завод
+
+> АВТОКОНТЕНТ 2026 — 4-дневный онлайн-интенсив по созданию вирусных видео, цифровых аватаров и заработку на нейросетях от 100 000 до 250 000 ₽/мес.
+> Обучение от Академии интернет-маркетинга (спикер: Евгений Андрианов).
+
+## Описание программы
+- **День 1:** Революция ИИ-контента 2026. Алгоритмы Reels, Shorts, TikTok и VK Клипы. Нейросети для генерации сценариев и промптов.
+- **День 2:** Создание цифровых аватаров и клонов. Клонирование голоса, синхронизация губ (Lip-Sync), автоматический монтаж.
+- **День 3:** 5 моделей заработка на ИИ-заводе (услуги под ключ, партнерские программы, арбитраж трафика).
+- **День 4:** Пошаговый план масштабирования до 250 000+ ₽/мес и разбор практических кейсов.
+
+## Бонус за регистрацию
+- Практическое PDF-руководство «Заработок на ИИ контент-заводе от 100.000 до 250.000 руб/мес».
+
+## Ключевые ссылки и эндпоинты
+- Главная страница: https://kontent.smartnotes-ai.ru/
+- Регистрация на интенсив: https://kontent.smartnotes-ai.ru/go
+- Каталог API (RFC 9727): https://kontent.smartnotes-ai.ru/.well-known/api-catalog
+- Спецификация OpenAPI: https://kontent.smartnotes-ai.ru/api/openapi.json
+- MCP Server Card: https://kontent.smartnotes-ai.ru/.well-known/mcp/server-card.json
+- Индекс Agent Skills: https://kontent.smartnotes-ai.ru/.well-known/agent-skills/index.json
+- ARD манифест: https://kontent.smartnotes-ai.ru/.well-known/ai-catalog.json
+- OAuth Protected Resource (RFC 9728): https://kontent.smartnotes-ai.ru/.well-known/oauth-protected-resource
+- Сервер авторизации: https://kontent.smartnotes-ai.ru/.well-known/oauth-authorization-server
+- Регистрация агентов: https://kontent.smartnotes-ai.ru/auth.md

@@ -14,6 +14,66 @@
   
   <link rel="icon" type="image/png" href="/img/favicon.png">
   
+  <!-- WebMCP (Model Context Protocol for in-browser agents) -->
+  <script>
+    (function() {
+      function initWebMCP() {
+        try {
+          if (typeof navigator !== 'undefined' && navigator.modelContext && typeof navigator.modelContext.provideContext === 'function') {
+            navigator.modelContext.provideContext({
+              tools: [
+                {
+                  name: "getWebinarInfo",
+                  description: "Get program, schedule, speaker details and registration link for the 4-day AI content intensive",
+                  inputSchema: {
+                    type: "object",
+                    properties: {},
+                    required: []
+                  },
+                  execute: async function() {
+                    return {
+                      success: true,
+                      title: "АВТОКОНТЕНТ 2026: ИИ Контент-Завод",
+                      speaker: "Евгений Андрианов",
+                      duration: "4 дня",
+                      price: "Бесплатно (0 ₽)",
+                      bonus: "PDF-гайд Заработок на ИИ контент-заводе от 100.000 до 250.000 руб/мес",
+                      registrationUrl: "https://kontent.smartnotes-ai.ru/go"
+                    };
+                  }
+                },
+                {
+                  name: "calculateProfitPotential",
+                  description: "Calculate expected earnings on AI content based on experience and weekly hours",
+                  inputSchema: {
+                    type: "object",
+                    properties: {
+                      experienceLevel: { type: "string", enum: ["beginner", "intermediate", "expert"] },
+                      hoursPerDay: { type: "number" }
+                    },
+                    required: ["experienceLevel"]
+                  },
+                  execute: async function(params) {
+                    let base = params.experienceLevel === "expert" ? 250000 : (params.experienceLevel === "intermediate" ? 160000 : 90000);
+                    let hours = params.hoursPerDay || 2;
+                    let calculated = Math.round(base * (hours / 2));
+                    return { success: true, estimatedMonthlyEarningsRub: calculated };
+                  }
+                }
+              ]
+            });
+          }
+        } catch(e) {
+          console.warn("WebMCP error", e);
+        }
+      }
+      initWebMCP();
+      if (typeof window !== 'undefined') {
+        window.addEventListener('DOMContentLoaded', initWebMCP);
+      }
+    })();
+  </script>
+  
   <style>
     :root {
       --bg: #090b14;

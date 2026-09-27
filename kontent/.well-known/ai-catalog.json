@@ -1,0 +1,32 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "АВТОКОНТЕНТ 2026",
+    "url": "https://kontent.smartnotes-ai.ru"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:kontent.smartnotes-ai.ru:app:course",
+      "displayName": "АВТОКОНТЕНТ 2026 ИИ Контент-Завод",
+      "type": "text/markdown",
+      "url": "https://kontent.smartnotes-ai.ru/llms.txt",
+      "representativeQueries": [
+        "ИИ контент-завод 2026",
+        "Создание видео нейросетями",
+        "Цифровые аватары обучение",
+        "Заработок на ИИ видео"
+      ]
+    },
+    {
+      "identifier": "urn:air:kontent.smartnotes-ai.ru:mcp:server",
+      "displayName": "АВТОКОНТЕНТ 2026 MCP Server",
+      "type": "application/json",
+      "url": "https://kontent.smartnotes-ai.ru/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "Интенсив по нейросетям программа",
+        "Регистрация на вебинар ИИ контент",
+        "Бонус PDF гайд по заработку"
+      ]
+    }
+  ]
+}

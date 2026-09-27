@@ -1,0 +1,46 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "АВТОКОНТЕНТ 2026 API",
+    "version": "1.0.0",
+    "description": "Programmatic API for discovering educational intensive materials, speaker details, and registration links."
+  },
+  "servers": [
+    {
+      "url": "https://kontent.smartnotes-ai.ru"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/go": {
+      "get": {
+        "summary": "Registration redirect",
+        "description": "Redirects to the webinar registration flow with partner tracking",
+        "responses": {
+          "302": {
+            "description": "Redirect to registration flow"
+          }
+        }
+      }
+    }
+  }
+}
