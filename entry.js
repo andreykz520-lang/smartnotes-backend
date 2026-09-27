@@ -2,13 +2,14 @@ const http = require('http');
 const next = require('next');
 const handleObd2 = require('./obd2/server.js');
 const handleAutomechanic = require('./automechanic/server.js');
+const handleKontent = require('./kontent/server.js');
 
 const dev = false;
 const port = parseInt(process.env.PORT || '3000', 10);
 const app = next({ dev, dir: __dirname });
 const handleNext = app.getRequestHandler();
 
-console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, and AutoMechanic...`);
+console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, and Kontent AI...`);
 
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
@@ -23,6 +24,12 @@ app.prepare().then(() => {
     if (host.includes('obd2scanai.ru') || host.includes('obd2')) {
       return handleObd2(req, res);
     }
+
+    // 3. Контент-Завод AI: kontent.smartnotes-ai.ru
+    if (host.includes('kontent')) {
+      return handleKontent(req, res);
+    }
+
 
     // 3. SmartNotes AI well-known & metadata discovery
     const url = new URL(req.url, 'http://localhost');
@@ -107,7 +114,9 @@ app.prepare().then(() => {
     console.log(`   - SmartNotes AI: smartnotes-ai.ru`);
     console.log(`   - OBD2 SCAN AI: obd2scanai.ru`);
     console.log(`   - AutoMechanic AI: automechanic.obd2scanai.ru`);
+    console.log(`   - Kontent AI: kontent.smartnotes-ai.ru`);
   });
+
 }).catch((err) => {
   console.error('[Multi-Site] Error starting server:', err);
   process.exit(1);
