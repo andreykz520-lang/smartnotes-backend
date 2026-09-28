@@ -3,8 +3,33 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SmartNotes AI",
-  description: "Официальный сайт приложения SmartNotes AI",
+  title: "SmartNotes AI — Умные голосовые заметки с нейросетью | Транскрибация аудио в текст и ИИ-помощник",
+  description: "SmartNotes AI превращает ваши голосовые сообщения, аудиозаписи и мысли в структурированные заметки, конспекты и списки задач с помощью нейросетей. Скачайте приложение для Android, Windows и Linux бесплатно!",
+  keywords: [
+    "smartnotes ai",
+    "смартнотес",
+    "умные заметки нейросеть",
+    "голосовые заметки в текст",
+    "транскрибация аудио в текст",
+    "заметки с искусственным интеллектом",
+    "ии помощник для заметок",
+    "расшифровка аудиозаписей",
+    "конспекты с помощью нейросети",
+    "приложение для заметок на русском",
+    "умный диктофон с расшифровкой"
+  ],
+  alternates: {
+    canonical: "https://smartnotes-ai.ru"
+  },
+  openGraph: {
+    title: "SmartNotes AI — Умные голосовые заметки с нейросетью",
+    description: "Мгновенное превращение голоса и аудиозаписей в структурированные заметки и резюме с помощью ИИ.",
+    url: "https://smartnotes-ai.ru",
+    siteName: "SmartNotes AI",
+    images: [{ url: "https://smartnotes-ai.ru/app_logo.png", width: 1200, height: 630 }],
+    locale: "ru_RU",
+    type: "website"
+  }
 };
 
 import { LanguageProvider } from "./context/LanguageContext";
@@ -16,8 +41,28 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "SmartNotes AI",
+              "operatingSystem": "Android, Windows, Linux, Web",
+              "applicationCategory": "ProductivityApplication",
+              "description": "Умное приложение для ведения заметок, транскрибации голоса и структурирования мыслей с помощью нейросетей.",
+              "url": "https://smartnotes-ai.ru",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "RUB"
+              }
+            })
+          }}
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
+
 (function() {
   function initWebMCP() {
     try {
