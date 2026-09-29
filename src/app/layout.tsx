@@ -39,6 +39,9 @@ export const metadata: Metadata = {
     apple: [
       { url: "/apple-icon.png?v=2", sizes: "180x180", type: "image/png" }
     ]
+  },
+  verification: {
+    yandex: "38736647fe8c5b9c"
   }
 };
 
@@ -48,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru" className="h-full">
       <head>
+        <meta name="yandex-verification" content="38736647fe8c5b9c" />
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=2" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png?v=2" />

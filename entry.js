@@ -55,6 +55,12 @@ app.prepare().then(() => {
       }
     }
 
+    // SmartNotes Yandex Webmaster Verification
+    if (pathname === '/yandex_38736647fe8c5b9c.html') {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 38736647fe8c5b9c</body></html>');
+    }
+
     // 3. SmartNotes AI well-known & metadata discovery
 
     if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource/' || pathname === '/.well-known/oauth-protected-resource.json') {
