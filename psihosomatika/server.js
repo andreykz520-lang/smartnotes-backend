@@ -526,6 +526,12 @@ module.exports = function handlePsihosomatika(req, res) {
     return res.end(sitemap);
   }
 
+  // 5b. Yandex Webmaster Verification
+  if (pathname === '/yandex_7134c2187fdd333c.html') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 7134c2187fdd333c</body></html>');
+  }
+
   // 6. llms.txt & auth.md
   if (pathname === '/llms.txt') {
     return serveFile(res, path.join(__dirname, 'llms.txt'), 'text/markdown; charset=utf-8', {
