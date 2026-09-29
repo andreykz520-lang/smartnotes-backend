@@ -1,0 +1,23 @@
+{
+  "serverInfo": {
+    "name": "psihosomatika-ai",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://psihosomatika.smartnotes-ai.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "getWebinarInfo",
+        "description": "Get curriculum, speaker details, and registration link for the psychosomatics masterclass by Dr. Vladimir Mikeda",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    ]
+  }
+}

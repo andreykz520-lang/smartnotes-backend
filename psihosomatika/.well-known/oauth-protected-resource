@@ -1,0 +1,15 @@
+{
+  "resource": "https://psihosomatika.smartnotes-ai.ru",
+  "resource_name": "Институт БИОпсихосоматики",
+  "authorization_servers": [
+    "https://psihosomatika.smartnotes-ai.ru"
+  ],
+  "scopes_supported": [
+    "webinar:read",
+    "webinar:register"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://psihosomatika.smartnotes-ai.ru/llms.txt"
+}

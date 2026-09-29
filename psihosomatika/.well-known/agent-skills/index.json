@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/agent-skills-discovery-rfc/main/schema/v0.2.0.json",
+  "skills": [
+    {
+      "name": "psychosomatics-institute",
+      "type": "tools",
+      "description": "Discover psychosomatics masterclass details, curriculum, and author methodology",
+      "url": "https://psihosomatika.smartnotes-ai.ru/llms.txt",
+      "sha256": "4a7b9389a9f243178c7f3918b95886d99a1cb1c7df0e3d6e5d2ec75d65c3cc82"
+    }
+  ]
+}

@@ -1,11 +1,42 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 Disallow: /stats
 Disallow: /go
 
 User-agent: Yandex
 Allow: /
+Disallow: /api/
 Disallow: /stats
 Disallow: /go
 
+# AI Crawlers and Search Bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Content Signals for AI
+Content-Signal: ai-train=no, search=yes, ai-input=no
+
+# Sitemap
 Sitemap: https://psihosomatika.smartnotes-ai.ru/sitemap.xml

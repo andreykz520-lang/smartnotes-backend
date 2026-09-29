@@ -1,0 +1,32 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "Институт БИОпсихосоматики",
+    "url": "https://psihosomatika.smartnotes-ai.ru"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:psihosomatika.smartnotes-ai.ru:app:course",
+      "displayName": "Институт БИОпсихосоматики — Обучение и Вебинар",
+      "type": "text/markdown",
+      "url": "https://psihosomatika.smartnotes-ai.ru/llms.txt",
+      "representativeQueries": [
+        "Обучение психосоматике",
+        "Владимир Микеда вебинар",
+        "Курсы по психосоматике с дипломом",
+        "Как стать психосоматологом"
+      ]
+    },
+    {
+      "identifier": "urn:air:psihosomatika.smartnotes-ai.ru:mcp:server",
+      "displayName": "Институт БИОпсихосоматики MCP Server",
+      "type": "application/json",
+      "url": "https://psihosomatika.smartnotes-ai.ru/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "Программа мастер-класса по психосоматике",
+        "Регистрация на вебинар Владимира Микеды",
+        "Чек-листы по психосоматике в подарок"
+      ]
+    }
+  ]
+}

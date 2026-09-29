@@ -1,0 +1,27 @@
+# Институт БИОпсихосоматики: Специалист по психосоматике
+
+> Программа профессионального обучения и онлайн-интенсив по доказательной психосоматике от Владимира Микеды.
+> Официальная государственная образовательная лицензия № ЛО35-01298-77/00667654.
+> Диплом о профессиональной переподготовке с внесением в реестр ФИС ФРДО.
+
+## Описание программы
+- **Теоретическая база:** Анатомия психосоматики, биологические законы функционирования тела и механизм зарождения симптомов в ответ на психоэмоциональный стресс.
+- **Диагностический протокол:** Экспресс-диагностика первопричины заболевания за 15 минут по симптому и пораженному органу.
+- **Практика работы с клиентами:** Алгоритмы проведения терапевтических сессий, протоколы исцеления без медикаментозной нагрузки, этика консультанта.
+- **Монетизация и практика:** Выход на стабильный доход от 150 000 ₽/мес, привлечение клиентов, юридическая безопасность частной практики.
+
+## Бонусы за регистрацию
+- Чек-лист «10 шагов к вершинам мастерства в психосоматике».
+- Практический гайд «Как выстроить очередь из клиентов на платные консультации».
+
+## Ключевые ссылки и эндпоинты
+- Главная страница: https://psihosomatika.smartnotes-ai.ru/
+- Регистрация на интенсив: https://psihosomatika.smartnotes-ai.ru/go
+- Каталог API (RFC 9727): https://psihosomatika.smartnotes-ai.ru/.well-known/api-catalog
+- Спецификация OpenAPI: https://psihosomatika.smartnotes-ai.ru/api/openapi.json
+- MCP Server Card: https://psihosomatika.smartnotes-ai.ru/.well-known/mcp/server-card.json
+- Индекс Agent Skills: https://psihosomatika.smartnotes-ai.ru/.well-known/agent-skills/index.json
+- ARD манифест: https://psihosomatika.smartnotes-ai.ru/.well-known/ai-catalog.json
+- OAuth Protected Resource (RFC 9728): https://psihosomatika.smartnotes-ai.ru/.well-known/oauth-protected-resource
+- Сервер авторизации: https://psihosomatika.smartnotes-ai.ru/.well-known/oauth-authorization-server
+- Регистрация агентов: https://psihosomatika.smartnotes-ai.ru/auth.md

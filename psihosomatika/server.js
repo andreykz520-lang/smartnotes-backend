@@ -404,6 +404,8 @@ function renderStatsHtml(stats) {
 </html>`;
 }
 
+const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
+
 module.exports = function handlePsihosomatika(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -416,6 +418,7 @@ module.exports = function handlePsihosomatika(req, res) {
 
   const url = new URL(req.url, 'http://localhost');
   const pathname = decodeURIComponent(url.pathname);
+  const accept = (req.headers['accept'] || '').toLowerCase();
 
   // 1. Secret Dashboard /stats
   if (pathname === '/stats' || pathname === '/stats/') {
@@ -482,7 +485,17 @@ module.exports = function handlePsihosomatika(req, res) {
     return res.end(renderStatsHtml(stats));
   }
 
-  // 2. Direct Redirect / Click tracking to Salid Offer
+  // 2. Markdown Content Negotiation for AI Agents (Accept: text/markdown or /index.md)
+  if ((accept.includes('text/markdown') && (pathname === '/' || pathname === '/index' || pathname === '/main' || pathname === '')) || pathname === '/index.md') {
+    const mdPath = path.join(__dirname, 'llms.txt');
+    return serveFile(res, mdPath, 'text/markdown; charset=utf-8', {
+      'x-markdown-tokens': '580',
+      'Vary': 'Accept',
+      'Link': LINK_HEADERS
+    });
+  }
+
+  // 3. Direct Redirect / Click tracking to Salid Offer
   if (pathname === '/go' || pathname === '/webinar' || pathname === '/join' || pathname === '/register') {
     recordClick(req, url);
     const targetUrl = new URL(AFFILIATE_LINK);
@@ -493,12 +506,12 @@ module.exports = function handlePsihosomatika(req, res) {
     return res.end();
   }
 
-  // 3. robots.txt
+  // 4. robots.txt
   if (pathname === '/robots.txt') {
     return serveFile(res, path.join(__dirname, 'robots.txt'), 'text/plain; charset=utf-8');
   }
 
-  // 4. sitemap.xml
+  // 5. sitemap.xml
   if (pathname === '/sitemap.xml') {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -513,13 +526,102 @@ module.exports = function handlePsihosomatika(req, res) {
     return res.end(sitemap);
   }
 
-  // 5. Main page (/)
-  if (pathname === '/' || pathname === '/index' || pathname === '/index.html' || pathname === '') {
-    recordView(req);
-    return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8');
+  // 6. llms.txt & auth.md
+  if (pathname === '/llms.txt') {
+    return serveFile(res, path.join(__dirname, 'llms.txt'), 'text/markdown; charset=utf-8', {
+      'Link': LINK_HEADERS
+    });
+  }
+  if (pathname === '/auth.md') {
+    return serveFile(res, path.join(__dirname, 'auth.md'), 'text/markdown; charset=utf-8');
   }
 
-  // 6. General file lookup
+  // 7. RFC 9727 API Catalog
+  if (pathname === '/.well-known/api-catalog') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'api-catalog'), 'application/linkset+json');
+  }
+
+  // 8. ARD Manifest (ai-catalog.json)
+  if (pathname === '/.well-known/ai-catalog.json') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'ai-catalog.json'), 'application/json; charset=utf-8');
+  }
+
+  // 9. MCP Server Card
+  if (pathname === '/.well-known/mcp/server-card.json') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'mcp', 'server-card.json'), 'application/json; charset=utf-8');
+  }
+
+  // 10. Agent Skills Index
+  if (pathname === '/.well-known/agent-skills/index.json' || pathname === '/.well-known/agent-skills') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'agent-skills', 'index.json'), 'application/json; charset=utf-8');
+  }
+
+  // 11. OpenID & OAuth Discovery
+  if (pathname === '/.well-known/openid-configuration' || pathname === '/.well-known/openid-configuration.json') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'openid-configuration'), 'application/json; charset=utf-8');
+  }
+  if (pathname === '/.well-known/oauth-authorization-server' || pathname === '/.well-known/oauth-authorization-server.json') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'oauth-authorization-server'), 'application/json; charset=utf-8');
+  }
+  if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource.json' || pathname === '/.well-known/oauth-protected-resource/') {
+    return serveFile(res, path.join(__dirname, '.well-known', 'oauth-protected-resource'), 'application/json; charset=utf-8');
+  }
+
+  // 12. Agent Registration endpoints (WorkOS auth.md discovery)
+  if (pathname === '/api/agent/register') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'registered',
+      client_id: 'agent_' + Date.now().toString(36),
+      token_endpoint: 'https://psihosomatika.smartnotes-ai.ru/api/auth/token'
+    }));
+  }
+  if (pathname === '/api/agent/identity') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      status: 'ok',
+      identity_assertion: 'mock_assertion_' + Date.now().toString(36)
+    }));
+  }
+  if (pathname === '/api/agent/claim') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', claimed: true }));
+  }
+  if (pathname === '/api/agent/event' || pathname === '/api/agent/event/notify') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'received' }));
+  }
+  if (pathname === '/api/auth/token') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({
+      access_token: 'agent_tok_' + Date.now().toString(36),
+      token_type: 'Bearer',
+      expires_in: 86400
+    }));
+  }
+  if (pathname === '/api/auth/revoke') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'revoked' }));
+  }
+
+  // 13. API Health & OpenAPI
+  if (pathname === '/api/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ status: 'ok', service: 'psihosomatika-institute' }));
+  }
+  if (pathname === '/api/openapi.json') {
+    return serveFile(res, path.join(__dirname, 'api', 'openapi.json'), 'application/vnd.oai.openapi+json');
+  }
+
+  // 14. Main page (/) with RFC 8288 Link headers
+  if (pathname === '/' || pathname === '/index' || pathname === '/index.html' || pathname === '') {
+    recordView(req);
+    return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8', {
+      'Link': LINK_HEADERS
+    });
+  }
+
+  // 15. General file lookup
   const possibleFile = path.join(__dirname, pathname.replace(/^\//, ''));
   if (fs.existsSync(possibleFile) && fs.statSync(possibleFile).isFile()) {
     const ext = path.extname(possibleFile).toLowerCase();
@@ -528,5 +630,7 @@ module.exports = function handlePsihosomatika(req, res) {
 
   // Fallback to main page
   recordView(req);
-  return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8');
+  return serveFile(res, path.join(__dirname, 'index.html'), 'text/html; charset=utf-8', {
+    'Link': LINK_HEADERS
+  });
 };

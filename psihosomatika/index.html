@@ -325,5 +325,60 @@
     </div>
   </footer>
 
+  <!-- WebMCP Declarative Form for AI Agents -->
+  <form action="/go" method="GET" toolname="register_for_webinar" tooldescription="Зарегистрироваться на бесплатный интенсив по психосоматике Владимира Микеды и забронировать бонусы" style="display:none;" aria-hidden="true">
+    <input type="text" name="name" toolparamdescription="Имя участника вебинара" placeholder="Ваше имя">
+    <input type="email" name="email" toolparamdescription="Email для отправки ссылки на вебинар и бонусных материалов" placeholder="Ваш Email">
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+
+  <!-- WebMCP Imperative API (https://webmachinelearning.github.io/webmcp/) -->
+  <script>
+    (function() {
+      function initWebMCP() {
+        if (typeof document === 'undefined') return;
+        if (!document.modelContext) {
+          document.modelContext = {
+            tools: new Map(),
+            registerTool: function(tool, options) {
+              this.tools.set(tool.name, tool);
+              return Promise.resolve({ toolId: tool.name });
+            },
+            unregisterTool: function(name) {
+              this.tools.delete(name);
+            }
+          };
+        }
+        if (typeof document.modelContext.registerTool === 'function') {
+          try {
+            document.modelContext.registerTool({
+              name: "register_for_webinar",
+              description: "Зарегистрироваться на бесплатный мастер-класс по психосоматике Владимира Микеды и забронировать 2 бонуса (чек-лист и гайд)",
+              inputSchema: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Имя участника вебинара" },
+                  email: { type: "string", description: "Email для отправки ссылки на мастер-класс и бонусов" }
+                },
+                required: []
+              },
+              execute: async function(args) {
+                window.location.href = '/go';
+                return { success: true, redirect: '/go', message: 'Переход к регистрации на вебинар' };
+              }
+            });
+          } catch (e) {
+            console.warn('WebMCP registration error:', e);
+          }
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWebMCP);
+      } else {
+        initWebMCP();
+      }
+    })();
+  </script>
+
 </body>
 </html>
