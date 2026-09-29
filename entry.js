@@ -3,6 +3,7 @@ const next = require('next');
 const handleObd2 = require('./obd2/server.js');
 const handleAutomechanic = require('./automechanic/server.js');
 const handleKontent = require('./kontent/server.js');
+const handlePsihosomatika = require('./psihosomatika/server.js');
 const { recordSmartNotesVisitor } = require('./smartnotes-tracker.js');
 
 const dev = false;
@@ -10,7 +11,7 @@ const port = parseInt(process.env.PORT || '3000', 10);
 const app = next({ dev, dir: __dirname });
 const handleNext = app.getRequestHandler();
 
-console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, and Kontent AI...`);
+console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, Kontent AI, and Psihosomatika...`);
 
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
@@ -29,6 +30,11 @@ app.prepare().then(() => {
     // 3. Контент-Завод AI: kontent.smartnotes-ai.ru
     if (host.includes('kontent')) {
       return handleKontent(req, res);
+    }
+
+    // 4. Психосоматика (Salid Оффер 99025): psihosomatika.smartnotes-ai.ru
+    if (host.includes('psihosomatika')) {
+      return handlePsihosomatika(req, res);
     }
 
 
@@ -117,6 +123,7 @@ app.prepare().then(() => {
     console.log(`   - OBD2 SCAN AI: obd2scanai.ru`);
     console.log(`   - AutoMechanic AI: automechanic.obd2scanai.ru`);
     console.log(`   - Kontent AI: kontent.smartnotes-ai.ru`);
+    console.log(`   - Psihosomatika: psihosomatika.smartnotes-ai.ru`);
   });
 
 }).catch((err) => {

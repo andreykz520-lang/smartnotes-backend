@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /stats
+Disallow: /go
+
+User-agent: Yandex
+Allow: /
+Disallow: /stats
+Disallow: /go
+
+Sitemap: https://psihosomatika.smartnotes-ai.ru/sitemap.xml
