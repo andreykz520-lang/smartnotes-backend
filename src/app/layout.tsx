@@ -29,6 +29,16 @@ export const metadata: Metadata = {
     images: [{ url: "https://smartnotes-ai.ru/app_logo.png", width: 1200, height: 630 }],
     locale: "ru_RU",
     type: "website"
+  },
+  icons: {
+    icon: [
+      { url: "/icon.png?v=2", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico?v=2", sizes: "48x48" }
+    ],
+    shortcut: "/favicon.ico?v=2",
+    apple: [
+      { url: "/apple-icon.png?v=2", sizes: "180x180", type: "image/png" }
+    ]
   }
 };
 
@@ -38,6 +48,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru" className="h-full">
       <head>
+        <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=2" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png?v=2" />
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <script

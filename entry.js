@@ -1,4 +1,6 @@
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
 const next = require('next');
 const handleObd2 = require('./obd2/server.js');
 const handleAutomechanic = require('./automechanic/server.js');
@@ -37,10 +39,23 @@ app.prepare().then(() => {
       return handlePsihosomatika(req, res);
     }
 
-
-    // 3. SmartNotes AI well-known & metadata discovery
     const url = new URL(req.url, 'http://localhost');
     const pathname = decodeURIComponent(url.pathname);
+
+    // SmartNotes Favicon.ico
+    if (pathname === '/favicon.ico') {
+      const icoPath = path.join(__dirname, 'public', 'favicon.ico');
+      if (fs.existsSync(icoPath)) {
+        res.writeHead(200, {
+          'Content-Type': 'image/x-icon',
+          'Cache-Control': 'public, max-age=86400',
+          'Content-Length': fs.statSync(icoPath).size
+        });
+        return fs.createReadStream(icoPath).pipe(res);
+      }
+    }
+
+    // 3. SmartNotes AI well-known & metadata discovery
 
     if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource/' || pathname === '/.well-known/oauth-protected-resource.json') {
       res.writeHead(200, {
