@@ -42,12 +42,12 @@ app.prepare().then(() => {
     const url = new URL(req.url, 'http://localhost');
     const pathname = decodeURIComponent(url.pathname);
 
-    // SmartNotes Favicon.ico
-    if (pathname === '/favicon.ico') {
-      const icoPath = path.join(__dirname, 'public', 'favicon.ico');
+    // SmartNotes Favicon
+    if (pathname === '/favicon.ico' || pathname === '/favicon.png') {
+      const icoPath = path.join(__dirname, 'public', 'icon-192.png');
       if (fs.existsSync(icoPath)) {
         res.writeHead(200, {
-          'Content-Type': 'image/x-icon',
+          'Content-Type': 'image/png',
           'Cache-Control': 'public, max-age=86400',
           'Content-Length': fs.statSync(icoPath).size
         });
