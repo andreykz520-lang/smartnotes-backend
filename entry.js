@@ -3,6 +3,7 @@ const next = require('next');
 const handleObd2 = require('./obd2/server.js');
 const handleAutomechanic = require('./automechanic/server.js');
 const handleKontent = require('./kontent/server.js');
+const { recordSmartNotesVisitor } = require('./smartnotes-tracker.js');
 
 const dev = false;
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -106,6 +107,7 @@ app.prepare().then(() => {
     }
 
     // 4. SmartNotes: smartnotes-ai.ru и остальные хосты
+    recordSmartNotesVisitor(req, pathname);
     return handleNext(req, res);
   });
 
