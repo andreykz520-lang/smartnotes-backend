@@ -1,6 +1,14 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /stats
+Disallow: /go
+
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Disallow: /stats
+Disallow: /go
 
 # AI Crawlers and Search Bots
 User-agent: GPTBot
