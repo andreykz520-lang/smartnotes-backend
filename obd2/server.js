@@ -19,7 +19,7 @@ const proxyOpenRouterApi = require('./api/proxy-openrouter');
 const chatApi = require('./api/chat');
 const { recordObd2Visitor } = require('./obd2-tracker');
 
-const server = http.createServer((req, res) => {
+const handleObd2 = (req, res) => {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -170,8 +170,13 @@ const server = http.createServer((req, res) => {
 
     res.status(404).send('Not Found');
   });
-});
+};
 
-server.listen(PORT, () => {
-  console.log(`OBD2 SCAN AI Server running on http://localhost:${PORT}`);
-});
+module.exports = handleObd2;
+
+if (require.main === module) {
+  const server = http.createServer(handleObd2);
+  server.listen(PORT, () => {
+    console.log(`OBD2 SCAN AI Server running on http://localhost:${PORT}`);
+  });
+}
