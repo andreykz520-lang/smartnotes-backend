@@ -288,42 +288,56 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Ключ OpenRouter API не указан' });
     }
     const model = store.settings?.aiModel || 'google/gemini-2.5-flash';
-    try {
-      const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + curKey,
-          'HTTP-Referer': 'https://obd2scanai.ru',
-          'X-Title': 'OBD2 SCAN AI'
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            { role: 'system', content: 'Ответь одной короткой фразой: ИИ-диагност OBD2 SCAN AI готов к работе.' },
-            { role: 'user', content: 'Тест связи' }
-          ],
-          max_tokens: 60,
-          temperature: 0.1
-        })
-      });
-      const orData = await orRes.json();
-      if (orRes.ok && orData.choices?.[0]?.message?.content) {
-        return res.status(200).json({
-          success: true,
-          model: model,
-          reply: orData.choices[0].message.content.trim(),
-          message: `Связь с ${model} успешна! Ответ: "${orData.choices[0].message.content.trim()}"`
+    const endpoints = [
+      store.settings?.openRouterProxyUrl || 'https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/v1/chat/completions',
+      'https://openrouter.ai/api/v1/chat/completions'
+    ];
+
+    let lastError = null;
+    for (const url of endpoints) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+        const orRes = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + curKey,
+            'HTTP-Referer': 'https://obd2scanai.ru',
+            'X-Title': 'OBD2 SCAN AI'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              { role: 'system', content: 'Ответь одной короткой фразой: ИИ-диагност OBD2 SCAN AI готов к работе.' },
+              { role: 'user', content: 'Тест связи' }
+            ],
+            max_tokens: 60,
+            temperature: 0.1
+          }),
+          signal: controller.signal
         });
-      } else {
-        return res.status(400).json({
-          success: false,
-          error: orData.error?.message || 'Ошибка ответа от OpenRouter'
-        });
+        clearTimeout(timeoutId);
+
+        const orData = await orRes.json();
+        if (orRes.ok && orData.choices?.[0]?.message?.content) {
+          const usedVia = url.includes('vercel.app') ? 'через Vercel Прокси' : 'напрямую';
+          return res.status(200).json({
+            success: true,
+            model: model,
+            reply: orData.choices[0].message.content.trim(),
+            message: `Связь с ${model} успешна (${usedVia})! Ответ: "${orData.choices[0].message.content.trim()}"`
+          });
+        } else {
+          lastError = orData.error?.message || `HTTP ${orRes.status}`;
+        }
+      } catch (e) {
+        lastError = e.message;
       }
-    } catch (e) {
-      return res.status(500).json({ success: false, error: 'Ошибка связи с OpenRouter: ' + e.message });
     }
+
+    return res.status(500).json({ success: false, error: 'Ошибка связи с OpenRouter (все шлюзы): ' + lastError });
   }
 
   // 6. Тестовая отправка Email через Resend

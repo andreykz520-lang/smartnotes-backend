@@ -148,47 +148,53 @@ function generateRuleBasedAdvice(userText, car) {
   return `Спасибо за обращение! Нам нужны данные тестирования в разных режимах работы авто (на холодную, на горячую, на ходу). Пожалуйста, снимите отладочный лог в приложении через боковое меню и отправьте на autoneuro24@gmail.com — мы сразу подарим вам пожизненную версию PRO!`;
 }
 
-// Запрос к AI Ассистенту через OpenRouter (Google Gemini 2.5 Flash)
+// Запрос к AI Ассистенту через наш Vercel прокси или напрямую в OpenRouter (Google Gemini 2.5 Flash)
 async function getAiAdvice(userText, car) {
   const apiKey = getOpenRouterKey();
   const model = store?.settings?.aiModel || 'google/gemini-2.5-flash';
 
   if (apiKey) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 9000);
+    const endpoints = [
+      store?.settings?.openRouterProxyUrl || 'https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/v1/chat/completions',
+      'https://openrouter.ai/api/v1/chat/completions'
+    ];
 
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + apiKey,
-          'HTTP-Referer': 'https://obd2scanai.ru',
-          'X-Title': 'OBD2 SCAN AI'
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            { role: 'system', content: AI_SYSTEM_PROMPT },
-            { role: 'user', content: `Автомобиль пользователя: ${car || 'Не указан'}\nВопрос пользователя: ${userText}` }
-          ],
-          max_tokens: 380,
-          temperature: 0.2
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
+    for (const url of endpoints) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
 
-      if (res.ok) {
-        const data = await res.json();
-        const content = data.choices?.[0]?.message?.content?.trim();
-        if (content) return content;
-      } else {
-        const errText = await res.text();
-        console.error('OpenRouter error HTTP ' + res.status + ':', errText);
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey,
+            'HTTP-Referer': 'https://obd2scanai.ru',
+            'X-Title': 'OBD2 SCAN AI'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              { role: 'system', content: AI_SYSTEM_PROMPT },
+              { role: 'user', content: `Автомобиль пользователя: ${car || 'Не указан'}\nВопрос пользователя: ${userText}` }
+            ],
+            max_tokens: 380,
+            temperature: 0.2
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          const content = data.choices?.[0]?.message?.content?.trim();
+          if (content) return content;
+        } else {
+          console.warn(`OpenRouter endpoint ${url} returned HTTP ${res.status}, trying next...`);
+        }
+      } catch (e) {
+        console.warn(`OpenRouter request to ${url} failed: ${e.message}, trying next...`);
       }
-    } catch (e) {
-      console.error('OpenRouter fetch exception:', e.message);
     }
   }
 
