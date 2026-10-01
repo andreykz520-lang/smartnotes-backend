@@ -61,6 +61,12 @@ app.prepare().then(() => {
       return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 38736647fe8c5b9c</body></html>');
     }
 
+    // Google Search Console Verification
+    if (pathname === '/google466842291cd2c381.html') {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end('google-site-verification: google466842291cd2c381.html');
+    }
+
     // 3. SmartNotes AI well-known & metadata discovery
 
     if (pathname === '/.well-known/oauth-protected-resource' || pathname === '/.well-known/oauth-protected-resource/' || pathname === '/.well-known/oauth-protected-resource.json') {

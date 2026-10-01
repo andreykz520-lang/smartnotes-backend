@@ -41,7 +41,8 @@ export const metadata: Metadata = {
     ]
   },
   verification: {
-    yandex: "38736647fe8c5b9c"
+    yandex: "38736647fe8c5b9c",
+    google: "google466842291cd2c381"
   }
 };
 
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ru" className="h-full">
       <head>
         <meta name="yandex-verification" content="38736647fe8c5b9c" />
+        <meta name="google-site-verification" content="google466842291cd2c381" />
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=2" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png?v=2" />
