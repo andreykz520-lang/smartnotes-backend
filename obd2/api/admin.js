@@ -58,6 +58,12 @@ function getResendClient() {
   return new Resend(apiKey);
 }
 
+function getOpenRouterKey() {
+  const envKey = (process.env.OPENROUTER_API_KEY || '').trim();
+  if (envKey && envKey !== '[SENSITIVE]') return envKey;
+  return store.settings?.openRouterKey || PERMANENT_KEYS.OPENROUTER_API_KEY || '';
+}
+
 const crypto = require('crypto');
 
 const TOTP_SECRET = process.env.ADMIN_TOTP_SECRET || 'KREUWT2ZGBMUO2DGKNIVSR27GFMU242T';
@@ -268,6 +274,58 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, message: 'Resend API Key успешно сохранён!' });
   }
 
+  // 5.1 Сохранение OpenRouter API Key для ИИ-ассистента
+  if (action === 'save_openrouter_key') {
+    const key = (token || '').trim();
+    store.settings.openRouterKey = key;
+    return res.status(200).json({ success: true, message: 'Ключ OpenRouter API успешно сохранён!' });
+  }
+
+  // 5.2 Тестирование OpenRouter API (Gemini 2.5 Flash)
+  if (action === 'test_openrouter') {
+    const curKey = (token || getOpenRouterKey()).trim();
+    if (!curKey) {
+      return res.status(400).json({ success: false, error: 'Ключ OpenRouter API не указан' });
+    }
+    const model = store.settings?.aiModel || 'google/gemini-2.5-flash';
+    try {
+      const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + curKey,
+          'HTTP-Referer': 'https://obd2scanai.ru',
+          'X-Title': 'OBD2 SCAN AI'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'system', content: 'Ответь одной короткой фразой: ИИ-диагност OBD2 SCAN AI готов к работе.' },
+            { role: 'user', content: 'Тест связи' }
+          ],
+          max_tokens: 60,
+          temperature: 0.1
+        })
+      });
+      const orData = await orRes.json();
+      if (orRes.ok && orData.choices?.[0]?.message?.content) {
+        return res.status(200).json({
+          success: true,
+          model: model,
+          reply: orData.choices[0].message.content.trim(),
+          message: `Связь с ${model} успешна! Ответ: "${orData.choices[0].message.content.trim()}"`
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          error: orData.error?.message || 'Ошибка ответа от OpenRouter'
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({ success: false, error: 'Ошибка связи с OpenRouter: ' + e.message });
+    }
+  }
+
   // 6. Тестовая отправка Email через Resend
   if (action === 'test_email') {
     const toEmail = (targetEmail || '').trim().toLowerCase();
@@ -449,6 +507,13 @@ module.exports = async (req, res) => {
     keyMasked: currentResendKey ? `${currentResendKey.slice(0, 5)}...${currentResendKey.slice(-4)}` : ''
   };
 
+  const curOpenRouterKey = getOpenRouterKey();
+  const openRouterStats = {
+    hasKey: !!curOpenRouterKey,
+    keyMasked: curOpenRouterKey ? `${curOpenRouterKey.slice(0, 8)}...${curOpenRouterKey.slice(-4)}` : '',
+    model: store.settings?.aiModel || 'google/gemini-2.5-flash'
+  };
+
   return res.status(200).json({
     success: true,
     sessionToken: validSessionToken,
@@ -474,7 +539,8 @@ module.exports = async (req, res) => {
       totalEmails: allEmails.length,
       estimatedRevenueRub: rubRevenue,
       bot: botStats,
-      resend: resendStats
+      resend: resendStats,
+      openRouter: openRouterStats
     },
     codes: enrichedCodes,
     deviceTrials: enrichedTrials,

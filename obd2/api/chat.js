@@ -1,15 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const { store, PERMANENT_KEYS } = require('../db');
 
 const CHAT_FILE = path.join(__dirname, '..', 'tester_chat.json');
 
 const INITIAL_MESSAGES = [
   {
     id: 'msg_init_1',
-    name: 'Алексей (ВАЗ 2114)',
-    car: 'ВАЗ 2114 1.6 8V (Январь 7.2)',
-    text: 'Подключился через синий адаптер ELM327 Bluetooth v1.5. Ошибки двигателя считало моментально, показало реальную температуру ОЖ и расход. Отправил лог на почту!',
-    time: new Date(Date.now() - 86400000).toISOString(),
+    name: 'Дмитрий (Peugeot 307)',
+    car: 'Peugeot 307 1.6 NFU (ME7.4.4)',
+    text: 'На Пежо 307 по протоколу KWP2000 теперь видит 19 параметров двигателя! Провёл серию тестов: на холодную, на горячую и в поездке. Куда отправить логи для вечного PRO?',
+    time: new Date(Date.now() - 43200000).toISOString(),
     isAi: false,
     isAdmin: false
   },
@@ -17,17 +18,17 @@ const INITIAL_MESSAGES = [
     id: 'msg_init_2',
     name: 'Разработчик OBD2 SCAN AI',
     car: 'Команда поддержки',
-    text: 'Спасибо, Алексей! Лог с Января 7.2 успешно получен и разобран. В ответном письме отправили вам вечный ключ активации тарифа PRO Навсегда 🎁',
-    time: new Date(Date.now() - 85800000).toISOString(),
+    text: 'Дмитрий, отличная работа! Серия тестов в разных режимах — это как раз то, что нужно для стабильности. Отправляйте файлы логов на autoneuro24@gmail.com с темой «Peugeot 307», сразу активируем вечный тариф PRO Навсегда 🎁',
+    time: new Date(Date.now() - 42800000).toISOString(),
     isAi: false,
     isAdmin: true
   },
   {
     id: 'msg_init_3',
-    name: 'Михаил (Toyota Corolla)',
-    car: 'Toyota Corolla 2012 (1.6 АКПП)',
-    text: 'Привет! Параметры двигателя и приборка читаются быстро. А температуру АКПП и ошибки ABS сможет прочитать?',
-    time: new Date(Date.now() - 43200000).toISOString(),
+    name: 'Сергей (ВАЗ 2110)',
+    car: 'ВАЗ 2110 1.5 8V (Январь 5.1)',
+    text: 'Привет! Хочу помочь в тестировании своего ВАЗ с Январем 5.1. Как правильно снять логи, чтобы помочь отладке приложения?',
+    time: new Date(Date.now() - 21600000).toISOString(),
     isAi: false,
     isAdmin: false
   },
@@ -35,28 +36,28 @@ const INITIAL_MESSAGES = [
     id: 'msg_init_4',
     name: '🤖 AI Диагност',
     car: 'Автоэксперт OBD2',
-    text: 'Привет, Михаил! По стандартному OBD2 (Mode 01) считываются параметры двигателя и общие коды DTC. Для чтения температуры АКПП и блока ABS Toyota мы как раз расширяем базу через логи тестеров. Пожалуйста, запустите «Полный скан» в приложении и отправьте файл лога на autoneuro24@gmail.com — мы добавим эти датчики, а вам сразу активируем вечный PRO!',
-    time: new Date(Date.now() - 43100000).toISOString(),
+    text: 'Привет, Сергей! Подключите адаптер ELM327 v1.5 к диагностическому разъёму и проведите серию тестов: 1) при холодном пуске, 2) на полностью прогретом моторе, 3) в движении на ходу. Затем в меню приложения нажмите «Экспорт отладочного лога» и отправьте файлы на autoneuro24@gmail.com — мы сразу подарим вам пожизненный тариф PRO!',
+    time: new Date(Date.now() - 21500000).toISOString(),
     isAi: true,
     isAdmin: false
   },
   {
     id: 'msg_init_5',
-    name: 'Дмитрий (Peugeot 307)',
-    car: 'Peugeot 307 1.6 NFU (ME7.4.4)',
-    text: 'На Пежо 307 по протоколу KWP2000 теперь видит 19 параметров двигателя в реальном времени! Тестирую проверку здоровья и приборку. Куда именно отправить лог для вечного PRO?',
-    time: new Date(Date.now() - 14400000).toISOString(),
+    name: 'Иван (Renault Logan)',
+    car: 'Renault Logan 1.6',
+    text: 'А безопасно ли проводить эти тесты? Приложение не может сбить заводскую прошивку или повредить блок управления?',
+    time: new Date(Date.now() - 7200000).toISOString(),
     isAi: false,
     isAdmin: false
   },
   {
     id: 'msg_init_6',
-    name: 'Разработчик OBD2 SCAN AI',
-    car: 'Команда поддержки',
-    text: 'Дмитрий, отличная новость! В приложении в боковом меню нажмите «Экспорт отладочного лога» (или возьмите файл obd2_debug.log) и отправьте на autoneuro24@gmail.com с пометкой «Peugeot 307». Сразу вышлем вечный PRO!',
-    time: new Date(Date.now() - 14100000).toISOString(),
-    isAi: false,
-    isAdmin: true
+    name: '🤖 AI Диагност',
+    car: 'Автоэксперт OBD2',
+    text: 'Иван, приложение на 100% безопасно! OBD2 SCAN AI работает строго в пассивном режиме чтения (Passive Read-Only). Оно отправляет исключительно стандартные диагностические запросы датчиков и физически не может повлиять на прошивку, адаптации или датчики авто.',
+    time: new Date(Date.now() - 7100000).toISOString(),
+    isAi: true,
+    isAdmin: false
   }
 ];
 
@@ -94,31 +95,105 @@ function getClientIp(req) {
   return req.headers['x-real-ip'] || req.socket?.remoteAddress || req.connection?.remoteAddress || '';
 }
 
-// Умный генератор ответов AI-ассистента автомеханика
-function generateAiAdvice(userText, car) {
+function getOpenRouterKey() {
+  const envKey = (process.env.OPENROUTER_API_KEY || '').trim();
+  if (envKey && envKey !== '[SENSITIVE]') return envKey;
+  return store?.settings?.openRouterKey || PERMANENT_KEYS?.OPENROUTER_API_KEY || '';
+}
+
+const AI_SYSTEM_PROMPT = `Ты — узкоспециализированный ИИ-диагност и эксперт мобильного приложения "OBD2 SCAN AI".
+Твоя ЕДИНСТВЕННАЯ цель — отвечать на вопросы, связанные ИСКЛЮЧИТЕЛЬНО с:
+1. Автомобильной диагностикой по протоколам OBD-II / EOBD / K-Line / CAN / KWP2000.
+2. Подключением и настройкой адаптеров ELM327 (версия 1.5 на чипе PIC18F25K80, Bluetooth, Wi-Fi, USB).
+3. Чтением, расшифровкой и сбросом кодов ошибок (DTC) двигателя, коробки и систем авто.
+4. Функциями приложения OBD2 SCAN AI (чтение датчиков в реальном времени, виртуальная приборная панель, DPF/сажевый фильтр, проверка скрутки пробега Anti-Fraud, экспорт отладочного лога).
+5. Программой бета-тестирования: напоминай автовладельцам, что процедуру тестирования нужно провести НЕ ОДИН РАЗ, а серию тестов в разных режимах (холодный пуск, прогретый мотор, тест в движении), снять логи и отправить на autoneuro24@gmail.com — за это разработчик дарит пожизненный тариф PRO Навсегда!
+6. Безопасностью: приложение работает на 100% в пассивном режиме чтения (Passive Read-Only) и физически не может повредить прошивку или узлы автомобиля.
+
+СТРОЖАЙШИЕ ПРАВИЛА И ОГРАНИЧЕНИЯ:
+1. ЕСЛИ ВОПРОС НЕ КАСАЕТСЯ АВТОМОБИЛЕЙ, ДИАГНОСТИКИ, СКАНИРОВАНИЯ ИЛИ ПРИЛОЖЕНИЯ OBD2 SCAN AI (например: кулинария, рецепты, политика, программирование, погода, стихи, общие разговоры, любые посторонние темы):
+ТЫ ОБЯЗАН СТРОГО И ВЕЖЛИВО ОТКАЗАТЬ:
+"Я специализированный ИИ-диагност приложения OBD2 SCAN AI и консультирую исключительно по автодиагностике, сканерам ELM327, ошибкам автомобиля и тестированию нашего приложения. Пожалуйста, задайте вопрос по диагностике вашего автомобиля!"
+2. Отвечай кратко, профессионально, дружелюбно, на русском языке, в 2-4 предложения (формат живого чата). Не используй markdown-заголовки # или списки более 3 пунктов.`;
+
+// Локальный запасной генератор ответов, если нет ключа OpenRouter или недоступна сеть
+function generateRuleBasedAdvice(userText, car) {
   const lower = (userText + ' ' + (car || '')).toLowerCase();
 
+  // Отсечка явного спама и посторонних тем
+  if (lower.includes('рецепт') || lower.includes('борщ') || lower.includes('суп') || lower.includes('погод') || lower.includes('стих') || lower.includes('анекдот') || lower.includes('политик')) {
+    return 'Я специализированный ИИ-диагност приложения OBD2 SCAN AI и консультирую исключительно по автодиагностике, сканерам ELM327, ошибкам автомобиля и тестированию нашего приложения. Пожалуйста, задайте вопрос по диагностике вашего автомобиля!';
+  }
+
   if (lower.includes('не подключается') || lower.includes('не видит') || lower.includes('ошибка подключения') || lower.includes('не связывается')) {
-    return `Привет! Если нет связи с автомобилем, проверьте следующие моменты:\n1. Включите зажигание (или заведите двигатель), чтобы ЭБУ подал питание на шину OBD-II.\n2. Убедитесь, что ваш сканер ELM327 версии 1.5 (чип PIC18F25K80). Урезанные китайские клоны v2.1 часто не поддерживают старые протоколы.\n3. В приложении выдайте разрешение на «Устройства поблизости» (Bluetooth).\nЕсли не помогло — сохраните лог подключения в меню и пришлите на autoneuro24@gmail.com, мы вручную настроим протокол под ваш ЭБУ и подарим вечный PRO!`;
+    return `Привет! Если нет связи с автомобилем, проверьте следующие моменты:\n1. Включите зажигание (или заведите мотор), чтобы ЭБУ подал питание на шину OBD-II.\n2. Убедитесь, что ваш сканер ELM327 версии 1.5 (на чипе PIC18F25K80). Урезанные клоны v2.1 часто не поддерживают протоколы.\n3. В приложении выдайте разрешение на «Устройства поблизости» (Bluetooth).\nЕсли не помогло — сохраните лог подключения в меню и пришлите на autoneuro24@gmail.com, мы поможем настроить протокол и подарим вечный PRO!`;
   }
 
-  if (lower.includes('безопасно') || lower.includes('сломать') || lower.includes('повредить') || lower.includes('эбу') || lower.includes('прошивк')) {
-    return `🛡️ Приложение на 100% безопасно для вашего автомобиля! OBD2 SCAN AI работает строго в режиме чтения (Passive Read-Only). Оно отправляет только стандартные диагностические запросы и физически не может повредить прошивку, датчики или проводку.`;
+  if (lower.includes('безопасн') || lower.includes('сломать') || lower.includes('повредить') || lower.includes('эбу') || lower.includes('прошивк')) {
+    return `🛡️ Приложение на 100% безопасно для вашего автомобиля! OBD2 SCAN AI работает строго в пассивном режиме чтения (Passive Read-Only). Оно отправляет исключительно стандартные диагностические запросы и физически не способно изменить прошивку или повредить блоки управления.`;
   }
 
-  if (lower.includes('как отправить') || lower.includes('где лог') || lower.includes('файл лога') || lower.includes('куда слать')) {
-    return `📋 Чтобы отправить лог:\n1. В приложении откройте меню (три полоски слева вверху).\n2. Нажмите «Экспорт отладочного лога» (или скопируйте файл obd2_debug.log).\n3. Отправьте файл на почту autoneuro24@gmail.com, указав марку и год машины.\nВ ответ разработчик пришлёт персональный вечный ключ тарифа PRO Навсегда!`;
+  if (lower.includes('как отправить') || lower.includes('где лог') || lower.includes('файл лога') || lower.includes('куда слать') || lower.includes('вечный pro') || lower.includes('про навсегда')) {
+    return `📋 Чтобы получить пожизненный PRO Навсегда:\n1. Проведите серию тестов в разных режимах (на холодную, прогретый мотор, в поездке).\n2. В боковом меню приложения нажмите «Экспорт отладочного лога» (файл obd2_debug.log).\n3. Отправьте файлы на autoneuro24@gmail.com с указанием марки и года авто.\nРазработчик проверит лог и сразу вышлет персональный вечный ключ PRO!`;
   }
 
   if (lower.includes('пежо') || lower.includes('peugeot') || lower.includes('ситроен') || lower.includes('citroen')) {
-    return `Французские авто (Peugeot/Citroen) используют специальный протокол ISO 14230-4 KWP2000 с заголовком 8210F1. В последнем обновлении мы настроили чтение параметров двигателя ME7.4.4. Обязательно снимите лог подключения и пришлите на autoneuro24@gmail.com для оптимизации!`;
+    return `Французские авто (Peugeot/Citroen) опрашиваются по протоколу ISO 14230-4 KWP2000. В текущей версии для блока Bosch ME7.4.4 читается 19 параметров двигателя. Проведите серию тестов в разных режимах и пришлите логи на autoneuro24@gmail.com для оптимизации!`;
   }
 
   if (lower.includes('ваз') || lower.includes('лада') || lower.includes('калина') || lower.includes('приора') || lower.includes('гранта')) {
-    return `Автомобили ВАЗ (Lada) отлично читаются по KWP2000 Fast Init (ISO 14230) или CAN (на новых Грантах/Вестах). Поддерживаются ЭБУ Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74. Проверьте чтение ошибок и датчиков и присылайте лог на autoneuro24@gmail.com за вечный PRO!`;
+    return `Для автомобилей ВАЗ (Lada) нам очень нужны тестеры! Подключите адаптер ELM327 v1.5, проведите серию тестов (холодный пуск, прогретый двигатель, в движении) и пришлите полученные логи на autoneuro24@gmail.com — мы добавим профиль вашего ЭБУ и активируем вечный PRO!`;
   }
 
-  return `Спасибо за сообщение! Пожалуйста, протестируйте в приложении чтение датчиков двигателя, приборную панель и проверку здоровья. Затем нажмите в меню «Экспорт лога» и пришлите файл на autoneuro24@gmail.com с указанием марки и года авто — мы сразу активируем вам вечную PRO-версию!`;
+  return `Спасибо за обращение! Нам нужны данные тестирования в разных режимах работы авто (на холодную, на горячую, на ходу). Пожалуйста, снимите отладочный лог в приложении через боковое меню и отправьте на autoneuro24@gmail.com — мы сразу подарим вам пожизненную версию PRO!`;
+}
+
+// Запрос к AI Ассистенту через OpenRouter (Google Gemini 2.5 Flash)
+async function getAiAdvice(userText, car) {
+  const apiKey = getOpenRouterKey();
+  const model = store?.settings?.aiModel || 'google/gemini-2.5-flash';
+
+  if (apiKey) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + apiKey,
+          'HTTP-Referer': 'https://obd2scanai.ru',
+          'X-Title': 'OBD2 SCAN AI'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'system', content: AI_SYSTEM_PROMPT },
+            { role: 'user', content: `Автомобиль пользователя: ${car || 'Не указан'}\nВопрос пользователя: ${userText}` }
+          ],
+          max_tokens: 380,
+          temperature: 0.2
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        const content = data.choices?.[0]?.message?.content?.trim();
+        if (content) return content;
+      } else {
+        const errText = await res.text();
+        console.error('OpenRouter error HTTP ' + res.status + ':', errText);
+      }
+    } catch (e) {
+      console.error('OpenRouter fetch exception:', e.message);
+    }
+  }
+
+  // Запасной fallback на локальные экспертные правила
+  return generateRuleBasedAdvice(userText, car);
 }
 
 module.exports = async (req, res) => {
@@ -175,8 +250,8 @@ module.exports = async (req, res) => {
 
     messages.push(userMsg);
 
-    // Автоматический ответ AI Диагноста
-    const aiText = generateAiAdvice(text, car);
+    // Умный ответ AI Диагноста (через Gemini 2.5 Flash или экспертный fallback)
+    const aiText = await getAiAdvice(text, car);
     const aiMsg = {
       id: 'msg_ai_' + (Date.now() + 1000) + '_' + Math.random().toString(36).substr(2, 4),
       name: '🤖 AI Диагност',

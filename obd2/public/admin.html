@@ -578,6 +578,47 @@
 
       </div>
 
+      <!-- 3.1 ИИ-Ассистент чата (OpenRouter API) -->
+      <div class="card" style="border-color: rgba(139, 92, 246, 0.4); background: linear-gradient(145deg, #151c2c 0%, #1a1633 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <h2 style="margin: 0 0 4px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
+              🤖 ИИ-Ассистент чата тестеров (OpenRouter API)
+              <span id="openRouterStatusBadge" class="badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger);">НЕТ КЛЮЧА</span>
+            </h2>
+            <p style="color: var(--muted); font-size: 13px; margin: 0;">
+              Модель: <b style="color: #a78bfa;">Google Gemini 2.5 Flash</b> (~$0.075 за 1M токенов / считанные копейки за 1000 ответов). Отвечает строго по теме автодиагностики, OBD2 и приложения OBD2 SCAN AI, вежливо отклоняя посторонние вопросы.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+          
+          <!-- Ввод ключа OpenRouter -->
+          <div style="background: var(--card-inner); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Ключ API (от openrouter.ai/keys):</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="text" id="openRouterKeyInput" placeholder="Вставьте ключ: sk-or-v1-..." style="flex: 1; min-width: 220px;">
+              <button onclick="saveOpenRouterKey()" class="btn-cyan" style="padding: 10px 16px;">💾 Сохранить</button>
+            </div>
+          </div>
+
+          <!-- Тест ИИ-ассистента -->
+          <div style="background: var(--card-inner); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">Проверить связь с ИИ (тестовый запрос):</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              <button onclick="testOpenRouter()" style="background: var(--purple); padding: 10px 20px; font-weight: 700; color: #fff; border: none; border-radius: 8px; cursor: pointer;">
+                🧪 Проверить ИИ (Gemini)
+              </button>
+              <span style="font-size: 12px; color: var(--muted);">Проверит статус модели и скорость ответа</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="openRouterTestMsg" style="display: none; font-size: 13px; margin-bottom: 4px; padding: 10px 14px; border-radius: 8px;"></div>
+      </div>
+
       <!-- 4. Таблица Кодов и Лицензий (Широкая на всю страницу) -->
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
@@ -1029,6 +1070,27 @@
         resBadge.style.borderColor = 'var(--danger)';
       }
 
+      // OpenRouter AI Status
+      const orStats = stats.openRouter || {};
+      const orBadge = document.getElementById('openRouterStatusBadge');
+      const orInput = document.getElementById('openRouterKeyInput');
+      if (orBadge) {
+        if (orStats.hasKey) {
+          orBadge.innerText = '🟢 АКТИВЕН (' + orStats.keyMasked + ')';
+          orBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+          orBadge.style.color = 'var(--success)';
+          orBadge.style.borderColor = 'var(--success)';
+          if (orStats.keyMasked && orInput && !orInput.value) {
+            orInput.placeholder = 'Текущий ключ: ' + orStats.keyMasked;
+          }
+        } else {
+          orBadge.innerText = '🔴 НЕТ КЛЮЧА';
+          orBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+          orBadge.style.color = 'var(--danger)';
+          orBadge.style.borderColor = 'var(--danger)';
+        }
+      }
+
       // Render Active OTPs
       const activeOtps = data.activeOtps || [];
       const otpContainer = document.getElementById('activeOtpsList');
@@ -1251,6 +1313,64 @@
         }
       } catch (e) {
         msgBox.innerText = 'Ошибка запроса: ' + e.message;
+      }
+    }
+
+    async function saveOpenRouterKey() {
+      const key = document.getElementById('openRouterKeyInput').value.trim();
+      if (!key) {
+        alert('Введите ключ OpenRouter API (вида sk-or-v1-...)!');
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'save_openrouter_key', token: key })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadData();
+        } else {
+          alert('Ошибка: ' + data.error);
+        }
+      } catch (e) {
+        alert('Ошибка связи: ' + e.message);
+      }
+    }
+
+    async function testOpenRouter() {
+      const key = document.getElementById('openRouterKeyInput').value.trim();
+      const msgBox = document.getElementById('openRouterTestMsg');
+      msgBox.style.display = 'block';
+      msgBox.style.background = '#111827';
+      msgBox.style.color = '#9ca3af';
+      msgBox.innerText = 'Тестирование связи с OpenRouter (Google Gemini 2.5 Flash)...';
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'test_openrouter', token: key })
+        });
+        const data = await res.json();
+        if (data.success) {
+          msgBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          msgBox.style.color = 'var(--success)';
+          msgBox.style.border = '1px solid var(--success)';
+          msgBox.innerHTML = `✅ <b>${data.message}</b>`;
+        } else {
+          msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          msgBox.style.color = 'var(--danger)';
+          msgBox.style.border = '1px solid var(--danger)';
+          msgBox.innerHTML = `❌ <b>Ошибка тестирования:</b> ${data.error}`;
+        }
+      } catch (e) {
+        msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        msgBox.style.color = 'var(--danger)';
+        msgBox.style.border = '1px solid var(--danger)';
+        msgBox.innerHTML = `❌ <b>Ошибка сети:</b> ${e.message}`;
       }
     }
 

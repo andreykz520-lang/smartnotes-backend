@@ -5,7 +5,9 @@ const PERMANENT_KEYS = {
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || '',
   YOOKASSA_SHOP_ID: process.env.YOOKASSA_SHOP_ID || '',
-  YOOKASSA_SECRET_KEY: process.env.YOOKASSA_SECRET_KEY || ''
+  YOOKASSA_SECRET_KEY: process.env.YOOKASSA_SECRET_KEY || '',
+  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || '',
+  OPENROUTER_MODEL: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash'
 };
 
 const initialCodes = {
@@ -21,7 +23,9 @@ const memoryStore = global._obd2Store || {
     botToken: PERMANENT_KEYS.TELEGRAM_BOT_TOKEN,
     resendApiKey: PERMANENT_KEYS.RESEND_API_KEY,
     yookassaShopId: PERMANENT_KEYS.YOOKASSA_SHOP_ID,
-    yookassaSecretKey: PERMANENT_KEYS.YOOKASSA_SECRET_KEY
+    yookassaSecretKey: PERMANENT_KEYS.YOOKASSA_SECRET_KEY,
+    openRouterKey: PERMANENT_KEYS.OPENROUTER_API_KEY,
+    aiModel: PERMANENT_KEYS.OPENROUTER_MODEL
   },
   codes: { ...initialCodes },
   deletedCodes: {},
