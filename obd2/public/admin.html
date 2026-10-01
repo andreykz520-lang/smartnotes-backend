@@ -341,29 +341,31 @@
 
     <!-- Форма входа -->
     <div id="loginCard" class="card" style="max-width: 480px; margin: 60px auto;">
-      <h2 style="text-align: center; margin-bottom: 8px;">🔐 Вход в Админ-панель</h2>
-      <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;">Введите пароль или 6-значный код Google Authenticator (2FA):</p>
+      <h2 style="text-align: center; margin-bottom: 8px;">🔐 Вход в Админ-панель (2FA)</h2>
+      <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;">
+        Для входа требуется ввести <b>пароль</b> И <b>6-значный код Google Authenticator</b>:
+      </p>
       
       <div style="margin-bottom: 14px;">
-        <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 600;">Пароль администратора:</label>
-        <input type="password" id="adminPassword" placeholder="Пароль администратора" onkeydown="if(event.key==='Enter') login()">
+        <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 600;">1. Пароль администратора:</label>
+        <input type="password" id="adminPassword" placeholder="Введите пароль" onkeydown="if(event.key==='Enter') login()">
       </div>
 
       <div style="margin-bottom: 18px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label style="font-size: 12px; color: var(--muted); font-weight: 600;">📱 Код Google Authenticator (2FA):</label>
-          <span style="font-size: 11px; color: var(--muted);">6 цифр</span>
+          <label style="font-size: 12px; color: var(--muted); font-weight: 600;">2. 📱 Код Google Authenticator (2FA):</label>
+          <span style="font-size: 11px; color: #a78bfa; font-weight: 600;">6 цифр с телефона</span>
         </div>
-        <input type="text" id="adminTotp" maxlength="6" placeholder="Например: 582910" style="font-family: monospace; font-size: 16px; letter-spacing: 3px; text-align: center;" onkeydown="if(event.key==='Enter') login()">
+        <input type="text" id="adminTotp" maxlength="6" inputmode="numeric" placeholder="Например: 582910" style="font-family: monospace; font-size: 18px; letter-spacing: 4px; text-align: center; color: #00F0FF; font-weight: 700;" onkeydown="if(event.key==='Enter') login()">
       </div>
 
-      <button onclick="login()" style="width: 100%; padding: 14px; font-size: 15px;">Войти в систему</button>
+      <button id="loginBtn" onclick="login()" style="width: 100%; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;">Войти в систему</button>
       <p id="loginError" style="color: var(--danger); display: none; margin-top: 12px; text-align: center; font-size: 13px;"></p>
 
       <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center;">
-        <span style="font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px;">
-          🛡️ Защита: Пароль + Google Authenticator (2FA TOTP)
-        </span>
+        <button onclick="open2FaModal()" style="background: transparent; border: none; font-size: 12px; color: #a78bfa; cursor: pointer; text-decoration: underline;">
+          📱 Показать секретный ключ для Google Authenticator
+        </button>
       </div>
     </div>
 
@@ -792,77 +794,136 @@
 
   <script>
     let currentPassword = localStorage.getItem('admin_pwd') || '';
-    let currentTotp = localStorage.getItem('admin_totp') || '';
+    let currentSessionToken = sessionStorage.getItem('admin_session') || localStorage.getItem('admin_session') || '';
     let globalData = null;
     let currentFilter = 'all';
     let lastGenerated = [];
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (currentPassword) {
+      if (currentPassword && document.getElementById('adminPassword')) {
         document.getElementById('adminPassword').value = currentPassword;
       }
-      if (currentTotp) {
-        document.getElementById('adminTotp').value = currentTotp;
-      }
-      if (currentPassword || currentTotp) {
-        login();
+      if (currentSessionToken) {
+        verifyExistingSession();
+      } else {
+        if (currentPassword && document.getElementById('adminTotp')) {
+          document.getElementById('adminTotp').focus();
+        } else if (document.getElementById('adminPassword')) {
+          document.getElementById('adminPassword').focus();
+        }
       }
     });
 
     function getAuthHeaders() {
-      const headers = {};
+      const headers = { 'Content-Type': 'application/json' };
+      if (currentSessionToken) headers['x-admin-session'] = currentSessionToken;
       if (currentPassword) headers['x-admin-password'] = currentPassword;
-      if (currentTotp) headers['x-admin-totp'] = currentTotp;
       return headers;
     }
 
+    async function verifyExistingSession() {
+      try {
+        const res = await fetch('/api/admin', { headers: getAuthHeaders() });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('loginCard').style.display = 'none';
+          document.getElementById('adminContent').style.display = 'block';
+          globalData = data;
+          renderDashboard(data);
+          return;
+        }
+      } catch (e) {}
+      // Session expired or invalid - reset and show login form
+      currentSessionToken = '';
+      sessionStorage.removeItem('admin_session');
+      localStorage.removeItem('admin_session');
+      document.getElementById('loginCard').style.display = 'block';
+    }
+
     async function login() {
-      const pwd = document.getElementById('adminPassword').value.trim();
-      const totp = document.getElementById('adminTotp').value.trim();
+      const pwdInput = document.getElementById('adminPassword');
+      const totpInput = document.getElementById('adminTotp');
+      const btn = document.getElementById('loginBtn');
       const err = document.getElementById('loginError');
+
+      const pwd = (pwdInput?.value || '').trim();
+      const totp = (totpInput?.value || '').trim();
       err.style.display = 'none';
 
-      if (!pwd && !totp) {
-        err.innerText = 'Введите пароль или 6-значный код Google Authenticator';
+      // Обязательно требуем И пароль, И 6-значный код 2FA одновременно
+      if (!pwd) {
+        err.innerText = 'Пожалуйста, введите пароль администратора!';
         err.style.display = 'block';
+        pwdInput.focus();
         return;
       }
 
+      if (!totp) {
+        err.innerText = 'Введите 6-значный код из Google Authenticator на телефоне!';
+        err.style.display = 'block';
+        totpInput.focus();
+        return;
+      }
+
+      if (totp.length !== 6 || !/^\d{6}$/.test(totp)) {
+        err.innerText = 'Код Google Authenticator должен состоять ровно из 6 цифр!';
+        err.style.display = 'block';
+        totpInput.focus();
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⏳ Проверка пароля и кода 2FA...';
+      }
+
       try {
-        const headers = {};
-        if (pwd) headers['x-admin-password'] = pwd;
-        if (totp) headers['x-admin-totp'] = totp;
+        const headers = {
+          'Content-Type': 'application/json',
+          'x-admin-password': pwd,
+          'x-admin-totp': totp
+        };
 
         const res = await fetch('/api/admin', { headers: headers });
         const data = await res.json();
         if (data.success) {
-          if (pwd) {
-            currentPassword = pwd;
-            localStorage.setItem('admin_pwd', pwd);
+          currentPassword = pwd;
+          localStorage.setItem('admin_pwd', pwd);
+
+          if (data.sessionToken) {
+            currentSessionToken = data.sessionToken;
+            sessionStorage.setItem('admin_session', data.sessionToken);
+            localStorage.setItem('admin_session', data.sessionToken);
           }
-          if (totp) {
-            currentTotp = totp;
-            localStorage.setItem('admin_totp', totp);
-          }
+
           document.getElementById('loginCard').style.display = 'none';
           document.getElementById('adminContent').style.display = 'block';
           globalData = data;
           renderDashboard(data);
         } else {
-          err.innerText = data.error || 'Неверный пароль или код Google Authenticator';
+          err.innerText = data.error || 'Ошибка входа: проверьте пароль и код 2FA';
           err.style.display = 'block';
+          totpInput.value = '';
+          totpInput.focus();
         }
       } catch (e) {
         err.innerText = 'Ошибка подключения к серверу: ' + e.message;
         err.style.display = 'block';
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Войти в систему';
+        }
       }
     }
 
     function logout() {
+      localStorage.removeItem('admin_session');
+      sessionStorage.removeItem('admin_session');
       localStorage.removeItem('admin_pwd');
       localStorage.removeItem('admin_totp');
       currentPassword = '';
-      currentTotp = '';
+      currentSessionToken = '';
       location.reload();
     }
 
@@ -894,9 +955,6 @@
           renderDashboard(data);
         }
       } catch (e) {
-        console.error('Data load error:', e);
-      }
-    }
         console.error('Data load error:', e);
       }
     }

@@ -118,12 +118,26 @@ module.exports = async (req, res) => {
   const adminPassword = (configuredPassword && configuredPassword !== '[SENSITIVE]') ? configuredPassword : 'admin123';
   const reqPassword = (req.headers['x-admin-password'] || parsedBody.password || query.password || '').trim();
   const reqTotp = (req.headers['x-admin-totp'] || parsedBody.totpCode || query.totpCode || '').trim();
+  const reqSession = (req.headers['x-admin-session'] || parsedBody.sessionToken || query.sessionToken || '').trim();
+
+  const validSessionToken = crypto.createHmac('sha256', TOTP_SECRET).update('obd2_admin_' + adminPassword).digest('hex');
+  const isSessionValid = reqSession && reqSession === validSessionToken;
 
   const isPasswordValid = reqPassword && (reqPassword === adminPassword || reqPassword === 'admin123');
   const isTotpValid = reqTotp ? verifyTotp(reqTotp, TOTP_SECRET) : false;
 
-  if (!isPasswordValid && !isTotpValid) {
-    return res.status(401).json({ success: false, error: 'Неверный пароль или код Google Authenticator' });
+  // ОБЯЗАТЕЛЬНО: активная сессия ЛИБО (И пароль, И код Google Authenticator одновременно)
+  if (!isSessionValid && !(isPasswordValid && isTotpValid)) {
+    if (reqPassword && !isPasswordValid) {
+      return res.status(401).json({ success: false, error: 'Неверный пароль администратора' });
+    }
+    if (isPasswordValid && !reqTotp) {
+      return res.status(401).json({ success: false, error: 'Введите 6-значный код из Google Authenticator' });
+    }
+    if (isPasswordValid && !isTotpValid) {
+      return res.status(401).json({ success: false, error: 'Неверный или просроченный код Google Authenticator. Пожалуйста, введите актуальный код с экрана телефона!' });
+    }
+    return res.status(401).json({ success: false, error: 'Для входа необходимо ввести И пароль, И 6-значный код Google Authenticator' });
   }
 
   const action = parsedBody.action || query.action;
@@ -434,6 +448,7 @@ module.exports = async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    sessionToken: validSessionToken,
     stats: {
       proPlus: {
         total: proPlusTotal,
