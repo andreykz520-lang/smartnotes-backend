@@ -878,13 +878,15 @@
       }
 
       try {
-        const headers = {
-          'Content-Type': 'application/json',
-          'x-admin-password': pwd,
-          'x-admin-totp': totp
-        };
-
-        const res = await fetch('/api/admin', { headers: headers });
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': pwd,
+            'x-admin-totp': totp
+          },
+          body: JSON.stringify({ password: pwd, totpCode: totp })
+        });
         const data = await res.json();
         if (data.success) {
           currentPassword = pwd;
