@@ -15,6 +15,14 @@ try {
 
 const { store, PERMANENT_KEYS } = require('../db');
 
+let getObd2Stats = () => ({ views: 0, lastView: null, countries: {}, recentVisitors: [] });
+let resetObd2Stats = () => {};
+try {
+  const tracker = require('../obd2-tracker');
+  getObd2Stats = tracker.getObd2Stats;
+  resetObd2Stats = tracker.resetObd2Stats;
+} catch (e) {}
+
 function determineTier(code, item) {
   if (item && item.tier) return item.tier;
   const upper = String(code).toUpperCase();
@@ -75,6 +83,12 @@ module.exports = async (req, res) => {
   if (!store.deviceTrials) store.deviceTrials = {};
   if (!store.otps) store.otps = {};
   if (!store.settings) store.settings = {};
+
+  // 0. Сброс статистики посещаемости (Трафик и страны)
+  if (action === 'reset_visitor_stats') {
+    resetObd2Stats();
+    return res.status(200).json({ success: true, message: 'Статистика посещаемости успешно сброшена!' });
+  }
 
   // 1. Включение / выключение Telegram-бота
   if (action === 'toggle_bot') {
@@ -356,6 +370,7 @@ module.exports = async (req, res) => {
     codes: enrichedCodes,
     deviceTrials: enrichedTrials,
     activeOtps: activeOtpsList,
-    emailList: allEmails
+    emailList: allEmails,
+    visitorStats: getObd2Stats()
   });
 };

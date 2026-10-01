@@ -413,6 +413,22 @@
 
       </div>
 
+      <!-- КРАТКАЯ СВОДКА ПО СТРАНАМ (Трафик) -->
+      <div id="trafficQuickWidget" class="card" style="display: none; margin-bottom: 24px; background: linear-gradient(145deg, #131c31 0%, #1a1633 100%); border-color: rgba(139, 92, 246, 0.4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 20px;">🌍</span>
+            <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #cbd5e1;">
+              География посетителей obd2scanai.ru
+            </span>
+          </div>
+          <button onclick="setFilter('traffic')" style="background: transparent; border: none; color: #a78bfa; font-size: 13px; font-weight: 600; cursor: pointer; padding: 4px 8px;">
+            Все детали и журнал →
+          </button>
+        </div>
+        <div id="quickCountriesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;"></div>
+      </div>
+
       <!-- 2. Две широкие карточки: Telegram-Бот (Слева) и Генератор кодов (Справа) -->
       <div class="admin-row-2">
         
@@ -550,10 +566,11 @@
         <!-- Фильтры и Поиск -->
         <div class="filter-bar">
           <div class="filter-tabs">
-            <button class="filter-btn active" onclick="setFilter('all', this)">Все (<span id="countAll">0</span>)</button>
-            <button class="filter-btn" onclick="setFilter('plus', this)">💎 PRO+ ИИ (<span id="countPlus">0</span>)</button>
-            <button class="filter-btn" onclick="setFilter('pro', this)">🏆 PRO (<span id="countPro">0</span>)</button>
-            <button class="filter-btn" onclick="setFilter('trial', this)">🛡️ Триалы (<span id="countTrials">0</span>)</button>
+            <button class="filter-btn active" id="btnFilter_all" onclick="setFilter('all', this)">Все (<span id="countAll">0</span>)</button>
+            <button class="filter-btn" id="btnFilter_plus" onclick="setFilter('plus', this)">💎 PRO+ ИИ (<span id="countPlus">0</span>)</button>
+            <button class="filter-btn" id="btnFilter_pro" onclick="setFilter('pro', this)">🏆 PRO (<span id="countPro">0</span>)</button>
+            <button class="filter-btn" id="btnFilter_trial" onclick="setFilter('trial', this)">🛡️ Триалы (<span id="countTrials">0</span>)</button>
+            <button class="filter-btn" id="btnFilter_traffic" onclick="setFilter('traffic', this)">🌍 Трафик и Страны (<span id="countTraffic">0</span>)</button>
           </div>
           <div class="search-box">
             <input type="text" id="searchInput" placeholder="🔍 Поиск (код, email, deviceId)..." oninput="applySearch()">
@@ -593,6 +610,54 @@
             </thead>
             <tbody id="trialsTableBody"></tbody>
           </table>
+        </div>
+
+        <!-- Раздел Трафика и Стран (показывается при выборе вкладки 'traffic') -->
+        <div id="trafficSectionWrapper" style="display: none;">
+          <!-- Шапка раздела трафика -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; background: var(--card-inner); padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 18px;">
+            <div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
+                <span>🌍 География и посещаемость obd2scanai.ru</span>
+              </h3>
+              <p style="margin: 6px 0 0; font-size: 13px; color: var(--muted);">
+                Всего зафиксировано визитов: <strong id="trafficTotalViews" style="color: #a78bfa; font-size: 15px;">0</strong> • Посл. визит: <span id="trafficLastView" style="color: #cbd5e1; font-family: monospace;">—</span>
+              </p>
+            </div>
+            <button onclick="resetVisitorStats()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+              🗑️ Сбросить статистику
+            </button>
+          </div>
+
+          <!-- Сетка всех стран -->
+          <div id="allCountriesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px;"></div>
+
+          <!-- Подсказка о географии -->
+          <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid #8b5cf6; padding: 14px 16px; border-radius: 10px; font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 20px;">
+            💡 <strong>Как учитывается география:</strong> Каждый визит на obd2scanai.ru проверяется в реальном времени через геолокацию IP-адресов. Россия, Казахстан и Беларусь — это реальные автовладельцы и клиенты мобильного/десктопного приложения. Заходы из США и Европы частично включают поисковые роботы (Google, Yandex, Bing, OpenAI) и облачные серверы.
+          </div>
+
+          <!-- Журнал последних посетителей -->
+          <div style="margin-top: 10px;">
+            <h4 style="margin: 0 0 12px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #cbd5e1;">
+              📋 Журнал последних посетителей
+            </h4>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">№</th>
+                    <th>Время (МСК)</th>
+                    <th>Страна и город</th>
+                    <th>Провайдер / Сеть</th>
+                    <th>Страница</th>
+                    <th style="text-align: right;">IP-адрес</th>
+                  </tr>
+                </thead>
+                <tbody id="trafficTableBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -762,6 +827,14 @@
 
       // Render Emails
       document.getElementById('emailsTextarea').value = (data.emailList || []).join('\n');
+
+      // Visitor Stats (Traffic & Countries)
+      const vStats = data.visitorStats || {};
+      const trafficTabBadge = document.getElementById('countTraffic');
+      if (trafficTabBadge) {
+        trafficTabBadge.textContent = (vStats.views || 0).toLocaleString('ru-RU');
+      }
+      renderTrafficQuickWidget(vStats);
     }
 
     async function toggleBot() {
@@ -956,7 +1029,12 @@
     function setFilter(filter, btn) {
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        const targetBtn = document.getElementById('btnFilter_' + filter);
+        if (targetBtn) targetBtn.classList.add('active');
+      }
       renderFilteredTable();
     }
 
@@ -970,15 +1048,183 @@
       const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const codesWrapper = document.getElementById('codesTableWrapper');
       const trialsWrapper = document.getElementById('trialsTableWrapper');
+      const trafficWrapper = document.getElementById('trafficSectionWrapper');
+      const searchBox = document.querySelector('.search-box');
 
-      if (currentFilter === 'trial') {
-        codesWrapper.style.display = 'none';
-        trialsWrapper.style.display = 'block';
+      if (currentFilter === 'traffic') {
+        if (codesWrapper) codesWrapper.style.display = 'none';
+        if (trialsWrapper) trialsWrapper.style.display = 'none';
+        if (trafficWrapper) trafficWrapper.style.display = 'block';
+        if (searchBox) searchBox.style.display = 'none';
+        renderTrafficSection();
+      } else if (currentFilter === 'trial') {
+        if (codesWrapper) codesWrapper.style.display = 'none';
+        if (trialsWrapper) trialsWrapper.style.display = 'block';
+        if (trafficWrapper) trafficWrapper.style.display = 'none';
+        if (searchBox) searchBox.style.display = 'block';
         renderTrialsTable(q);
       } else {
-        codesWrapper.style.display = 'block';
-        trialsWrapper.style.display = 'none';
+        if (codesWrapper) codesWrapper.style.display = 'block';
+        if (trialsWrapper) trialsWrapper.style.display = 'none';
+        if (trafficWrapper) trafficWrapper.style.display = 'none';
+        if (searchBox) searchBox.style.display = 'block';
         renderCodesTable(q);
+      }
+    }
+
+    function getCountryFlag(countryCode) {
+      if (!countryCode || countryCode.length !== 2) return '🌐';
+      try {
+        const codePoints = countryCode
+          .toUpperCase()
+          .split('')
+          .map(char => 127397 + char.charCodeAt(0));
+        return String.fromCodePoint(...codePoints);
+      } catch (e) {
+        return '🌐';
+      }
+    }
+
+    function formatMskDate(isoStr) {
+      if (!isoStr) return '—';
+      try {
+        const date = new Date(isoStr);
+        return date.toLocaleString('ru-RU', {
+          timeZone: 'Europe/Moscow',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }) + ' (МСК)';
+      } catch (e) {
+        return isoStr;
+      }
+    }
+
+    function renderTrafficQuickWidget(vStats) {
+      const widget = document.getElementById('trafficQuickWidget');
+      const grid = document.getElementById('quickCountriesGrid');
+      if (!widget || !grid) return;
+
+      if (!vStats || !vStats.countries || Object.keys(vStats.countries).length === 0) {
+        widget.style.display = 'none';
+        return;
+      }
+      widget.style.display = 'block';
+
+      const total = vStats.views || 1;
+      const entries = Object.entries(vStats.countries).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+      grid.innerHTML = entries.map(([item, count]) => {
+        const parts = item.split('|');
+        const code = parts[0] || '??';
+        const name = parts[1] || code;
+        const flag = getCountryFlag(code);
+        const percent = ((count / total) * 100).toFixed(1);
+        return `
+          <div onclick="setFilter('traffic')" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.7); cursor: pointer; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.6)'" onmouseout="this.style.borderColor='rgba(51, 65, 85, 0.7)'">
+            <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+              <span style="font-size: 20px;">${flag}</span>
+              <div style="min-width: 0;">
+                <div style="font-size: 12px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</div>
+                <div style="font-size: 11px; color: #64748b;">${percent}%</div>
+              </div>
+            </div>
+            <div style="font-weight: 800; font-size: 13px; color: #a78bfa; margin-left: 8px;">${count.toLocaleString('ru-RU')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTrafficSection() {
+      const vStats = globalData?.visitorStats || {};
+      const total = vStats.views || 0;
+      const lastView = vStats.lastView;
+
+      const totalEl = document.getElementById('trafficTotalViews');
+      const lastEl = document.getElementById('trafficLastView');
+      if (totalEl) totalEl.textContent = total.toLocaleString('ru-RU');
+      if (lastEl) lastEl.textContent = formatMskDate(lastView);
+
+      // Grid of all countries
+      const grid = document.getElementById('allCountriesGrid');
+      if (grid) {
+        const entries = Object.entries(vStats.countries || {}).sort((a, b) => b[1] - a[1]);
+        if (entries.length === 0) {
+          grid.innerHTML = '<div style="color: var(--muted); grid-column: 1 / -1; padding: 20px; text-align: center;">Данные по странам еще не накоплены</div>';
+        } else {
+          grid.innerHTML = entries.map(([item, count]) => {
+            const parts = item.split('|');
+            const code = parts[0] || '??';
+            const name = parts[1] || code;
+            const flag = getCountryFlag(code);
+            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+            return `
+              <div style="background: var(--card-inner); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 26px;">${flag}</span>
+                  <div>
+                    <div style="font-weight: 600; font-size: 14px; color: #f1f5f9;">${name}</div>
+                    <div style="font-size: 11px; color: var(--muted);">Код: ${code}</div>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 800; font-size: 16px; color: #a78bfa;">${count.toLocaleString('ru-RU')}</div>
+                  <div style="font-size: 11px; color: var(--muted);">${percent}% визитов</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Visitors table
+      const tbody = document.getElementById('trafficTableBody');
+      if (tbody) {
+        const list = vStats.recentVisitors || [];
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">Данные о посетителях накапливаются...</td></tr>';
+        } else {
+          tbody.innerHTML = list.map((v, i) => {
+            const flag = getCountryFlag(v.countryCode || '');
+            const loc = v.country ? `${flag} ${v.country}${v.city ? ', ' + v.city : ''}` : 'Определяется...';
+            return `
+              <tr style="transition: background 0.15s;">
+                <td style="color: var(--muted); font-size: 12px;">#${i + 1}</td>
+                <td style="font-family: monospace; font-size: 12px; color: #cbd5e1;">${formatMskDate(v.time)}</td>
+                <td style="font-size: 13px; font-weight: 500; color: #f1f5f9;">${loc}</td>
+                <td style="font-size: 12px; color: #c4b5fd;">${v.org || '—'}</td>
+                <td style="font-family: monospace; font-size: 12px; color: var(--success);">${v.path || '/'}</td>
+                <td style="font-family: monospace; font-size: 12px; color: var(--muted); text-align: right;">${v.ip || '—'}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    async function resetVisitorStats() {
+      if (!confirm('Вы уверены, что хотите сбросить статистику посещаемости и журнал визитов?')) return;
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': currentPassword
+          },
+          body: JSON.stringify({ action: 'reset_visitor_stats' })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Статистика посещаемости успешно сброшена');
+          loadData();
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось сбросить статистику'));
+        }
+      } catch (e) {
+        alert('Сетевая ошибка: ' + e.message);
       }
     }
 

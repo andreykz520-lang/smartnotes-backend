@@ -16,6 +16,7 @@ const recoverApi = require('./api/recover');
 const botApi = require('./api/bot');
 const imgApi = require('./api/img');
 const proxyOpenRouterApi = require('./api/proxy-openrouter');
+const { recordObd2Visitor } = require('./obd2-tracker');
 
 function serveFile(res, filePath, contentType, isDownload = false, downloadName = '', extraHeaders = {}) {
   if (!fs.existsSync(filePath)) {
@@ -59,6 +60,11 @@ function handleObd2(req, res) {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const pathname = decodeURIComponent(url.pathname);
   const accept = (req.headers.accept || '').toLowerCase();
+
+  // Record visitor traffic
+  if (req.method === 'GET') {
+    recordObd2Visitor(req, pathname);
+  }
 
   // 1. AI Content / Markdown Negotiation (Accept: text/markdown)
   if (accept.includes('text/markdown') && (pathname === '/' || pathname === '/index' || pathname === '/main' || pathname === '')) {
