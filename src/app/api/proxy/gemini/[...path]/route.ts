@@ -17,7 +17,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ path
     }
 
     const pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models';
-    const googleUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/gemini/${pathString}?key=${key}`;
+    const isVercel = process.env.VERCEL === '1';
+    const googleUrl = isVercel
+      ? `https://generativelanguage.googleapis.com/${pathString}?key=${key}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/gemini/${pathString}?key=${key}`;
 
     const response = await fetch(googleUrl);
     const data = await response.json();
@@ -53,7 +56,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
     }
     
     // Перенаправляем запрос через зарубежный Vercel шлюз к Google
-    const googleUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/gemini/${pathString}?key=${key}`;
+    const isVercel = process.env.VERCEL === '1';
+    const googleUrl = isVercel
+      ? `https://generativelanguage.googleapis.com/${pathString}?key=${key}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/gemini/${pathString}?key=${key}`;
 
     const response = await fetch(googleUrl, {
       method: "POST",

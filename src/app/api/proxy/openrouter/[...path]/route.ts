@@ -38,7 +38,10 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       }
     }
 
-    const openRouterUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
+    const isVercel = process.env.VERCEL === '1';
+    const openRouterUrl = isVercel
+      ? `https://openrouter.ai/api/${pathString}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       method: "POST",
@@ -76,7 +79,10 @@ export async function GET(req: NextRequest, { params }: { params?: Promise<{ pat
       apiKey = process.env.OPENROUTER_API_KEY || "";
     }
 
-    const openRouterUrl = `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
+    const isVercel = process.env.VERCEL === '1';
+    const openRouterUrl = isVercel
+      ? `https://openrouter.ai/api/${pathString}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       headers: {
