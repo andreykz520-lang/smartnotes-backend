@@ -139,6 +139,8 @@ const handleObd2 = (req, res) => {
         '.webp': 'image/webp',
         '.ico': 'image/x-icon',
         '.svg': 'image/svg+xml',
+        '.xml': 'application/xml; charset=utf-8',
+        '.txt': 'text/plain; charset=utf-8',
         '.apk': 'application/vnd.android.package-archive',
         '.zip': 'application/zip',
         '.exe': 'application/x-msdownload'
