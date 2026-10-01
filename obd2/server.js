@@ -110,6 +110,9 @@ const server = http.createServer((req, res) => {
     } else if (pathname === '/admin') {
       filePath = path.join(__dirname, 'public', 'admin.html');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'admin.html');
+    } else if (pathname === '/testers' || pathname === '/tester' || pathname === '/beta' || pathname === '/club') {
+      filePath = path.join(__dirname, 'public', 'testers.html');
+      if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'testers.html');
     } else if (pathname === '/privacy' || pathname === '/privacy-policy') {
       filePath = path.join(__dirname, 'public', 'privacy.html');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'privacy.html');

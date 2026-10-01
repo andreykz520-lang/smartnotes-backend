@@ -3,14 +3,79 @@
   "outputDirectory": "public",
   "cleanUrls": true,
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": ".*text/markdown.*"
+        }
+      ],
+      "destination": "/api/markdown-root"
+    },
+    { "source": "/.well-known/oauth-protected-resource", "destination": "/api/well-known-oauth-resource" },
+    { "source": "/.well-known/oauth-authorization-server", "destination": "/api/well-known-oauth-server" },
+    { "source": "/.well-known/openid-configuration", "destination": "/api/well-known-openid" },
+    { "source": "/.well-known/api-catalog", "destination": "/api/well-known-api-catalog" },
+    { "source": "/.well-known/ai-catalog.json", "destination": "/api/well-known-ai-catalog" },
+    { "source": "/api/agent/register", "destination": "/api/agent-register" },
+    { "source": "/api/agent/identity", "destination": "/api/agent-identity" },
+    { "source": "/api/agent/claim", "destination": "/api/agent-claim" },
+    { "source": "/api/agent/event", "destination": "/api/agent-event" },
+    { "source": "/api/agent/event/notify", "destination": "/api/agent-event" },
+    { "source": "/api/auth/token", "destination": "/api/auth-token" },
+    { "source": "/api/auth/revoke", "destination": "/api/auth-revoke" },
     { "source": "/buy", "destination": "/buy.html" },
-    { "source": "/admin", "destination": "/admin.html" }
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/testers", "destination": "/testers.html" },
+    { "source": "/club", "destination": "/testers.html" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Link", "value": "</llms.txt>; rel=\"service-doc\", </.well-known/api-catalog>; rel=\"api-catalog\"" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/llms.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "x-markdown-tokens", "value": "380" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/auth.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     },
     {

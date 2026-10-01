@@ -491,7 +491,7 @@
         <a href="#screens" class="nav-link-desktop" data-i18n="nav_screens">Скриншоты</a>
         <a href="#features" class="nav-link-desktop" data-i18n="nav_features">Возможности</a>
         <a href="#verified-cars" class="nav-link-desktop" style="color: #38bdf8; font-weight: 600;">🚘 Проверено на авто</a>
-        <a href="javascript:void(0)" onclick="toggleTesterChat(true)" class="nav-link-desktop" style="color: #a78bfa; font-weight: 600;">💬 Чат тестеров</a>
+        <a href="/testers" class="nav-link-desktop" style="color: #a78bfa; font-weight: 600;">👥 Клуб тестеров</a>
         <a href="/obd2scanai.apk" download class="apk-badge-desktop" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.4); padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
           📲 Android APK
         </a>
@@ -691,9 +691,14 @@
         <p style="font-size: 13px; color: var(--muted); margin: 0 0 14px; max-width: 800px; margin-left: auto; margin-right: auto;">
           Нам нужны тестеры <b>абсолютно любых машин</b>! Подключите ваш ELM327, проведите серию тестов (на холодную, на горячую, в движении), снимите 2-3 лога и пришлите нам на <b>autoneuro24@gmail.com</b> — и мы подарим вам вечный тариф PRO Навсегда!
         </p>
-        <button onclick="toggleTesterChat(true)" style="background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">
-          💬 Написать в чат тестеров о своей машине
-        </button>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="/testers" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);">
+            🚀 Открыть Клуб & Форум по маркам авто (/testers)
+          </a>
+          <button onclick="toggleTesterChat(true)" style="background: var(--card-inner); border: 1px solid var(--accent); color: var(--accent); padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;">
+            💬 Быстрый чат на странице
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1443,11 +1448,52 @@
       }
     }
 
+    let widgetCurrentBrand = 'all';
+    let cachedWidgetMessages = [];
+    const WIDGET_BRAND_KEYWORDS = {
+      peugeot: ["peugeot", "пежо", "citroen", "ситроен", "307", "206", "406", "407", "c4", "al4"],
+      vaz: ["ваз", "лада", "lada", "калина", "гранта", "приора", "веста", "2110", "2114", "2107", "январь", "итэлма"],
+      toyota: ["toyota", "тойота", "тоёта", "lexus", "лексус", "corolla", "camry", "rav4", "prius"],
+      renault: ["renault", "рено", "dacia", "logan", "логан", "sandero", "duster", "megane"],
+      vag: ["vag", "vw", "volkswagen", "фольксваген", "skoda", "шкода", "audi", "ауди", "octavia", "golf", "passat", "polo"],
+      kia: ["hyundai", "хендай", "хёндай", "хундай", "kia", "киа", "solaris", "солярис", "rio", "рио", "ceed", "sportage"]
+    };
+
+    function filterWidgetChat(brand, btn) {
+      widgetCurrentBrand = brand;
+      document.querySelectorAll('.widget-pill').forEach(b => {
+        b.style.background = '#172033';
+        b.style.color = '#94a3b8';
+        b.style.borderColor = '#334155';
+      });
+      if (btn) {
+        btn.style.background = 'rgba(6, 182, 212, 0.2)';
+        btn.style.color = '#fff';
+        btn.style.borderColor = 'var(--accent)';
+      }
+      
+      const carInput = document.getElementById('chatInputCar');
+      if (carInput) {
+        const defaults = {
+          peugeot: 'Peugeot 307 1.6 NFU',
+          vaz: 'ВАЗ 2110 / Granta',
+          toyota: 'Toyota Corolla 1.6',
+          renault: 'Renault Logan 1.6',
+          vag: 'VW Polo Sedan 1.6',
+          kia: 'Kia Rio / Solaris'
+        };
+        if (defaults[brand]) carInput.value = defaults[brand];
+      }
+
+      renderChatMessages(cachedWidgetMessages, true);
+    }
+
     async function loadChatMessages(scrollToBottom = false) {
       try {
         const res = await fetch('/api/chat');
         const data = await res.json();
         if (data.success && Array.isArray(data.messages)) {
+          cachedWidgetMessages = data.messages;
           renderChatMessages(data.messages, scrollToBottom);
         }
       } catch (e) {
@@ -1459,15 +1505,25 @@
       const container = document.getElementById('chatMessagesList');
       if (!container) return;
 
-      if (messages.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 13px; padding: 30px 10px;">Пока нет сообщений.<br>Напишите первым о вашей марке авто!</div>';
+      let filtered = messages;
+      if (widgetCurrentBrand !== 'all' && WIDGET_BRAND_KEYWORDS[widgetCurrentBrand]) {
+        const kws = WIDGET_BRAND_KEYWORDS[widgetCurrentBrand];
+        filtered = messages.filter(m => {
+          if (m.isAdmin) return true;
+          const str = ((m.car || '') + ' ' + (m.text || '') + ' ' + (m.name || '')).toLowerCase();
+          return kws.some(k => str.includes(k));
+        });
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 13px; padding: 30px 10px;">В этой ветке пока нет сообщений.<br>Напишите первым о вашей марке авто!</div>';
         return;
       }
 
-      const shouldScroll = forceScroll || (container.scrollHeight - container.scrollTop - container.clientHeight < 80) || (messages.length !== lastChatMessagesCount);
-      lastChatMessagesCount = messages.length;
+      const shouldScroll = forceScroll || (container.scrollHeight - container.scrollTop - container.clientHeight < 80) || (filtered.length !== lastChatMessagesCount);
+      lastChatMessagesCount = filtered.length;
 
-      container.innerHTML = messages.map(msg => {
+      container.innerHTML = filtered.map(msg => {
         const isAi = !!msg.isAi;
         const isAdmin = !!msg.isAdmin;
         let timeFormatted = '';
@@ -1629,7 +1685,19 @@
 
     <!-- Alert banner about PRO for logs -->
     <div style="background: rgba(139, 92, 246, 0.15); border-bottom: 1px solid rgba(139, 92, 246, 0.25); padding: 7px 12px; font-size: 11px; color: #ddd6fe; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-      <span>🎁 <b>Вечный PRO за лог:</b> отправьте файл лога на <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">autoneuro24@gmail.com</a></span>
+      <span>🎁 <b>Вечный PRO за лог:</b> <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">autoneuro24@gmail.com</a></span>
+      <a href="/testers" target="_blank" style="color: #c4b5fd; text-decoration: underline; font-weight: 700; white-space: nowrap;">Хаб по маркам ↗</a>
+    </div>
+
+    <!-- Brand filter row -->
+    <div style="display: flex; gap: 5px; overflow-x: auto; padding: 6px 10px; background: #0c1424; border-bottom: 1px solid rgba(51, 65, 85, 0.5); scrollbar-width: none;">
+      <button onclick="filterWidgetChat('all', this)" class="widget-pill" style="background: rgba(6, 182, 212, 0.2); color: #fff; border: 1px solid var(--accent); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🌐 Все</button>
+      <button onclick="filterWidgetChat('peugeot', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🦁 Peugeot</button>
+      <button onclick="filterWidgetChat('vaz', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🏎️ ВАЗ</button>
+      <button onclick="filterWidgetChat('toyota', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇯🇵 Toyota</button>
+      <button onclick="filterWidgetChat('renault', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇫🇷 Renault</button>
+      <button onclick="filterWidgetChat('vag', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇩🇪 VAG</button>
+      <button onclick="filterWidgetChat('kia', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇰🇷 Kia/Hyu</button>
     </div>
 
     <!-- Messages Container -->
