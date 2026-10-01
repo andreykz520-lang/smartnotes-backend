@@ -96,6 +96,23 @@
     .nav-btn.primary:hover {
       background: #22d3ee;
     }
+    /* Языковой селектор */
+    .lang-select {
+      background: rgba(15, 23, 42, 0.9);
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .lang-select:hover, .lang-select:focus {
+      border-color: var(--accent);
+    }
+
 
     .main-wrap {
       max-width: 1200px;
@@ -426,9 +443,17 @@
         <span class="logo-badge">Клуб Тестеров</span>
       </a>
       <div class="header-nav">
-        <a href="/" class="nav-btn">← На главную</a>
-        <a href="/obd2scanai.apk" download class="nav-btn primary">📲 Скачать APK (11.7 МБ)</a>
-        <a href="/admin" class="nav-btn">🔑 Админка</a>
+        <a href="/" class="nav-btn" data-i18n="testers_nav_home">← На главную</a>
+        <a href="/obd2scanai.apk" download class="nav-btn primary" data-i18n="testers_nav_apk">📲 Скачать APK (11.7 МБ)</a>
+        <a href="/admin" class="nav-btn" data-i18n="testers_nav_admin">🔑 Админка</a>
+        <select class="lang-select" id="langSelect" onchange="changeLang(this.value)">
+          <option value="ru">🇷🇺 RU</option>
+          <option value="en">🇬🇧 EN</option>
+          <option value="de">🇩🇪 DE</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="ar">🇸🇦 AR</option>
+        </select>
       </div>
     </div>
   </header>
@@ -437,9 +462,9 @@
 
     <!-- Hero Баннер -->
     <div class="hero-banner">
-      <div class="hero-tag">👥 Сообщество автовладельцев & ИИ-Диагност</div>
-      <h1 class="hero-title">Хаб & Ветка Обсуждений Бета-Тестеров</h1>
-      <p class="hero-desc">
+      <div class="hero-tag" data-i18n="testers_hero_tag">👥 Сообщество автовладельцев & ИИ-Диагност</div>
+      <h1 class="hero-title" data-i18n="testers_hero_title">Хаб & Ветка Обсуждений Бета-Тестеров</h1>
+      <p class="hero-desc" data-i18n-html="testers_hero_desc">
         Здесь автовладельцы делятся результатами подключения своих машин, подсказывают настройки адаптеров ELM327, задают вопросы <b>ИИ-Диагносту (Google Gemini)</b> и разработчику приложения.
       </p>
 
@@ -447,16 +472,16 @@
         <div class="notice-card safe">
           <span style="font-size: 24px;">🛡️</span>
           <div>
-            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px;">100% Безопасно для авто</div>
-            <div style="font-size: 12.5px; color: #cbd5e1;">Приложение работает строго в пассивном режиме чтения (Read-Only) и физически не может повредить прошивку или блоки.</div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px;" data-i18n="notice_safe_title">100% Безопасно для авто</div>
+            <div style="font-size: 12.5px; color: #cbd5e1;" data-i18n="notice_safe_desc">Приложение работает строго в пассивном режиме чтения (Read-Only) и физически не может повредить прошивку или блоки.</div>
           </div>
         </div>
 
         <div class="notice-card pro">
           <span style="font-size: 24px;">🎁</span>
           <div>
-            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px;">Пожизненный PRO Навсегда</div>
-            <div style="font-size: 12.5px; color: #cbd5e1;">Проведите <b>серию тестов</b> (холодный пуск, прогретый мотор, тест в движении) и отправьте логи на <b>autoneuro24@gmail.com</b>!</div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px;" data-i18n="notice_pro_title">Пожизненный PRO Навсегда</div>
+            <div style="font-size: 12.5px; color: #cbd5e1;" data-i18n-html="notice_pro_desc">Проведите <b>серию тестов</b> (холодный пуск, прогретый мотор, тест в движении) и отправьте логи на <b>autoneuro24@gmail.com</b>!</div>
           </div>
         </div>
       </div>
@@ -466,9 +491,9 @@
     <div class="brands-section">
       <div class="section-head">
         <div class="section-title">
-          <span>🚗</span> Выберите марку автомобиля для фильтрации:
+          <span>🚗</span> <span data-i18n="brands_filter_title">Выберите марку автомобиля для фильтрации:</span>
         </div>
-        <div style="font-size: 12px; color: var(--muted);">
+        <div style="font-size: 12px; color: var(--muted);" data-i18n="brands_filter_sub">
           Кликните по марке, чтобы увидеть статус и вопросы владельцев
         </div>
       </div>
@@ -476,37 +501,37 @@
       <div class="brand-pills">
         <button class="brand-pill active" onclick="selectBrand('all', this)">
           <span class="status-dot dot-all"></span>
-          <span>🌐 Все марки</span>
+          <span data-i18n="pill_all">🌐 Все марки</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('peugeot', this)">
           <span class="status-dot dot-tuning"></span>
-          <span>🦁 Peugeot & Citroen</span>
+          <span data-i18n="pill_peugeot">🦁 Peugeot & Citroen</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('vaz', this)">
           <span class="status-dot dot-needed"></span>
-          <span>🏎️ LADA (ВАЗ)</span>
+          <span data-i18n="pill_vaz">🏎️ LADA (ВАЗ)</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('toyota', this)">
           <span class="status-dot dot-needed"></span>
-          <span>🇯🇵 Toyota & Lexus</span>
+          <span data-i18n="pill_toyota">🇯🇵 Toyota & Lexus</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('renault', this)">
           <span class="status-dot dot-needed"></span>
-          <span>🇫🇷 Renault & Dacia</span>
+          <span data-i18n="pill_renault">🇫🇷 Renault & Dacia</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('vag', this)">
           <span class="status-dot dot-needed"></span>
-          <span>🇩🇪 VAG (VW, Skoda, Audi)</span>
+          <span data-i18n="pill_vag">🇩🇪 VAG (VW, Skoda, Audi)</span>
         </button>
 
         <button class="brand-pill" onclick="selectBrand('kia', this)">
           <span class="status-dot dot-needed"></span>
-          <span>🇰🇷 Hyundai & Kia</span>
+          <span data-i18n="pill_kia">🇰🇷 Hyundai & Kia</span>
         </button>
       </div>
     </div>
@@ -523,7 +548,7 @@
         </p>
       </div>
       <button onclick="focusChatInput()" style="background: var(--card-inner); border: 1px solid var(--accent); color: var(--accent); padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;">
-        ✍️ Написать о своей машине
+        <span data-i18n="btn_write_car">✍️ Написать о своей машине</span>
       </button>
     </div>
 
@@ -535,11 +560,11 @@
         <div class="chat-header">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 18px;">💬</span>
-            <strong style="color: #fff; font-size: 14px;" id="chatHeaderTitle">Общий чат сообщества</strong>
+            <strong style="color: #fff; font-size: 14px;" id="chatHeaderTitle" data-i18n="chat_header_general">Общий чат сообщества</strong>
             <span style="background: rgba(16, 185, 129, 0.2); color: var(--success); font-size: 11px; padding: 2px 7px; border-radius: 6px; font-weight: 700;">online</span>
           </div>
           <button onclick="loadChatMessages(true)" style="background: rgba(255, 255, 255, 0.08); border: none; color: #cbd5e1; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;">
-            🔄 Обновить
+            <span data-i18n="chat_refresh_btn">🔄 Обновить</span>
           </button>
         </div>
 
@@ -553,19 +578,19 @@
         <!-- Форма отправки сообщения -->
         <div class="chat-input-bar">
           <div class="input-row">
-            <input type="text" id="senderName" class="input-field" placeholder="Ваше имя / ник" style="flex: 1; min-width: 150px;">
-            <input type="text" id="senderCar" class="input-field" placeholder="Марка и модель авто (напр. ВАЗ 2110 1.5)" style="flex: 2; min-width: 220px;">
+            <input type="text" id="senderName" class="input-field" placeholder="Ваше имя / ник" data-i18n-placeholder="chat_ph_name" style="flex: 1; min-width: 150px;">
+            <input type="text" id="senderCar" class="input-field" placeholder="Марка и модель авто (напр. ВАЗ 2110 1.5)" data-i18n-placeholder="chat_ph_car" style="flex: 2; min-width: 220px;">
           </div>
           <div style="display: flex; gap: 10px;">
-            <input type="text" id="msgText" class="input-field" placeholder="Напишите вопрос, результат сканирования или симптомы авто..." style="flex: 1;" onkeydown="if(event.key==='Enter') sendMessage()">
+            <input type="text" id="msgText" class="input-field" placeholder="Напишите вопрос, результат сканирования или симптомы авто..." data-i18n-placeholder="chat_ph_msg" style="flex: 1;" onkeydown="if(event.key==='Enter') sendMessage()">
             <button class="btn-send" id="btnSend" onclick="sendMessage()">
-              <span>Отправить</span>
+              <span data-i18n="chat_btn_send">Отправить</span>
               <span>➤</span>
             </button>
           </div>
           <div style="font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between;">
-            <span>🤖 На вопросы мгновенно отвечает специализированный ИИ-Диагност</span>
-            <span>Серия логов = Вечный PRO 🎁</span>
+            <span data-i18n="chat_hint_ai">🤖 На вопросы мгновенно отвечает специализированный ИИ-Диагност</span>
+            <span data-i18n="chat_hint_pro">Серия логов = Вечный PRO 🎁</span>
           </div>
         </div>
       </div>
@@ -573,44 +598,44 @@
       <!-- Боковая колонка: Памятка тестеру -->
       <div class="sidebar-card">
         <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
-          <span>📋</span> Инструкция для бета-тестеров
+          <span>📋</span> <span data-i18n="sidebar_title">Инструкция для бета-тестеров</span>
         </h3>
 
         <div class="step-item">
           <div class="step-num">1</div>
           <div class="step-content">
-            <strong>Подключите адаптер</strong>
-            <p>Используйте адаптер ELM327 версии 1.5 (на чипе PIC18F25K80). Включите зажигание.</p>
+            <strong data-i18n="sidebar_s1_title">Подключите адаптер</strong>
+            <p data-i18n="sidebar_s1_desc">Используйте адаптер ELM327 версии 1.5 (на чипе PIC18F25K80). Включите зажигание.</p>
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">2</div>
           <div class="step-content">
-            <strong>Проведите серию тестов</strong>
-            <p>Не ограничивайтесь 1 разом: проверьте 1) при холодном пуске, 2) на горячем моторе, 3) в движении.</p>
+            <strong data-i18n="sidebar_s2_title">Проведите серию тестов</strong>
+            <p data-i18n="sidebar_s2_desc">Не ограничивайтесь 1 разом: проверьте 1) при холодном пуске, 2) на горячем моторе, 3) в движении.</p>
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">3</div>
           <div class="step-content">
-            <strong>Экспортируйте лог</strong>
-            <p>В боковом меню приложения нажмите <b>«Экспорт отладочного лога»</b> (файл obd2_debug.log).</p>
+            <strong data-i18n="sidebar_s3_title">Экспортируйте лог</strong>
+            <p data-i18n-html="sidebar_s3_desc">В боковом меню приложения нажмите <b>«Экспорт отладочного лога»</b> (файл obd2_debug.log).</p>
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">4</div>
           <div class="step-content">
-            <strong>Отправьте на E-mail</strong>
-            <p>Пришлите файлы на <b>autoneuro24@gmail.com</b> с маркой авто. В ответ мы сразу вышлем вечный PRO!</p>
+            <strong data-i18n="sidebar_s4_title">Отправьте на E-mail</strong>
+            <p data-i18n-html="sidebar_s4_desc">Пришлите файлы на <b>autoneuro24@gmail.com</b> с маркой авто. В ответ мы сразу вышлем вечный PRO!</p>
           </div>
         </div>
 
         <div style="background: rgba(139, 92, 246, 0.1); border: 1px dashed rgba(139, 92, 246, 0.4); border-radius: 12px; padding: 14px; text-align: center;">
-          <div style="font-size: 13px; font-weight: 700; color: #c4b5fd; margin-bottom: 4px;">Нужна прямая помощь?</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Напишите разработчику напрямую на почту</div>
+          <div style="font-size: 13px; font-weight: 700; color: #c4b5fd; margin-bottom: 4px;" data-i18n="sidebar_help_title">Нужна прямая помощь?</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;" data-i18n="sidebar_help_desc">Напишите разработчику напрямую на почту</div>
           <a href="mailto:autoneuro24@gmail.com?subject=Тестирование%20OBD2%20SCAN%20AI" style="display: inline-block; background: var(--purple); color: #fff; text-decoration: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;">
             ✉️ autoneuro24@gmail.com
           </a>
@@ -622,6 +647,419 @@
   </div>
 
   <script>
+
+    let currentLang = 'ru';
+
+    const TESTERS_TRANSLATIONS = {
+      ru: {
+        brand_all_title: "Все марки и модели автомобилей",
+        brand_all_desc: "Здесь показаны сообщения и вопросы по всем маркам. Нажмите на вкладку конкретной марки сверху, чтобы открыть ветку именно вашего автомобиля.",
+        brand_all_status: "🟡 В активной отладке",
+        brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "Для блока Bosch ME7.4.4 читается 19 параметров двигателя! Проводится проверка приборки и здоровья. Нужна серия тестов на холодную/горячую/в движении.",
+        brand_peugeot_status: "🟡 В активной отладке разработчиком",
+        brand_vaz_title: "🏎️ LADA (ВАЗ) — Январь, Итэлма, Bosch, CAN",
+        brand_vaz_desc: "Требуется проверка подключения к ЭБУ Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74 и чтение шины CAN на Granta/Vesta. Проведите серию тестов и пришлите логи!",
+        brand_vaz_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
+        brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
+        brand_toyota_desc: "Требуется проверить стабильность потока Live Data, чтение ошибок ABS/АКПП и контроль гибридной батареи. Ждём ваши серии логов для вечного PRO!",
+        brand_toyota_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
+        brand_renault_title: "🇫🇷 Renault & Dacia (Logan, Sandero, Duster, Megane)",
+        brand_renault_desc: "Нужна проверка опроса блоков Siemens EMS3132/Valeo по K-Line и CAN-шине. Проверьте чтение в разных режимах и пришлите отладочный лог!",
+        brand_renault_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
+        brand_vag_title: "🇩🇪 Volkswagen, Skoda, Audi (Polo, Golf, Octavia, Passat)",
+        brand_vag_desc: "Тестирование протокола ISO 15765 CAN и UDS команд. Необходима проверка опроса ДВС, давления наддува и чтения кодов DTC.",
+        brand_vag_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
+        brand_kia_title: "🇰🇷 Hyundai & Kia (Solaris, Rio, Ceed, Cerato, Sportage)",
+        brand_kia_desc: "Проверка скорости опроса шины CAN 500k, плавности приборной панели и чтения параметров двигателей Gamma и Nu.",
+        brand_kia_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
+        testers_nav_home: "← На главную",
+        testers_nav_apk: "📲 Скачать APK (11.7 МБ)",
+        testers_nav_admin: "🔑 Админка",
+        testers_hero_tag: "👥 Сообщество автовладельцев & ИИ-Диагност",
+        testers_hero_title: "Хаб & Ветка Обсуждений Бета-Тестеров",
+        testers_hero_desc: "Здесь автовладельцы делятся результатами подключения своих машин, подсказывают настройки адаптеров ELM327, задают вопросы <b>ИИ-Диагносту (Google Gemini)</b> и разработчику приложения.",
+        notice_safe_title: "100% Безопасно для авто",
+        notice_safe_desc: "Приложение работает строго в пассивном режиме чтения (Read-Only) и физически не может повредить прошивку или блоки.",
+        notice_pro_title: "Пожизненный PRO Навсегда",
+        notice_pro_desc: "Проведите <b>серию тестов</b> (холодный пуск, прогретый мотор, тест в движении) и отправьте логи на <b>autoneuro24@gmail.com</b>!",
+        brands_filter_title: "Выберите марку автомобиля для фильтрации:",
+        brands_filter_sub: "Кликните по марке, чтобы увидеть статус и вопросы владельцев",
+        pill_all: "🌐 Все марки",
+        pill_peugeot: "🦁 Peugeot & Citroen",
+        pill_vaz: "🏎️ LADA (ВАЗ)",
+        pill_toyota: "🇯🇵 Toyota & Lexus",
+        pill_renault: "🇫🇷 Renault & Dacia",
+        pill_vag: "🇩🇪 VAG (VW, Skoda, Audi)",
+        pill_kia: "🇰🇷 Hyundai & Kia",
+        btn_write_car: "✍️ Написать о своей машине",
+        chat_header_general: "Общий чат сообщества",
+        chat_refresh_btn: "🔄 Обновить",
+        chat_ph_name: "Ваше имя / ник",
+        chat_ph_car: "Марка и модель авто (напр. ВАЗ 2110 1.5)",
+        chat_ph_msg: "Напишите вопрос, результат сканирования или симптомы авто...",
+        chat_btn_send: "Отправить",
+        chat_hint_ai: "🤖 На вопросы мгновенно отвечает специализированный ИИ-Диагност",
+        chat_hint_pro: "Серия логов = Вечный PRO 🎁",
+        sidebar_title: "Инструкция для бета-тестеров",
+        sidebar_s1_title: "Подключите адаптер",
+        sidebar_s1_desc: "Используйте адаптер ELM327 версии 1.5 (на чипе PIC18F25K80). Включите зажигание.",
+        sidebar_s2_title: "Проведите серию тестов",
+        sidebar_s2_desc: "Не ограничивайтесь 1 разом: проверьте 1) при холодном пуске, 2) на горячем моторе, 3) в движении.",
+        sidebar_s3_title: "Экспортируйте лог",
+        sidebar_s3_desc: "В боковом меню приложения нажмите <b>«Экспорт отладочного лога»</b> (файл obd2_debug.log).",
+        sidebar_s4_title: "Отправьте на E-mail",
+        sidebar_s4_desc: "Пришлите файлы на <b>autoneuro24@gmail.com</b> с маркой авто. В ответ мы сразу вышлем вечный PRO!",
+        sidebar_help_title: "Нужна прямая помощь?",
+        sidebar_help_desc: "Напишите разработчику напрямую на почту"
+      },
+      en: {
+        brand_all_title: "All Vehicle Makes & Models",
+        brand_all_desc: "Showing diagnostic messages and questions for all car brands. Click a brand tab above to open the dedicated thread for your vehicle.",
+        brand_all_status: "🟡 In Active Debugging",
+        brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "Bosch ME7.4.4 ECU already streams 19 engine parameters! Live dashboard and health monitors are being tested across cold, warm, and driving cycles.",
+        brand_peugeot_status: "🟡 In Active Debugging",
+        brand_vaz_title: "🏎️ LADA (VAZ) — January, Itelma, Bosch, CAN",
+        brand_vaz_desc: "Testing connection to January 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 and CAN bus on Granta/Vesta. Run test series and send logs for lifetime PRO!",
+        brand_vaz_status: "🔴 TESTERS URGENTLY NEEDED",
+        brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
+        brand_toyota_desc: "Verify Live Data stream rate, ABS/AT trouble codes and hybrid battery monitoring. Submit debug logs to receive free lifetime PRO!",
+        brand_toyota_status: "🔴 TESTERS URGENTLY NEEDED",
+        brand_renault_title: "🇫🇷 Renault & Dacia (Logan, Sandero, Duster, Megane)",
+        brand_renault_desc: "Testing polling of Siemens EMS3132/Valeo ECUs over K-Line and CAN bus. Run diagnostic checks across driving modes and export logs!",
+        brand_renault_status: "🔴 TESTERS URGENTLY NEEDED",
+        brand_vag_title: "🇩🇪 Volkswagen, Skoda, Audi (Polo, Golf, Octavia, Passat)",
+        brand_vag_desc: "ISO 15765 CAN protocol & UDS routine testing. Need verification for engine telemetry, boost pressure, and DTC readout.",
+        brand_vag_status: "🔴 TESTERS URGENTLY NEEDED",
+        brand_kia_title: "🇰🇷 Hyundai & Kia (Solaris, Rio, Ceed, Cerato, Sportage)",
+        brand_kia_desc: "Verifying CAN 500k bus polling speed, dashboard response, and Gamma/Nu engine sensor readouts.",
+        brand_kia_status: "🔴 TESTERS URGENTLY NEEDED",
+        testers_nav_home: "← Home",
+        testers_nav_apk: "📲 Download APK (11.7 MB)",
+        testers_nav_admin: "🔑 Admin",
+        testers_hero_tag: "👥 Drivers Community & AI Diagnostic",
+        testers_hero_title: "Beta Testers Hub & Discussion Thread",
+        testers_hero_desc: "Here drivers share ELM327 connection results, discuss adapter setups, ask questions to <b>AI Diagnostic (Google Gemini)</b> and the developer.",
+        notice_safe_title: "100% Safe for Vehicles",
+        notice_safe_desc: "The app runs strictly in Passive Read-Only mode and physically cannot damage ECU firmware or vehicle components.",
+        notice_pro_title: "Lifetime PRO Forever",
+        notice_pro_desc: "Run a <b>series of tests</b> (cold start, warm engine, driving) and send logs to <b>autoneuro24@gmail.com</b>!",
+        brands_filter_title: "Select vehicle brand to filter:",
+        brands_filter_sub: "Click on a brand to view protocol status and community questions",
+        pill_all: "🌐 All Brands",
+        pill_peugeot: "🦁 Peugeot & Citroen",
+        pill_vaz: "🏎️ LADA (VAZ)",
+        pill_toyota: "🇯🇵 Toyota & Lexus",
+        pill_renault: "🇫🇷 Renault & Dacia",
+        pill_vag: "🇩🇪 VAG (VW, Skoda, Audi)",
+        pill_kia: "🇰🇷 Hyundai & Kia",
+        btn_write_car: "✍️ Write about my car",
+        chat_header_general: "Community Chat",
+        chat_refresh_btn: "🔄 Refresh",
+        chat_ph_name: "Your name / nickname",
+        chat_ph_car: "Car make & model (e.g. Toyota Corolla 1.6)",
+        chat_ph_msg: "Type your question, scan results, or vehicle symptoms...",
+        chat_btn_send: "Send",
+        chat_hint_ai: "🤖 Specialized AI Diagnostic replies instantly",
+        chat_hint_pro: "Series of logs = Lifetime PRO 🎁",
+        sidebar_title: "Beta Tester Guide",
+        sidebar_s1_title: "Connect Adapter",
+        sidebar_s1_desc: "Use an ELM327 v1.5 adapter (PIC18F25K80 chip). Turn ignition ON.",
+        sidebar_s2_title: "Run Series of Tests",
+        sidebar_s2_desc: "Do not test just once: verify 1) cold start, 2) warm idle, 3) in motion.",
+        sidebar_s3_title: "Export Debug Log",
+        sidebar_s3_desc: "In the side menu tap <b>«Export Debug Log»</b> (obd2_debug.log file).",
+        sidebar_s4_title: "Send via E-mail",
+        sidebar_s4_desc: "Send logs to <b>autoneuro24@gmail.com</b> with vehicle make. We will email your lifetime PRO key!",
+        sidebar_help_title: "Need direct assistance?",
+        sidebar_help_desc: "Write directly to developer email"
+      },
+      de: {
+        brand_all_title: "Alle Automarken & Modelle",
+        brand_all_desc: "Hier werden Beiträge und Fragen zu allen Marken angezeigt. Klicken Sie oben auf eine Marke, um den spezifischen Bereich für Ihr Auto zu öffnen.",
+        brand_all_status: "🟡 In aktiver Optimierung",
+        brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "Bosch ME7.4.4 liest bereits 19 Motorparameter! Testreihen bei Kaltstart, warmem Motor und Fahrt laufen.",
+        brand_peugeot_status: "🟡 In aktiver Optimierung",
+        brand_vaz_title: "🏎️ LADA (VAZ) — Januar, Itelma, Bosch, CAN",
+        brand_vaz_desc: "Prüfung der Verbindung zu Januar 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 und CAN-Bus bei Granta/Vesta erforderlich.",
+        brand_vaz_status: "🔴 TESTER DRINGEND GESUCHT",
+        brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
+        brand_toyota_desc: "Live Data Stabilität, ABS/Getriebefehler und Hybridbatterie-Überwachung testen. Logs für lebenslanges PRO senden!",
+        brand_toyota_status: "🔴 TESTER DRINGEND GESUCHT",
+        brand_renault_title: "🇫🇷 Renault & Dacia (Logan, Sandero, Duster, Megane)",
+        brand_renault_desc: "Siemens EMS3132/Valeo Steuergeräte über K-Line und CAN testen. Testreihe durchführen und Log exportieren!",
+        brand_renault_status: "🔴 TESTER DRINGEND GESUCHT",
+        brand_vag_title: "🇩🇪 Volkswagen, Skoda, Audi (Polo, Golf, Octavia, Passat)",
+        brand_vag_desc: "ISO 15765 CAN & UDS Protokolltests. Prüfung von Motorparametern, Ladedruck und DTCs erforderlich.",
+        brand_vag_status: "🔴 TESTER DRINGEND GESUCHT",
+        brand_kia_title: "🇰🇷 Hyundai & Kia (Solaris, Rio, Ceed, Cerato, Sportage)",
+        brand_kia_desc: "CAN 500k Busgeschwindigkeit, Telemetriegrafik und Parameter für Gamma- und Nu-Motoren überprüfen.",
+        brand_kia_status: "🔴 TESTER DRINGEND GESUCHT",
+        testers_nav_home: "← Startseite",
+        testers_nav_apk: "📲 APK herunterladen (11.7 MB)",
+        testers_nav_admin: "🔑 Admin",
+        testers_hero_tag: "👥 Fahrer-Community & KI-Diagnose",
+        testers_hero_title: "Beta-Tester-Hub & Diskussionsforum",
+        testers_hero_desc: "Hier tauschen Autobesitzer Erfahrungen mit ELM327 aus, teilen Verbindungsergebnisse und stellen Fragen an die <b>KI-Diagnose (Google Gemini)</b>.",
+        notice_safe_title: "100% Sicher für das Auto",
+        notice_safe_desc: "Die App arbeitet im rein passiven Nur-Lese-Modus (Read-Only) und kann Steuergeräte nicht beschädigen.",
+        notice_pro_title: "Lebenslanges PRO Geschenk",
+        notice_pro_desc: "Führen Sie eine <b>Testreihe</b> (Kaltstart, warm, Fahrt) durch und senden Sie Logs an <b>autoneuro24@gmail.com</b>!",
+        brands_filter_title: "Fahrzeugmarke zum Filtern auswählen:",
+        brands_filter_sub: "Klicken Sie auf eine Marke, um Status und Beiträge zu sehen",
+        pill_all: "🌐 Alle Marken",
+        pill_peugeot: "🦁 Peugeot & Citroen",
+        pill_vaz: "🏎️ LADA (VAZ)",
+        pill_toyota: "🇯🇵 Toyota & Lexus",
+        pill_renault: "🇫🇷 Renault & Dacia",
+        pill_vag: "🇩🇪 VAG (VW, Skoda, Audi)",
+        pill_kia: "🇰🇷 Hyundai & Kia",
+        btn_write_car: "✍️ Über mein Auto schreiben",
+        chat_header_general: "Allgemeiner Community-Chat",
+        chat_refresh_btn: "🔄 Aktualisieren",
+        chat_ph_name: "Ihr Name / Rufzeichen",
+        chat_ph_car: "Automarke & Modell (z. B. VW Golf 1.6)",
+        chat_ph_msg: "Frage stellen, Diagnoseergebnis oder Symptome beschreiben...",
+        chat_btn_send: "Senden",
+        chat_hint_ai: "🤖 KI-Diagnose antwortet sofort auf Fachfragen",
+        chat_hint_pro: "Log-Serie = Lebenslanges PRO 🎁",
+        sidebar_title: "Anleitung für Beta-Tester",
+        sidebar_s1_title: "Adapter anschließen",
+        sidebar_s1_desc: "ELM327 v1.5 Adapter verwenden (PIC18F25K80). Zündung einschalten.",
+        sidebar_s2_title: "Testreihe durchführen",
+        sidebar_s2_desc: "Nicht nur einmal: 1) Kaltstart, 2) warmgelaufener Motor, 3) während der Fahrt testen.",
+        sidebar_s3_title: "Debug-Protokoll exportieren",
+        sidebar_s3_desc: "Im Seitenmenü auf <b>«Debug-Protokoll exportieren»</b> tippen.",
+        sidebar_s4_title: "Per E-Mail senden",
+        sidebar_s4_desc: "Logs an <b>autoneuro24@gmail.com</b> senden. Wir antworten mit dem PRO-Lizenzschlüssel!",
+        sidebar_help_title: "Direkte Hilfe nötig?",
+        sidebar_help_desc: "Schreiben Sie dem Entwickler direkt per E-Mail"
+      },
+      fr: {
+        brand_all_title: "Toutes les Marques & Modèles",
+        brand_all_desc: "Retrouvez les échanges sur tous les véhicules. Cliquez sur une marque ci-dessus pour ouvrir le fil spécifique à votre voiture.",
+        brand_all_status: "🟡 En cours d'optimisation",
+        brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "Le calculateur Bosch ME7.4.4 lit déjà 19 paramètres moteur ! Des tests à froid, à chaud et sur route sont en cours.",
+        brand_peugeot_status: "🟡 En cours d'optimisation",
+        brand_vaz_title: "🏎️ LADA (VAZ) — Janvier, Itelma, Bosch, CAN",
+        brand_vaz_desc: "Tests de connexion calculateurs Janvier 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 et CAN Granta/Vesta.",
+        brand_vaz_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
+        brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
+        brand_toyota_desc: "Vérification des flux en direct, défauts ABS/boîte et batterie hybride. Envoyez vos logs pour un PRO à vie !",
+        brand_toyota_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
+        brand_renault_title: "🇫🇷 Renault & Dacia (Logan, Sandero, Duster, Megane)",
+        brand_renault_desc: "Test d'interrogation Siemens EMS3132/Valeo sur ligne K et CAN. Faites des essais et partagez vos logs !",
+        brand_renault_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
+        brand_vag_title: "🇩🇪 Volkswagen, Skoda, Audi (Polo, Golf, Octavia, Passat)",
+        brand_vag_desc: "Tests des protocoles ISO 15765 CAN & UDS. Lecture des paramètres moteur, pression de turbo et codes défaut.",
+        brand_vag_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
+        brand_kia_title: "🇰🇷 Hyundai & Kia (Solaris, Rio, Ceed, Cerato, Sportage)",
+        brand_kia_desc: "Vérification de la vitesse CAN 500k, fluidité des jauges et capteurs moteurs Gamma / Nu.",
+        brand_kia_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
+        testers_nav_home: "← Accueil",
+        testers_nav_apk: "📲 Télécharger APK (11.7 Mo)",
+        testers_nav_admin: "🔑 Admin",
+        testers_hero_tag: "👥 Communauté & Diagnostic IA",
+        testers_hero_title: "Hub & Forum des Bêta-Testeurs",
+        testers_hero_desc: "Partagez les tests de vos véhicules avec l'adaptateur ELM327, échangez vos réglages et posez vos questions au <b>Diagnostic IA (Google Gemini)</b>.",
+        notice_safe_title: "100% Sûr pour le véhicule",
+        notice_safe_desc: "L'application fonctionne en lecture seule passive (Read-Only) et ne peut pas altérer vos calculateurs.",
+        notice_pro_title: "Licence PRO à vie offerte",
+        notice_pro_desc: "Réalisez une <b>série de tests</b> (démarrage à froid, moteur chaud, en roulant) et envoyez les logs à <b>autoneuro24@gmail.com</b> !",
+        brands_filter_title: "Sélectionnez une marque pour filtrer :",
+        brands_filter_sub: "Cliquez sur une marque pour voir le statut et les retours des testeurs",
+        pill_all: "🌐 Toutes Marques",
+        pill_peugeot: "🦁 Peugeot & Citroen",
+        pill_vaz: "🏎️ LADA (VAZ)",
+        pill_toyota: "🇯🇵 Toyota & Lexus",
+        pill_renault: "🇫🇷 Renault & Dacia",
+        pill_vag: "🇩🇪 VAG (VW, Skoda, Audi)",
+        pill_kia: "🇰🇷 Hyundai & Kia",
+        btn_write_car: "✍️ Écrire sur mon véhicule",
+        chat_header_general: "Discussion de la Communauté",
+        chat_refresh_btn: "🔄 Rafraîchir",
+        chat_ph_name: "Votre nom / pseudo",
+        chat_ph_car: "Marque et modèle (ex. Peugeot 307 1.6)",
+        chat_ph_msg: "Posez une question, partagez vos résultats ou symptômes...",
+        chat_btn_send: "Envoyer",
+        chat_hint_ai: "🤖 Le Diagnostic IA répond immédiatement à vos questions",
+        chat_hint_pro: "Série de logs = Accès PRO à vie 🎁",
+        sidebar_title: "Guide du Bêta-Testeur",
+        sidebar_s1_title: "Branchez l'adaptateur",
+        sidebar_s1_desc: "Utilisez un boîtier ELM327 v1.5 (puce PIC18F25K80). Mettez le contact.",
+        sidebar_s2_title: "Faites une série de tests",
+        sidebar_s2_desc: "Ne vous limitez pas à un essai : testez à froid, à chaud et en conduite.",
+        sidebar_s3_title: "Exportez le journal",
+        sidebar_s3_desc: "Dans le menu latéral, cliquez sur <b>«Exporter le journal»</b> (fichier obd2_debug.log).",
+        sidebar_s4_title: "Envoyez par e-mail",
+        sidebar_s4_desc: "Envoyez le fichier à <b>autoneuro24@gmail.com</b> avec votre modèle. Recevez votre clé PRO !",
+        sidebar_help_title: "Besoin d'aide ?",
+        sidebar_help_desc: "Contactez directement le développeur par e-mail"
+      },
+      es: {
+        brand_all_title: "Todas las Marcas y Modelos",
+        brand_all_desc: "Mostrando consultas y pruebas para todas las marcas. Haz clic en una marca arriba para abrir el canal de tu vehículo.",
+        brand_all_status: "🟡 En depuración activa",
+        brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "¡La centralita Bosch ME7.4.4 ya lee 19 parámetros del motor! Se realizan pruebas en frío, caliente y en marcha.",
+        brand_peugeot_status: "🟡 En depuración activa",
+        brand_vaz_title: "🏎️ LADA (VAZ) — Enero, Itelma, Bosch, CAN",
+        brand_vaz_desc: "Se requiere probar conexión a Enero 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 y CAN Granta/Vesta.",
+        brand_vaz_status: "🔴 SE BUSCAN TESTERS URGENTE",
+        brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
+        brand_toyota_desc: "Verificar telemetría en vivo, códigos de falla ABS/caja y batería híbrida. ¡Envía logs para PRO vitalicio!",
+        brand_toyota_status: "🔴 SE BUSCAN TESTERS URGENTE",
+        brand_renault_title: "🇫🇷 Renault & Dacia (Logan, Sandero, Duster, Megane)",
+        brand_renault_desc: "Pruebas de lectura en calculadores Siemens EMS3132/Valeo por K-Line y CAN. ¡Genera tus logs!",
+        brand_renault_status: "🔴 SE BUSCAN TESTERS URGENTE",
+        brand_vag_title: "🇩🇪 Volkswagen, Skoda, Audi (Polo, Golf, Octavia, Passat)",
+        brand_vag_desc: "Pruebas de protocolo ISO 15765 CAN y rutinas UDS. Lectura de parámetros de motor, turbo y códigos DTC.",
+        brand_vag_status: "🔴 SE BUSCAN TESTERS URGENTE",
+        brand_kia_title: "🇰🇷 Hyundai & Kia (Solaris, Rio, Ceed, Cerato, Sportage)",
+        brand_kia_desc: "Comprobación de tasa de muestreo CAN 500k, fluidez de tacómetros y motores Gamma y Nu.",
+        brand_kia_status: "🔴 SE BUSCAN TESTERS URGENTE",
+        testers_nav_home: "← Inicio",
+        testers_nav_apk: "📲 Descargar APK (11.7 MB)",
+        testers_nav_admin: "🔑 Admin",
+        testers_hero_tag: "👥 Comunidad de Conductores e IA",
+        testers_hero_title: "Hub y Foro de Beta Testers",
+        testers_hero_desc: "Aquí los conductores comparten resultados con ELM327, configuran adaptadores y hacen consultas al <b>Diagnóstico IA (Google Gemini)</b> y al desarrollador.",
+        notice_safe_title: "100% Seguro para el auto",
+        notice_safe_desc: "La aplicación opera estrictamente en modo pasivo de sólo lectura (Read-Only) sin riesgo para las centralitas.",
+        notice_pro_title: "Licencia PRO de por vida",
+        notice_pro_desc: "¡Realiza una <b>serie de pruebas</b> (arranque en frío, motor caliente, en marcha) y envía los logs a <b>autoneuro24@gmail.com</b>!",
+        brands_filter_title: "Selecciona una marca para filtrar:",
+        brands_filter_sub: "Haz clic en una marca para ver el estado del protocolo y consultas",
+        pill_all: "🌐 Todas las marcas",
+        pill_peugeot: "🦁 Peugeot & Citroen",
+        pill_vaz: "🏎️ LADA (VAZ)",
+        pill_toyota: "🇯🇵 Toyota & Lexus",
+        pill_renault: "🇫🇷 Renault & Dacia",
+        pill_vag: "🇩🇪 VAG (VW, Skoda, Audi)",
+        pill_kia: "🇰🇷 Hyundai & Kia",
+        btn_write_car: "✍️ Comentar sobre mi auto",
+        chat_header_general: "Chat General de la Comunidad",
+        chat_refresh_btn: "🔄 Actualizar",
+        chat_ph_name: "Tu nombre / alias",
+        chat_ph_car: "Marca y modelo (ej. Toyota Corolla 1.6)",
+        chat_ph_msg: "Escribe una pregunta, resultado del escáner o síntomas...",
+        chat_btn_send: "Enviar",
+        chat_hint_ai: "🤖 El Diagnóstico IA responde al instante",
+        chat_hint_pro: "Serie de logs = PRO de por vida 🎁",
+        sidebar_title: "Guía para Beta Testers",
+        sidebar_s1_title: "Conecta el adaptador",
+        sidebar_s1_desc: "Usa un adaptador ELM327 v1.5 (chip PIC18F25K80). Pon el contacto.",
+        sidebar_s2_title: "Haz una serie de pruebas",
+        sidebar_s2_desc: "No pruebes sólo una vez: 1) en frío, 2) motor a temperatura, 3) en movimiento.",
+        sidebar_s3_title: "Exporta el registro",
+        sidebar_s3_desc: "En el menú lateral pulsa <b>«Exportar registro de depuración»</b>.",
+        sidebar_s4_title: "Envía por correo",
+        sidebar_s4_desc: "Envía los archivos a <b>autoneuro24@gmail.com</b> con tu modelo. ¡Recibe tu clave PRO!",
+        sidebar_help_title: "¿Necesitas ayuda directa?",
+        sidebar_help_desc: "Escribe directamente al desarrollador"
+      },
+      ar: {
+        brand_all_title: "جميع الماركات والموديلات",
+        brand_all_desc: "عرض الأسئلة والمشاركات لجميع ماركات السيارات. اضغط على أي ماركة أعلاه لفتح القسم المخصص لسيارتك.",
+        brand_all_status: "🟡 قيد الاختبار النشط",
+        brand_peugeot_title: "🦁 بيجو وستروين (ME7.4.4, AL4, KWP2000)",
+        brand_peugeot_desc: "وحدة التحكم Bosch ME7.4.4 تقرأ بالفعل 19 مؤشراً للمحرك! الاختبارات مستمرة في مختلف ظروف القيادة.",
+        brand_peugeot_status: "🟡 قيد الاختبار النشط",
+        brand_vaz_title: "🏎️ لادا (VAZ) — يناير، إيتيلما، بوش، CAN",
+        brand_vaz_desc: "مطلوب اختبار الاتصال بوحدات التحكم يناير 5.1/7.2، بوش M7.9.7، إيتيلما وقراءة ناقل CAN.",
+        brand_vaz_status: "🔴 مطلوب مختبرين بشكل عاجل",
+        brand_toyota_title: "🇯🇵 تويوتا ولكزس (كورولا، كامري، RAV4، بريوس)",
+        brand_toyota_desc: "التحقق من استقرار قراءة الحساسات الحية، فحص المكابح والقير ومراقبة بطارية الهايبرد. أرسل السجلات!",
+        brand_toyota_status: "🔴 مطلوب مختبرين بشكل عاجل",
+        brand_renault_title: "🇫🇷 رينو وداسيا (لوغان، سانديرو، داستر، ميغان)",
+        brand_renault_desc: "اختبار قراءة وحدات التحكم Siemens EMS3132/Valeo عبر K-Line و CAN. التقط سجلات تصحيح الأخطاء!",
+        brand_renault_status: "🔴 مطلوب مختبرين بشكل عاجل",
+        brand_vag_title: "🇩🇪 فولكس واجن وسكودا وأودي (بولو، جولف، أوكتافيا، باسات)",
+        brand_vag_desc: "اختبارات بروتوكول ISO 15765 CAN وأوامر UDS. فحص المحرك وضغط التوربو وأكواد الأعطال.",
+        brand_vag_status: "🔴 مطلوب مختبرين بشكل عاجل",
+        brand_kia_title: "🇰🇷 هيونداي وكيا (سولاريس، ريو، سيراتو، سبورتاج)",
+        brand_kia_desc: "التحقق من سرعة قراءة ناقل CAN 500k وسلاسة العدادات ومعايير محركات Gamma و Nu.",
+        brand_kia_status: "🔴 مطلوب مختبرين بشكل عاجل",
+        testers_nav_home: "← الرئيسية",
+        testers_nav_apk: "📲 تنزيل APK (11.7 ميغابايت)",
+        testers_nav_admin: "🔑 لوحة الإدارة",
+        testers_hero_tag: "👥 مجتمع السائقين والتشخيص بالذكاء الاصطناعي",
+        testers_hero_title: "ملتقى ومنتدى المختبرين التجريبيين",
+        testers_hero_desc: "هنا يشارك السائقون نتائج الفحص عبر محولات ELM327، ويطرحون استفساراتهم على <b>خبير الذكاء الاصطناعي (Google Gemini)</b> والمطور.",
+        notice_safe_title: "100% آمن تماماً على السيارة",
+        notice_safe_desc: "يعمل التطبيق حصرياً في وضع القراءة السلبية (Read-Only) ولا يمكنه إلحاق أي ضرر بوحدات التحكم.",
+        notice_pro_title: "ترخيص PRO دائم مدى الحياة",
+        notice_pro_desc: "قم بإجراء <b>سلسلة اختبارات</b> (تشغيل على البارد، محرك ساخن، أثناء القيادة) وأرسل السجلات إلى <b>autoneuro24@gmail.com</b>!",
+        brands_filter_title: "اختر ماركة السيارة للتصفية:",
+        brands_filter_sub: "اضغط على الماركة لعرض حالة البروتوكول وتجارب الأعضاء",
+        pill_all: "🌐 كل الماركات",
+        pill_peugeot: "🦁 بيجو وستروين",
+        pill_vaz: "🏎️ لادا (VAZ)",
+        pill_toyota: "🇯🇵 تويوتا ولكزس",
+        pill_renault: "🇫🇷 رينو وداسيا",
+        pill_vag: "🇩🇪 فولكس واجن وسكودا وأودي",
+        pill_kia: "🇰🇷 هيونداي وكيا",
+        btn_write_car: "✍️ شارك تجربة سيارتك",
+        chat_header_general: "الدردشة العامة للمجتمع",
+        chat_refresh_btn: "🔄 تحديث",
+        chat_ph_name: "اسمك / لقبك",
+        chat_ph_car: "نوع وطراز السيارة (مثال تويوتا كورولا 1.6)",
+        chat_ph_msg: "اطرح سؤالك، شارك نتائج الفحص أو أعراض السيارة...",
+        chat_btn_send: "إرسال",
+        chat_hint_ai: "🤖 يجيب خبير الذكاء الاصطناعي فوراً على الاستفسارات الفنية",
+        chat_hint_pro: "سلسلة سجلات = ترخيص PRO دائم 🎁",
+        sidebar_title: "إرشادات المختبرين التجريبيين",
+        sidebar_s1_title: "توصيل المحول",
+        sidebar_s1_desc: "استخدم محول ELM327 إصدار 1.5 (شريحة PIC18F25K80). شغّل مفتاح الإشعال.",
+        sidebar_s2_title: "إجراء سلسلة اختبارات",
+        sidebar_s2_desc: "لا تكتفِ بمرة واحدة: 1) تشغيل المحرك بارداً، 2) بعد الإحماء، 3) أثناء القيادة.",
+        sidebar_s3_title: "تصدير السجل",
+        sidebar_s3_desc: "من القائمة الجانبية اضغط على <b>«تصدير سجل التشخيص»</b>.",
+        sidebar_s4_title: "الإرسال عبر البريد",
+        sidebar_s4_desc: "أرسل السجلات إلى <b>autoneuro24@gmail.com</b> مع ذكر نوع السيارة لتحصل على كود PRO!",
+        sidebar_help_title: "هل تحتاج مساعدة مباشرة؟",
+        sidebar_help_desc: "راسل المطور مباشرة عبر البريد الإلكتروني"
+      }
+    };
+
+    function changeLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('obd2_lang', lang);
+      const dict = TESTERS_TRANSLATIONS[lang] || TESTERS_TRANSLATIONS.ru;
+
+      if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
+
+      const langSelect = document.getElementById('langSelect');
+      if (langSelect && langSelect.value !== lang) {
+        langSelect.value = lang;
+      }
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerText = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) el.placeholder = dict[key];
+      });
+
+      // Update brand detail card with translated metadata
+      updateBrandCardUI();
+    }
+
     const BRAND_METADATA = {
       all: {
         title: "Все марки и модели автомобилей",
@@ -681,6 +1119,33 @@
       }
     };
 
+
+    function updateBrandCardUI() {
+      const meta = BRAND_METADATA[currentSelectedBrand] || BRAND_METADATA.all;
+      const dict = TESTERS_TRANSLATIONS[currentLang] || TESTERS_TRANSLATIONS.ru;
+      
+      const titleElem = document.getElementById('brandTitle');
+      const descElem = document.getElementById('brandDesc');
+      const badgeElem = document.getElementById('brandStatusBadge');
+      const chatTitleElem = document.getElementById('chatHeaderTitle');
+      
+      const title = dict['brand_' + currentSelectedBrand + '_title'] || meta.title;
+      const desc = dict['brand_' + currentSelectedBrand + '_desc'] || meta.desc;
+      const status = dict['brand_' + currentSelectedBrand + '_status'] || meta.status;
+
+      if (titleElem) titleElem.innerText = title;
+      if (descElem) descElem.innerText = desc;
+      if (badgeElem) {
+        badgeElem.innerText = status;
+        badgeElem.className = 'brand-badge ' + meta.badgeClass;
+      }
+      if (chatTitleElem) {
+        chatTitleElem.innerText = currentSelectedBrand === 'all' 
+          ? (dict.chat_header_general || 'Общий чат сообщества')
+          : `${title}`;
+      }
+    }
+
     let currentSelectedBrand = 'all';
     let allCachedMessages = [];
     let chatTimer = null;
@@ -694,16 +1159,8 @@
 
       const meta = BRAND_METADATA[brandKey] || BRAND_METADATA.all;
       
-      // Обновляем инфо-карточку
-      document.getElementById('brandTitle').innerText = meta.title;
-      document.getElementById('brandDesc').innerText = meta.desc;
-      
-      const badge = document.getElementById('brandStatusBadge');
-      badge.innerText = meta.status;
-      badge.className = 'brand-badge ' + meta.badgeClass;
-
-      // Обновляем заголовок чата
-      document.getElementById('chatHeaderTitle').innerText = brandKey === 'all' ? 'Общий чат сообщества' : `Ветка: ${meta.title}`;
+      // Обновляем инфо-карточку и заголовок
+      updateBrandCardUI();
 
       // Предзаполняем поле авто
       const carInput = document.getElementById('senderCar');
@@ -846,7 +1303,7 @@
         alert('Ошибка связи: ' + e.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>Отправить</span><span>➤</span>';
+        btn.innerHTML = '<span data-i18n="chat_btn_send">Отправить</span><span>➤</span>';
         textInput.focus();
       }
     }
@@ -869,6 +1326,10 @@
       if (savedCar) document.getElementById('senderCar').value = savedCar;
 
       loadChatMessages(true);
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('obd2_lang') || 'ru';
+      changeLang(savedLang);
+    });
       chatTimer = setInterval(() => loadChatMessages(false), 8000);
     });
   </script>
