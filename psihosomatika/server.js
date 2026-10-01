@@ -313,6 +313,9 @@ function renderStatsHtml(stats) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Статистика переходов — БИОпсихосоматика</title>
   <meta http-equiv="refresh" content="15">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2026">
+  <link rel="alternate icon" type="image/png" href="/favicon.png?v=2026">
+  <link rel="shortcut icon" href="/favicon.ico?v=2026">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #090e17; color: #f8fafc; padding: 30px 20px; min-height: 100vh; }
