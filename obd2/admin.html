@@ -332,6 +332,7 @@
         </div>
       </div>
       <div class="header-links">
+        <button onclick="open2FaModal()" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); padding: 8px 14px; font-size: 13px; border-radius: 8px; font-weight: 600;">📱 2FA Аутентификатор</button>
         <a href="/" target="_blank">🌐 Сайт</a>
         <a href="/buy" target="_blank">💳 Страница оплаты</a>
         <button onclick="logout()" style="background: transparent; border: 1px solid var(--border); padding: 8px 16px; font-size: 13px;">Выйти</button>
@@ -341,10 +342,29 @@
     <!-- Форма входа -->
     <div id="loginCard" class="card" style="max-width: 480px; margin: 60px auto;">
       <h2 style="text-align: center; margin-bottom: 8px;">🔐 Вход в Админ-панель</h2>
-      <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;">Введите мастер-пароль администратора (ADMIN_PASSWORD):</p>
-      <input type="password" id="adminPassword" placeholder="Пароль администратора" onkeydown="if(event.key==='Enter') login()">
-      <button onclick="login()" style="width: 100%; margin-top: 14px; padding: 14px; font-size: 15px;">Войти в систему</button>
+      <p style="color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 20px;">Введите пароль или 6-значный код Google Authenticator (2FA):</p>
+      
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 600;">Пароль администратора:</label>
+        <input type="password" id="adminPassword" placeholder="Пароль администратора" onkeydown="if(event.key==='Enter') login()">
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="font-size: 12px; color: var(--muted); font-weight: 600;">📱 Код Google Authenticator (2FA):</label>
+          <span style="font-size: 11px; color: var(--muted);">6 цифр</span>
+        </div>
+        <input type="text" id="adminTotp" maxlength="6" placeholder="Например: 582910" style="font-family: monospace; font-size: 16px; letter-spacing: 3px; text-align: center;" onkeydown="if(event.key==='Enter') login()">
+      </div>
+
+      <button onclick="login()" style="width: 100%; padding: 14px; font-size: 15px;">Войти в систему</button>
       <p id="loginError" style="color: var(--danger); display: none; margin-top: 12px; text-align: center; font-size: 13px;"></p>
+
+      <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center;">
+        <span style="font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px;">
+          🛡️ Защита: Пароль + Google Authenticator (2FA TOTP)
+        </span>
+      </div>
     </div>
 
     <!-- Основной дашборд -->
@@ -682,8 +702,46 @@
 
   </div>
 
+  <!-- Модальное окно 2FA Google Authenticator -->
+  <div id="modal2Fa" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: 20px; max-width: 520px; width: 100%; padding: 26px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">📱</span>
+          <h3 style="margin: 0; font-size: 18px; color: #fff;">Google Authenticator (2FA)</h3>
+        </div>
+        <button onclick="close2FaModal()" style="background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px 8px;">✕</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 16px;">
+        Для двухфакторного входа привяжите секретный ключ к приложению <b>Google Authenticator</b> (или Яндекс Ключ / Microsoft Authenticator) на вашем смартфоне:
+      </p>
+
+      <div style="background: var(--card-inner); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+        <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 6px;">Секретный ключ настройки:</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <span id="totpSecretKeyText" style="font-family: monospace; font-size: 15px; font-weight: 700; color: #c4b5fd; letter-spacing: 1px;">KREUWT2ZGBMUO2DGKNIVSR27GFMU242T</span>
+          <button onclick="copyTotpSecret()" class="btn-cyan" style="padding: 6px 12px; font-size: 12px;">Копировать</button>
+        </div>
+      </div>
+
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: 12px; padding: 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;">
+        <strong style="color: #cbd5e1; display: block; margin-bottom: 6px;">Инструкция по подключению:</strong>
+        <div>1. Откройте <b>Google Authenticator</b> на телефоне.</div>
+        <div style="color: #10b981; font-weight: 600; margin: 4px 0;">⚡ Если у вас уже добавлен ключ SmartNotes AI — код подходит и сюда (тот же самый ключ)!</div>
+        <div>2. Либо нажмите <b>«+» ➔ «Ввести ключ настройки»</b>.</div>
+        <div>3. Имя аккаунта: <b>OBD2 SCAN AI</b></div>
+        <div>4. Ключ: вставьте скопированный ключ выше.</div>
+        <div>5. Тип ключа: <b>По времени (Time-based)</b> ➔ нажмите <b>«Добавить»</b>.</div>
+      </div>
+
+      <button onclick="close2FaModal()" class="btn-cyan" style="width: 100%; padding: 12px; font-size: 14px;">Понятно, готово!</button>
+    </div>
+  </div>
+
   <script>
     let currentPassword = localStorage.getItem('admin_pwd') || '';
+    let currentTotp = localStorage.getItem('admin_totp') || '';
     let globalData = null;
     let currentFilter = 'all';
     let lastGenerated = [];
@@ -691,29 +749,56 @@
     window.addEventListener('DOMContentLoaded', () => {
       if (currentPassword) {
         document.getElementById('adminPassword').value = currentPassword;
+      }
+      if (currentTotp) {
+        document.getElementById('adminTotp').value = currentTotp;
+      }
+      if (currentPassword || currentTotp) {
         login();
       }
     });
 
+    function getAuthHeaders() {
+      const headers = {};
+      if (currentPassword) headers['x-admin-password'] = currentPassword;
+      if (currentTotp) headers['x-admin-totp'] = currentTotp;
+      return headers;
+    }
+
     async function login() {
       const pwd = document.getElementById('adminPassword').value.trim();
+      const totp = document.getElementById('adminTotp').value.trim();
       const err = document.getElementById('loginError');
       err.style.display = 'none';
 
+      if (!pwd && !totp) {
+        err.innerText = 'Введите пароль или 6-значный код Google Authenticator';
+        err.style.display = 'block';
+        return;
+      }
+
       try {
-        const res = await fetch('/api/admin', {
-          headers: { 'x-admin-password': pwd }
-        });
+        const headers = {};
+        if (pwd) headers['x-admin-password'] = pwd;
+        if (totp) headers['x-admin-totp'] = totp;
+
+        const res = await fetch('/api/admin', { headers: headers });
         const data = await res.json();
         if (data.success) {
-          currentPassword = pwd;
-          localStorage.setItem('admin_pwd', pwd);
+          if (pwd) {
+            currentPassword = pwd;
+            localStorage.setItem('admin_pwd', pwd);
+          }
+          if (totp) {
+            currentTotp = totp;
+            localStorage.setItem('admin_totp', totp);
+          }
           document.getElementById('loginCard').style.display = 'none';
           document.getElementById('adminContent').style.display = 'block';
           globalData = data;
           renderDashboard(data);
         } else {
-          err.innerText = data.error || 'Неверный пароль администратора';
+          err.innerText = data.error || 'Неверный пароль или код Google Authenticator';
           err.style.display = 'block';
         }
       } catch (e) {
@@ -724,13 +809,33 @@
 
     function logout() {
       localStorage.removeItem('admin_pwd');
+      localStorage.removeItem('admin_totp');
+      currentPassword = '';
+      currentTotp = '';
       location.reload();
+    }
+
+    function open2FaModal() {
+      const m = document.getElementById('modal2Fa');
+      if (m) m.style.display = 'flex';
+    }
+
+    function close2FaModal() {
+      const m = document.getElementById('modal2Fa');
+      if (m) m.style.display = 'none';
+    }
+
+    function copyTotpSecret() {
+      const secret = document.getElementById('totpSecretKeyText')?.innerText || 'KREUWT2ZGBMUO2DGKNIVSR27GFMU242T';
+      navigator.clipboard.writeText(secret).then(() => {
+        alert('Секретный ключ скопирован в буфер обмена!');
+      });
     }
 
     async function loadData() {
       try {
         const res = await fetch('/api/admin', {
-          headers: { 'x-admin-password': currentPassword }
+          headers: getAuthHeaders()
         });
         const data = await res.json();
         if (data.success) {
@@ -738,6 +843,9 @@
           renderDashboard(data);
         }
       } catch (e) {
+        console.error('Data load error:', e);
+      }
+    }
         console.error('Data load error:', e);
       }
     }
@@ -850,7 +958,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'toggle_bot', enabled: nextState })
         });
@@ -877,7 +986,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'save_bot_token', token: token })
         });
@@ -906,7 +1016,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'test_bot', token: token })
         });
@@ -940,7 +1051,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'set_webhook', token: token, webhookUrl: 'https://obd2scanai.ru/api/bot' })
         });
@@ -972,7 +1084,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'save_resend_key', token: key })
         });
@@ -1005,7 +1118,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'test_email', targetEmail: email })
         });
@@ -1212,7 +1326,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'reset_visitor_stats' })
         });
@@ -1360,7 +1475,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': currentPassword
+            'x-admin-password': currentPassword,
+            'x-admin-totp': currentTotp
           },
           body: JSON.stringify({ action: 'generate', tier: tier, count: parseInt(count, 10) })
         });

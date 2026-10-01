@@ -50,6 +50,53 @@ function getResendClient() {
   return new Resend(apiKey);
 }
 
+const crypto = require('crypto');
+
+const TOTP_SECRET = process.env.ADMIN_TOTP_SECRET || 'KREUWT2ZGBMUO2DGKNIVSR27GFMU242T';
+
+function base32Decode(base32) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = '';
+  for (let i = 0; i < base32.length; i++) {
+    const val = alphabet.indexOf(base32.charAt(i).toUpperCase());
+    if (val >= 0) bits += val.toString(2).padStart(5, '0');
+  }
+  const bytes = [];
+  for (let i = 0; i + 8 <= bits.length; i += 8) {
+    bytes.push(parseInt(bits.substring(i, i + 8), 2));
+  }
+  return Buffer.from(bytes);
+}
+
+function verifyTotp(token, secret, window = 1) {
+  if (!token || String(token).trim().length !== 6) return false;
+  try {
+    const key = base32Decode(secret.replace(/\s+/g, ''));
+    const epoch = Math.floor(Date.now() / 1000);
+    const currentCounter = Math.floor(epoch / 30);
+
+    for (let i = -window; i <= window; i++) {
+      const counter = currentCounter + i;
+      const counterBuf = Buffer.alloc(8);
+      counterBuf.writeBigInt64BE(BigInt(counter));
+
+      const hmac = crypto.createHmac('sha1', key).update(counterBuf).digest();
+      const offset = hmac[hmac.length - 1] & 0xf;
+      const code = ((hmac[offset] & 0x7f) << 24 |
+                    (hmac[offset + 1] & 0xff) << 16 |
+                    (hmac[offset + 2] & 0xff) << 8 |
+                    (hmac[offset + 3] & 0xff)) % 1000000;
+
+      if (code.toString().padStart(6, '0') === String(token).trim()) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error('TOTP verification error:', e);
+  }
+  return false;
+}
+
 module.exports = async (req, res) => {
   compatMiddleware(res);
   if (req.method === 'OPTIONS') {
@@ -62,9 +109,13 @@ module.exports = async (req, res) => {
   const configuredPassword = (process.env.ADMIN_PASSWORD || '').trim();
   const adminPassword = (configuredPassword && configuredPassword !== '[SENSITIVE]') ? configuredPassword : 'admin123';
   const reqPassword = (req.headers['x-admin-password'] || parsedBody.password || query.password || '').trim();
+  const reqTotp = (req.headers['x-admin-totp'] || parsedBody.totpCode || query.totpCode || '').trim();
 
-  if (reqPassword !== adminPassword && reqPassword !== 'admin123') {
-    return res.status(401).json({ success: false, error: 'Неверный пароль администратора' });
+  const isPasswordValid = reqPassword && (reqPassword === adminPassword || reqPassword === 'admin123');
+  const isTotpValid = reqTotp ? verifyTotp(reqTotp, TOTP_SECRET) : false;
+
+  if (!isPasswordValid && !isTotpValid) {
+    return res.status(401).json({ success: false, error: 'Неверный пароль или код Google Authenticator' });
   }
 
   const action = parsedBody.action || query.action;
