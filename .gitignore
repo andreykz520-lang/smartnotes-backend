@@ -8,4 +8,5 @@
 .env*
 *.tsbuildinfo
 public/*.exe
+*stats.json
 

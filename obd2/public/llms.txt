@@ -1,18 +1,34 @@
-# OBD2 SCAN AI — ИИ-Автосканер и Диагност
+# OBD2 SCAN AI — Умный ИИ-Автосканер и Диагностика
 
 > OBD2 SCAN AI is an AI-driven OBD-II diagnostics and vehicle troubleshooting platform for drivers, mechanics, and autonomous diagnostic agents.
 > OBD2 SCAN AI — интеллектуальная диагностика автомобилей через OBD-II сканеры ELM327 и нейросетевой анализ кодов DTC.
 
-## Capabilities / Возможности
-- OBD-II fault code (DTC) reading and interpretation (P0300, P0171, P0420, etc.).
-- Step-by-step repair guides and symptom-based diagnostic assistance.
-- Torque specs calculator and automotive component troubleshooting.
-- Cross-platform support for Android (APK) and Windows PC.
+## Возможности / Capabilities
+- Чтение и расшифровка кодов ошибок DTC (P0300, P0171, P0420, Check Engine).
+- ИИ-Ассистент: пошаговые инструкции по ремонту и оценка безопасности поездки.
+- Мониторинг параметров двигателя в реальном времени (обороты, температура ОЖ, расход).
+- Клуб тестеров: 2 пожизненные PRO лицензии (OBD2 SCAN AI + SmartNotes AI) за участие в тестировании авто.
+- Поддержка платформ: Android (APK) и Windows PC. Совместимость с ELM327 (Bluetooth, Wi-Fi, USB).
+
+## Клуб тестеров / Tester's Club
+- Страница: https://obd2scanai.ru/testers
+- Бонус: Двойной PRO Навсегда (OBD2 SCAN AI + SmartNotes AI).
+- Автомобильные сценарии SmartNotes AI:
+  1. Фото канистры масла и фильтров (вязкость 5W-30/5W-40, дата и пробег).
+  2. Голосовой бортовой журнал ремонтов и ТО.
+  3. Распознавание чеков с автосервисов и OEM номеров запчастей.
+  4. Защищенное хранение документов на авто под PIN-кодом.
+
+## Загрузки / Downloads
+- Android APK: https://obd2scanai.ru/download
+- Windows PC: https://obd2scanai.ru/download-windows
+- SmartNotes AI: https://smartnotes-ai.ru/
 
 ## Discovery Endpoints / Эндпоинты
-- Website: https://obd2scanai.ru/
-- API Catalog: https://obd2scanai.ru/.well-known/api-catalog
+- Главная страница: https://obd2scanai.ru/
+- API Catalog (RFC 9727): https://obd2scanai.ru/.well-known/api-catalog
 - OpenAPI Spec: https://obd2scanai.ru/api/openapi.json
+- Health check: https://obd2scanai.ru/api/health
 - MCP Server Card: https://obd2scanai.ru/.well-known/mcp/server-card.json
 - Agent Skills Index: https://obd2scanai.ru/.well-known/agent-skills/index.json
 - Protected Resource: https://obd2scanai.ru/.well-known/oauth-protected-resource

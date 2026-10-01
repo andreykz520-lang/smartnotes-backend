@@ -4,6 +4,9 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
+// RFC 8288 Link Headers for Agent Discovery
+const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="service-doc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
+
 // Import serverless API handlers
 const adminApi = require('./api/admin');
 const payApi = require('./api/pay');
@@ -73,6 +76,10 @@ const handleObd2 = (req, res) => {
 
     // Route API requests
     try {
+      if (pathname === '/api/health') {
+        res.setHeader('Link', LINK_HEADERS);
+        return res.json({ status: 'ok', service: 'OBD2 SCAN AI', timestamp: new Date().toISOString() });
+      }
       if (pathname === '/api/bot') return await botApi(req, res);
       if (pathname === '/api/chat') return await chatApi(req, res);
       if (pathname === '/api/admin') return await adminApi(req, res);
@@ -90,6 +97,42 @@ const handleObd2 = (req, res) => {
     } catch (err) {
       console.error('API Error:', err);
       return res.status(500).json({ error: err.message });
+    }
+
+    // Markdown content negotiation (Accept: text/markdown)
+    const acceptHeader = (req.headers['accept'] || '').toLowerCase();
+    const wantsMarkdown = acceptHeader.includes('text/markdown');
+
+    if (wantsMarkdown) {
+      if (pathname === '/' || pathname === '/index' || pathname === '/main') {
+        const llmsPath = path.join(__dirname, 'public', 'llms.txt');
+        const mdText = fs.existsSync(llmsPath) ? fs.readFileSync(llmsPath, 'utf-8') : '# OBD2 SCAN AI\n\nAI-powered vehicle diagnostics.';
+        const tokenCount = Math.ceil(Buffer.byteLength(mdText, 'utf-8') / 3.5);
+        res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+        res.setHeader('Vary', 'Accept');
+        res.setHeader('x-markdown-tokens', String(tokenCount));
+        res.setHeader('Link', LINK_HEADERS);
+        res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+        res.setHeader('Content-Length', Buffer.byteLength(mdText, 'utf-8'));
+        return res.end(mdText, 'utf-8');
+      }
+      if (pathname === '/testers' || pathname === '/tester' || pathname === '/beta' || pathname === '/club') {
+        const testersMdPath = path.join(__dirname, 'public', 'testers.md');
+        let mdText = '';
+        if (fs.existsSync(testersMdPath)) {
+          mdText = fs.readFileSync(testersMdPath, 'utf-8');
+        } else {
+          mdText = '# Клуб Тестеров OBD2 SCAN AI\n\nТестируйте приложение и получите 2 PRO лицензии: OBD2 SCAN AI + SmartNotes AI!';
+        }
+        const tokenCount = Math.ceil(Buffer.byteLength(mdText, 'utf-8') / 3.5);
+        res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+        res.setHeader('Vary', 'Accept');
+        res.setHeader('x-markdown-tokens', String(tokenCount));
+        res.setHeader('Link', LINK_HEADERS);
+        res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+        res.setHeader('Content-Length', Buffer.byteLength(mdText, 'utf-8'));
+        return res.end(mdText, 'utf-8');
+      }
     }
 
     // Static HTML and asset routes
@@ -133,6 +176,8 @@ const handleObd2 = (req, res) => {
         '.html': 'text/html; charset=utf-8',
         '.css': 'text/css; charset=utf-8',
         '.js': 'application/javascript; charset=utf-8',
+        '.json': 'application/json; charset=utf-8',
+        '.md': 'text/markdown; charset=utf-8',
         '.png': 'image/png',
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg',
@@ -145,7 +190,17 @@ const handleObd2 = (req, res) => {
         '.zip': 'application/zip',
         '.exe': 'application/x-msdownload'
       };
-      res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
+
+      let contentType = mimeTypes[ext] || 'application/octet-stream';
+      if (pathname.endsWith('/api-catalog')) {
+        contentType = 'application/linkset+json; charset=utf-8';
+      } else if (pathname.endsWith('llms.txt')) {
+        contentType = 'text/markdown; charset=utf-8';
+      } else if (pathname.includes('/.well-known/') && !ext) {
+        contentType = 'application/json; charset=utf-8';
+      }
+      res.setHeader('Content-Type', contentType);
+
       if (ext === '.apk') {
         res.setHeader('Content-Disposition', 'attachment; filename="OBD2_SCAN_AI.apk"');
       } else if (ext === '.exe') {
@@ -153,13 +208,20 @@ const handleObd2 = (req, res) => {
       } else if (ext === '.zip') {
         res.setHeader('Content-Disposition', 'attachment; filename="OBD2_SCAN_AI_Windows.zip"');
       }
+
       if (ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.webp' || ext === '.ico' || ext === '.svg') {
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       } else {
         res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
       }
+
+      // RFC 8288 Link header and Vary on HTML, Markdown, API Catalog, and discovery files
+      if (ext === '.html' || ext === '.md' || pathname === '/' || pathname === '/index' || pathname === '/testers' || pathname.includes('/.well-known/') || pathname.endsWith('llms.txt')) {
+        res.setHeader('Link', LINK_HEADERS);
+        res.setHeader('Vary', 'Accept');
+      }
       
-      if (ext === '.html' || ext === '.css' || ext === '.js') {
+      if (ext === '.html' || ext === '.css' || ext === '.js' || ext === '.md' || ext === '.json' || ext === '.xml' || ext === '.txt' || pathname.includes('/.well-known/')) {
         const text = fs.readFileSync(filePath, 'utf-8');
         res.setHeader('Content-Length', Buffer.byteLength(text, 'utf-8'));
         return res.end(text, 'utf-8');
