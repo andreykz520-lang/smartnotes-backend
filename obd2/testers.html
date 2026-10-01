@@ -430,6 +430,143 @@
       font-size: 12.5px;
       margin: 0;
     }
+  
+    /* Карточка Супер-Подарка SmartNotes AI */
+    .smartnotes-promo-card {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.45);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-top: 30px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(139, 92, 246, 0.2);
+    }
+    .smartnotes-promo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .smartnotes-promo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .smartnotes-promo-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .smartnotes-promo-sub {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 900px;
+    }
+    .sn-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .sn-case-card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .sn-case-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(139, 92, 246, 0.45);
+      background: rgba(26, 34, 53, 0.75);
+    }
+    .sn-case-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .sn-case-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .sn-case-card p {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+    .sn-action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .sn-btn-primary {
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      color: #fff;
+      text-decoration: none;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
+      transition: filter 0.2s, transform 0.1s;
+    }
+    .sn-btn-rustore {
+      background: #0077ff;
+      color: #fff;
+      text-decoration: none;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 20px -5px rgba(0, 119, 255, 0.4);
+      transition: filter 0.2s, transform 0.1s;
+    }
+    .sn-btn-apk {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      text-decoration: none;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .sn-btn-primary:hover, .sn-btn-rustore:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .sn-btn-apk:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
   </style>
 </head>
 <body>
@@ -644,6 +781,73 @@
 
     </div>
 
+    <!-- Блок Супер-Подарка: SmartNotes AI PRO для автовладельцев -->
+    <div class="smartnotes-promo-card">
+      <div class="smartnotes-promo-badge" data-i18n="sn_gift_badge">
+        🎁 Двойной супер-бонус активным тестерам
+      </div>
+      <div class="smartnotes-promo-header">
+        <div>
+          <h2 class="smartnotes-promo-title" data-i18n="sn_gift_title">
+            В подарок: Вечный PRO для приложения SmartNotes AI!
+          </h2>
+          <p class="smartnotes-promo-sub" data-i18n-html="sn_gift_sub">
+            Каждый тестер, приславший серию логов по своему автомобилю, бесплатно получает пожизненную лицензию PRO сразу на два приложения: автосканер <b>OBD2 SCAN AI</b> и персональный ИИ-органайзер <b>SmartNotes AI</b>.
+          </p>
+        </div>
+        <div style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 16px; padding: 12px 18px; text-align: center;">
+          <div style="font-size: 11px; color: #a78bfa; font-weight: 700; text-transform: uppercase;">Комбо-подарок</div>
+          <div style="font-size: 18px; font-weight: 900; color: #fff; margin-top: 2px;">2 × PRO Навсегда</div>
+        </div>
+      </div>
+
+      <div class="sn-cases-grid">
+        <div class="sn-case-card">
+          <div class="sn-case-icon">🛢️</div>
+          <div>
+            <h4 data-i18n="sn_case1_title">Фото канистры масла и фильтров</h4>
+            <p data-i18n="sn_case1_desc">Сфотографируйте канистру масла на замене — больше не нужно вспоминать вязкость (5W-30 или 5W-40), допуски и марку при следующем ТО!</p>
+          </div>
+        </div>
+
+        <div class="sn-case-card">
+          <div class="sn-case-icon">🔧</div>
+          <div>
+            <h4 data-i18n="sn_case2_title">Голосовой бортовой журнал ремонтов</h4>
+            <p data-i18n="sn_case2_desc">Надиктуйте голосом: «Замена передних колодок на 142 500 км, цена 3 200 ₽». ИИ переведет речь в структурированную запись с датой и тегом.</p>
+          </div>
+        </div>
+
+        <div class="sn-case-card">
+          <div class="sn-case-icon">🧾</div>
+          <div>
+            <h4 data-i18n="sn_case3_title">Чеки СТО и артикулы запчастей</h4>
+            <p data-i18n="sn_case3_desc">Сфотографируйте упаковку детали или заказ-наряд с автосервиса — нейросеть распознает каталожный номер (OEM) и сохранит в архив.</p>
+          </div>
+        </div>
+
+        <div class="sn-case-card">
+          <div class="sn-case-icon">🔒</div>
+          <div>
+            <h4 data-i18n="sn_case4_title">Автодокументы под PIN-кодом</h4>
+            <p data-i18n="sn_case4_desc">Храните фото СТС, прав, полиса ОСАГО и сервисной книжки в зашифрованных заметках с защитой входа по PIN-коду.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sn-action-row">
+        <a href="https://smartnotes-ai.ru/" target="_blank" rel="noopener" class="sn-btn-primary" data-i18n="sn_btn_site">
+          🌐 Официальный сайт SmartNotes-AI.ru ➔
+        </a>
+        <a href="https://www.rustore.ru/catalog/app/com.andrey.smartnotes" target="_blank" rel="noopener" class="sn-btn-rustore" data-i18n="sn_btn_rustore">
+          🇷🇺 Открыть в RuStore ↗
+        </a>
+        <a href="https://smartnotes-ai.ru/SmartNotes.apk" download class="sn-btn-apk" data-i18n="sn_btn_apk">
+          📲 Скачать SmartNotes.apk
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -652,6 +856,20 @@
 
     const TESTERS_TRANSLATIONS = {
       ru: {
+        sn_gift_badge: "🎁 Двойной супер-бонус активным тестерам",
+        sn_gift_title: "В подарок: Вечный PRO для приложения SmartNotes AI!",
+        sn_gift_sub: "Каждый тестер, приславший серию логов по своему автомобилю, бесплатно получает пожизненную лицензию PRO сразу на два приложения: автосканер <b>OBD2 SCAN AI</b> и персональный ИИ-органайзер <b>SmartNotes AI</b>.",
+        sn_case1_title: "Фото канистры масла и фильтров",
+        sn_case1_desc: "Сфотографируйте канистру масла на замене — больше не нужно вспоминать вязкость (5W-30 или 5W-40), допуски и марку при следующем ТО!",
+        sn_case2_title: "Голосовой бортовой журнал ремонтов",
+        sn_case2_desc: "Надиктуйте голосом: «Замена передних колодок на 142 500 км, цена 3 200 ₽». ИИ переведет речь в структурированную запись с датой и тегом.",
+        sn_case3_title: "Чеки СТО и артикулы запчастей",
+        sn_case3_desc: "Сфотографируйте упаковку детали или заказ-наряд с автосервиса — нейросеть распознает каталожный номер (OEM) и сохранит в архив.",
+        sn_case4_title: "Автодокументы под PIN-кодом",
+        sn_case4_desc: "Храните фото СТС, прав, полиса ОСАГО и сервисной книжки в зашифрованных заметках с защитой входа по PIN-коду.",
+        sn_btn_site: "🌐 Официальный сайт SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 Открыть в RuStore ↗",
+        sn_btn_apk: "📲 Скачать SmartNotes.apk",
         brand_all_title: "Все марки и модели автомобилей",
         brand_all_desc: "Здесь показаны сообщения и вопросы по всем маркам. Нажмите на вкладку конкретной марки сверху, чтобы открыть ветку именно вашего автомобиля.",
         brand_all_status: "🟡 В активной отладке",
@@ -714,6 +932,20 @@
         sidebar_help_desc: "Напишите разработчику напрямую на почту"
       },
       en: {
+        sn_gift_badge: "🎁 Double Super-Bonus for Active Testers",
+        sn_gift_title: "Second Gift: Lifetime PRO for SmartNotes AI App!",
+        sn_gift_sub: "Every tester who submits a diagnostic log series gets lifetime PRO licenses for two apps for free: the <b>OBD2 SCAN AI</b> scanner and <b>SmartNotes AI</b> private organizer.",
+        sn_case1_title: "Oil Canister & Filter Photos",
+        sn_case1_desc: "Take a photo of your engine oil canister — never forget exact viscosity (5W-30 / 5W-40), OEM approvals, and brand at your next oil change!",
+        sn_case2_title: "Voice Maintenance Logbook",
+        sn_case2_desc: "Just speak: «Front brake pads replaced at 142,500 km, cost $45». AI transcribes your voice into a structured record with dates and tags.",
+        sn_case3_title: "Service Receipts & OEM Part Numbers",
+        sn_case3_desc: "Snap a photo of the spare parts box or garage invoice — Gemini AI recognizes OEM part numbers and keeps a searchable history.",
+        sn_case4_title: "Vehicle Documents under PIN & Encryption",
+        sn_case4_desc: "Keep driver's license, insurance policy, and vehicle registration photos safely in encrypted notes locked with a PIN code.",
+        sn_btn_site: "🌐 Official Site SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 Open in RuStore ↗",
+        sn_btn_apk: "📲 Download SmartNotes.apk",
         brand_all_title: "All Vehicle Makes & Models",
         brand_all_desc: "Showing diagnostic messages and questions for all car brands. Click a brand tab above to open the dedicated thread for your vehicle.",
         brand_all_status: "🟡 In Active Debugging",
@@ -776,6 +1008,20 @@
         sidebar_help_desc: "Write directly to developer email"
       },
       de: {
+        sn_gift_badge: "🎁 Doppelter Super-Bonus für aktive Tester",
+        sn_gift_title: "Zweites Geschenk: Lebenslanges PRO für SmartNotes AI!",
+        sn_gift_sub: "Jeder Tester, der Diagnose-Logs sendet, erhält lebenslange PRO-Lizenzen für zwei Apps: den <b>OBD2 SCAN AI</b> Scanner und den <b>SmartNotes AI</b> Organizer.",
+        sn_case1_title: "Fotos von Ölkanistern & Filtern",
+        sn_case1_desc: "Ölkanister fotografieren — nie wieder Viskosität (5W-30/5W-40) und Herstellernormen beim nächsten Service vergessen!",
+        sn_case2_title: "Sprachgesteuertes Serviceheft",
+        sn_case2_desc: "Einfach diktieren: «Bremsbeläge vorne bei 142.500 km gewechselt, 45 €». KI wandelt Sprache in strukturierte Einträge mit Datum und Tags um.",
+        sn_case3_title: "Werkstattrechnungen & Teilenummern",
+        sn_case3_desc: "Ersatzteilverpackung oder Werkstattrechnung fotografieren — Gemini KI erkennt OEM-Teilenummern und speichert sie durchsuchbar.",
+        sn_case4_title: "Fahrzeugpapiere unter PIN & Verschlüsselung",
+        sn_case4_desc: "Fahrzeugschein, Führerschein und Versicherungspolice sicher in verschlüsselten Notizen mit PIN-Schutz aufbewahren.",
+        sn_btn_site: "🌐 Offizielle Website SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 Im RuStore öffnen ↗",
+        sn_btn_apk: "📲 SmartNotes.apk herunterladen",
         brand_all_title: "Alle Automarken & Modelle",
         brand_all_desc: "Hier werden Beiträge und Fragen zu allen Marken angezeigt. Klicken Sie oben auf eine Marke, um den spezifischen Bereich für Ihr Auto zu öffnen.",
         brand_all_status: "🟡 In aktiver Optimierung",
@@ -838,6 +1084,20 @@
         sidebar_help_desc: "Schreiben Sie dem Entwickler direkt per E-Mail"
       },
       fr: {
+        sn_gift_badge: "🎁 Double Super-Bonus pour les Testeurs Actifs",
+        sn_gift_title: "Deuxième Cadeau : PRO à Vie pour l'Application SmartNotes AI !",
+        sn_gift_sub: "Chaque testeur envoyant ses logs reçoit deux licences PRO à vie gratuites : le scanner <b>OBD2 SCAN AI</b> et le bloc-notes privé <b>SmartNotes AI</b>.",
+        sn_case1_title: "Photos du Bidon d'Huile & Filtres",
+        sn_case1_desc: "Prenez en photo votre bidon d'huile moteur — plus besoin d'hésiter sur la viscosité (5W-30 / 5W-40) et les normes au prochain entretien !",
+        sn_case2_title: "Carnet d'Entretien Vocal",
+        sn_case2_desc: "Dictez à la voix : «Plaquettes avant changées à 142 500 km, 45 €». L'IA transforme votre voix en fiche structurée avec date et tags.",
+        sn_case3_title: "Factures d'Atelier & Réf. Pièces",
+        sn_case3_desc: "Photographiez l'emballage de pièce ou la facture — l'IA Gemini reconnaît les références OEM et crée un historique consultable.",
+        sn_case4_title: "Documents Véhicule sous Code PIN",
+        sn_case4_desc: "Gardez permis de conduire, carte grise et police d'assurance dans des notes chiffrées sécurisées par code PIN.",
+        sn_btn_site: "🌐 Site Officiel SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 Ouvrir dans RuStore ↗",
+        sn_btn_apk: "📲 Télécharger SmartNotes.apk",
         brand_all_title: "Toutes les Marques & Modèles",
         brand_all_desc: "Retrouvez les échanges sur tous les véhicules. Cliquez sur une marque ci-dessus pour ouvrir le fil spécifique à votre voiture.",
         brand_all_status: "🟡 En cours d'optimisation",
@@ -900,6 +1160,20 @@
         sidebar_help_desc: "Contactez directement le développeur par e-mail"
       },
       es: {
+        sn_gift_badge: "🎁 Doble Super-Bono para Testers Activos",
+        sn_gift_title: "Segundo Regalo: ¡PRO de por vida para SmartNotes AI!",
+        sn_gift_sub: "Cada tester que envíe registros de diagnóstico recibe gratis licencias PRO de por vida para dos apps: <b>OBD2 SCAN AI</b> y <b>SmartNotes AI</b>.",
+        sn_case1_title: "Fotos de Aceite y Filtros",
+        sn_case1_desc: "Fotografía tu lata de aceite — ¡no vuelvas a dudar sobre la viscosidad exacta (5W-30/5W-40) y especificaciones en el próximo cambio!",
+        sn_case2_title: "Bitácora de Mantenimiento por Voz",
+        sn_case2_desc: "Dicta por voz: «Pastillas de freno cambiadas a 142.500 km, costo $45». La IA convierte tu voz en un registro estructurado con fecha y etiquetas.",
+        sn_case3_title: "Facturas del Taller y Números de Pieza",
+        sn_case3_desc: "Fotografía la caja de repuestos o la factura del taller — Gemini IA reconoce números de parte OEM y guarda el historial.",
+        sn_case4_title: "Documentos del Auto bajo Código PIN",
+        sn_case4_desc: "Guarda fotos de licencia, póliza de seguro y tarjeta de circulación en notas cifradas y protegidas con código PIN.",
+        sn_btn_site: "🌐 Sitio Oficial SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 Abrir en RuStore ↗",
+        sn_btn_apk: "📲 Descargar SmartNotes.apk",
         brand_all_title: "Todas las Marcas y Modelos",
         brand_all_desc: "Mostrando consultas y pruebas para todas las marcas. Haz clic en una marca arriba para abrir el canal de tu vehículo.",
         brand_all_status: "🟡 En depuración activa",
@@ -962,6 +1236,20 @@
         sidebar_help_desc: "Escribe directamente al desarrollador"
       },
       ar: {
+        sn_gift_badge: "🎁 مكافأة مضاعفة حصرية للمختبرين النشطين",
+        sn_gift_title: "الهدية الثانية: ترخيص PRO دائم لتطبيق SmartNotes AI!",
+        sn_gift_sub: "كل مختبر يرسل سجلات فحص لسيارته يحصل مجاناً على ترخيصين PRO دائمين: ماسح السيارات <b>OBD2 SCAN AI</b> والمفكرة الذكية <b>SmartNotes AI</b>.",
+        sn_case1_title: "صور علبة الزيت والفلاتر",
+        sn_case1_desc: "التقط صورة لعلبة زيت المحرك — لن تنسى أبداً اللزوجة الدقيقة (5W-30 أو 5W-40) والمواصفات عند الصيانة القادمة!",
+        sn_case2_title: "سجل صيانة صوتي ذكي",
+        sn_case2_desc: "سجل بصوتك: «تم تغيير فحمات الفرامل عند 142,500 كم بتكلفة 45$». الذكاء الاصطناعي يحول صوتك إلى سجل منظم مع التاريخ والتصنيف.",
+        sn_case3_title: "فواتير الورشة وأرقام قطع الغيار",
+        sn_case3_desc: "صور علبة قطعة الغيار أو فاتورة الصيانة — الذكاء الاصطناعي يستخرج أرقام القطع الأصلية (OEM) ويحفظها للرجوع إليها.",
+        sn_case4_title: "وثائق السيارة مشفرة برمز PIN",
+        sn_case4_desc: "احتفظ بصور رخصة القيادة والتأمين واستمارة السيارة بأمان في ملاحظات مشفرة ومحمية برمز PIN.",
+        sn_btn_site: "🌐 الموقع الرسمي SmartNotes-AI.ru ➔",
+        sn_btn_rustore: "🇷🇺 فتح في RuStore ↗",
+        sn_btn_apk: "📲 تنزيل SmartNotes.apk",
         brand_all_title: "جميع الماركات والموديلات",
         brand_all_desc: "عرض الأسئلة والمشاركات لجميع ماركات السيارات. اضغط على أي ماركة أعلاه لفتح القسم المخصص لسيارتك.",
         brand_all_status: "🟡 قيد الاختبار النشط",
