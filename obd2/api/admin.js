@@ -23,6 +23,14 @@ try {
   resetObd2Stats = tracker.resetObd2Stats;
 } catch (e) {}
 
+let getChatMessages = () => [];
+let saveChatMessages = () => {};
+try {
+  const chatMod = require('./chat');
+  getChatMessages = chatMod.getChatMessages;
+  saveChatMessages = chatMod.saveChatMessages;
+} catch (e) {}
+
 function determineTier(code, item) {
   if (item && item.tier) return item.tier;
   const upper = String(code).toUpperCase();
@@ -139,6 +147,38 @@ module.exports = async (req, res) => {
   if (action === 'reset_visitor_stats') {
     resetObd2Stats();
     return res.status(200).json({ success: true, message: 'Статистика посещаемости успешно сброшена!' });
+  }
+
+  // 0.1 Получение сообщений чата тестеров
+  if (action === 'get_chat_messages') {
+    return res.status(200).json({ success: true, messages: getChatMessages() });
+  }
+
+  // 0.2 Удаление неадекватного сообщения из чата тестеров
+  if (action === 'delete_chat_message') {
+    const msgId = parsedBody.messageId || query.messageId;
+    const msgs = getChatMessages().filter(m => m.id !== msgId);
+    saveChatMessages(msgs);
+    return res.status(200).json({ success: true, message: 'Сообщение успешно удалено из чата!' });
+  }
+
+  // 0.3 Ответ разработчика / администратора в чат тестеров
+  if (action === 'admin_reply_chat') {
+    const replyText = (parsedBody.text || '').trim();
+    if (!replyText) return res.status(400).json({ success: false, error: 'Текст ответа пуст' });
+    const msgs = getChatMessages();
+    const newMsg = {
+      id: 'msg_adm_' + Date.now(),
+      name: 'Разработчик OBD2 SCAN AI',
+      car: 'Команда поддержки',
+      text: replyText,
+      time: new Date().toISOString(),
+      isAi: false,
+      isAdmin: true
+    };
+    msgs.push(newMsg);
+    saveChatMessages(msgs);
+    return res.status(200).json({ success: true, message: 'Ответ опубликован в чате!', newMsg });
   }
 
   // 1. Включение / выключение Telegram-бота
@@ -422,6 +462,7 @@ module.exports = async (req, res) => {
     deviceTrials: enrichedTrials,
     activeOtps: activeOtpsList,
     emailList: allEmails,
-    visitorStats: getObd2Stats()
+    visitorStats: getObd2Stats(),
+    chatMessages: getChatMessages()
   });
 };

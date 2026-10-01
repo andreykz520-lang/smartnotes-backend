@@ -16,6 +16,7 @@ const recoverApi = require('./api/recover');
 const botApi = require('./api/bot');
 const imgApi = require('./api/img');
 const proxyOpenRouterApi = require('./api/proxy-openrouter');
+const chatApi = require('./api/chat');
 const { recordObd2Visitor } = require('./obd2-tracker');
 
 function serveFile(res, filePath, contentType, isDownload = false, downloadName = '', extraHeaders = {}) {
@@ -207,6 +208,7 @@ function handleObd2(req, res) {
     // Route API requests
     try {
       if (pathname === '/api/bot') return await botApi(req, res);
+      if (pathname === '/api/chat') return await chatApi(req, res);
       if (pathname === '/api/admin') return await adminApi(req, res);
       if (pathname === '/api/pay') return await payApi(req, res);
       if (pathname === '/api/activate') return await activateApi(req, res);

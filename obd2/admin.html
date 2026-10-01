@@ -591,6 +591,7 @@
             <button class="filter-btn" id="btnFilter_pro" onclick="setFilter('pro', this)">🏆 PRO (<span id="countPro">0</span>)</button>
             <button class="filter-btn" id="btnFilter_trial" onclick="setFilter('trial', this)">🛡️ Триалы (<span id="countTrials">0</span>)</button>
             <button class="filter-btn" id="btnFilter_traffic" onclick="setFilter('traffic', this)">🌍 Трафик и Страны (<span id="countTraffic">0</span>)</button>
+            <button class="filter-btn" id="btnFilter_chat" onclick="setFilter('chat', this)">💬 Чат тестеров (<span id="countChat">0</span>)</button>
           </div>
           <div class="search-box">
             <input type="text" id="searchInput" placeholder="🔍 Поиск (код, email, deviceId)..." oninput="applySearch()">
@@ -677,6 +678,56 @@
                 <tbody id="trafficTableBody"></tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <!-- Раздел Чата тестеров и модерации (показывается при выборе вкладки 'chat') -->
+        <div id="chatSectionWrapper" style="display: none;">
+          <!-- Шапка раздела чата -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; background: var(--card-inner); padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 18px;">
+            <div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
+                <span>💬 Публичный чат автовладельцев & Модерация</span>
+                <span id="chatTotalBadge" class="badge badge-purple" style="font-size: 12px;">0 сообщений</span>
+              </h3>
+              <p style="margin: 6px 0 0; font-size: 13px; color: var(--muted);">
+                Все сообщения видны посетителям сайта в виджете чата. Неадекватные сообщения можно удалить одной кнопкой, а также написать официальный ответ.
+              </p>
+            </div>
+            <button onclick="loadData()" style="padding: 8px 16px; font-size: 13px; background: #1f293d;">🔄 Обновить чат</button>
+          </div>
+
+          <!-- Форма ответа разработчика -->
+          <div style="background: linear-gradient(145deg, #131c31 0%, #1e1b4b 100%); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+              <strong style="color: #c4b5fd; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                👑 Ответить в чат от имени «Разработчик OBD2 SCAN AI»:
+              </strong>
+              <span style="font-size: 12px; color: var(--muted);">Сообщение сразу появится у всех посетителей</span>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <textarea id="adminChatReplyText" rows="2" placeholder="Напишите ответ тестеру, рекомендацию по подключению или подтверждение отправки вечного PRO..." style="flex: 1; min-width: 280px; background: var(--card-inner); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 10px 14px; font-size: 13px; resize: none; font-family: inherit;"></textarea>
+              <button onclick="adminSendChatMessage()" class="btn-cyan" style="height: 52px; padding: 0 20px; font-size: 14px; font-weight: 700; align-self: flex-end;">
+                📨 Опубликовать ответ
+              </button>
+            </div>
+          </div>
+
+          <!-- Таблица сообщений чата с кнопками модерации -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 130px;">Время</th>
+                  <th style="width: 170px;">Автор / Статус</th>
+                  <th style="width: 180px;">Автомобиль</th>
+                  <th>Текст сообщения</th>
+                  <th style="width: 120px;">IP-адрес</th>
+                  <th style="text-align: right; width: 110px;">Модерация</th>
+                </tr>
+              </thead>
+              <tbody id="chatTableBody"></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -876,6 +927,9 @@
       document.getElementById('countPlus').innerText = stats.proPlus?.total || 0;
       document.getElementById('countPro').innerText = stats.pro?.total || 0;
       document.getElementById('countTrials').innerText = stats.trials?.total || 0;
+      if (document.getElementById('countChat')) {
+        document.getElementById('countChat').innerText = (data.chatMessages || []).length;
+      }
 
       // Telegram Bot Status
       const botStats = stats.bot || {};
@@ -1163,24 +1217,35 @@
       const codesWrapper = document.getElementById('codesTableWrapper');
       const trialsWrapper = document.getElementById('trialsTableWrapper');
       const trafficWrapper = document.getElementById('trafficSectionWrapper');
+      const chatWrapper = document.getElementById('chatSectionWrapper');
       const searchBox = document.querySelector('.search-box');
 
-      if (currentFilter === 'traffic') {
+      if (currentFilter === 'chat') {
+        if (codesWrapper) codesWrapper.style.display = 'none';
+        if (trialsWrapper) trialsWrapper.style.display = 'none';
+        if (trafficWrapper) trafficWrapper.style.display = 'none';
+        if (chatWrapper) chatWrapper.style.display = 'block';
+        if (searchBox) searchBox.style.display = 'none';
+        renderChatSection();
+      } else if (currentFilter === 'traffic') {
         if (codesWrapper) codesWrapper.style.display = 'none';
         if (trialsWrapper) trialsWrapper.style.display = 'none';
         if (trafficWrapper) trafficWrapper.style.display = 'block';
+        if (chatWrapper) chatWrapper.style.display = 'none';
         if (searchBox) searchBox.style.display = 'none';
         renderTrafficSection();
       } else if (currentFilter === 'trial') {
         if (codesWrapper) codesWrapper.style.display = 'none';
         if (trialsWrapper) trialsWrapper.style.display = 'block';
         if (trafficWrapper) trafficWrapper.style.display = 'none';
+        if (chatWrapper) chatWrapper.style.display = 'none';
         if (searchBox) searchBox.style.display = 'block';
         renderTrialsTable(q);
       } else {
         if (codesWrapper) codesWrapper.style.display = 'block';
         if (trialsWrapper) trialsWrapper.style.display = 'none';
         if (trafficWrapper) trafficWrapper.style.display = 'none';
+        if (chatWrapper) chatWrapper.style.display = 'none';
         if (searchBox) searchBox.style.display = 'block';
         renderCodesTable(q);
       }
@@ -1544,6 +1609,121 @@
       a.href = url;
       a.download = 'obd2_emails_' + new Date().toISOString().slice(0,10) + '.csv';
       a.click();
+    }
+
+    function renderChatSection() {
+      const msgs = (globalData && Array.isArray(globalData.chatMessages)) ? globalData.chatMessages : [];
+      const tbody = document.getElementById('chatTableBody');
+      const badge = document.getElementById('chatTotalBadge');
+      if (badge) badge.innerText = msgs.length + ' сообщений';
+      if (!tbody) return;
+
+      if (msgs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">Сообщений в чате пока нет</td></tr>';
+        return;
+      }
+
+      // Display newest messages first in admin moderation table
+      const reversed = [...msgs].reverse();
+
+      tbody.innerHTML = reversed.map(m => {
+        let timeStr = '—';
+        if (m.time) {
+          try {
+            const d = new Date(m.time);
+            timeStr = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + '<br><span style="font-size: 10px; color: var(--muted);">' + d.toLocaleDateString('ru-RU') + '</span>';
+          } catch(e) {}
+        }
+
+        let authorBadge = '';
+        if (m.isAi) {
+          authorBadge = '<span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">🤖 AI Диагност</span>';
+        } else if (m.isAdmin) {
+          authorBadge = '<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">👑 Разработчик</span>';
+        } else {
+          authorBadge = '<span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">👤 Тестер</span>';
+        }
+
+        const safeName = escapeHtmlAdmin(m.name || '—');
+        const safeCar = escapeHtmlAdmin(m.car || '—');
+        const safeText = escapeHtmlAdmin(m.text || '').replace(/\n/g, '<br>');
+        const ipStr = m.ip ? `<span style="font-family: monospace; font-size: 11px; color: #94a3b8;">${escapeHtmlAdmin(m.ip)}</span>` : '<span style="color: var(--muted);">—</span>';
+
+        return `
+          <tr>
+            <td style="font-size: 12px; color: #cbd5e1; line-height: 1.3;">${timeStr}</td>
+            <td>
+              <div style="font-weight: 700; color: #fff; margin-bottom: 3px;">${safeName}</div>
+              ${authorBadge}
+            </td>
+            <td style="font-size: 13px; color: #38bdf8; font-weight: 600;">${safeCar}</td>
+            <td style="font-size: 13px; color: #e2e8f0; line-height: 1.45; word-break: break-word;">${safeText}</td>
+            <td>${ipStr}</td>
+            <td style="text-align: right;">
+              <button onclick="deleteChatMessage('${m.id}')" class="btn-danger" style="padding: 6px 12px; font-size: 12px;" title="Удалить неадекватное сообщение">
+                🗑️ Удалить
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtmlAdmin(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function adminSendChatMessage() {
+      const textarea = document.getElementById('adminChatReplyText');
+      const text = (textarea.value || '').trim();
+      if (!text) {
+        alert('Введите текст ответа разработчика!');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'admin_reply_chat', text: text })
+        });
+        const data = await res.json();
+        if (data.success) {
+          textarea.value = '';
+          alert('Ответ успешно опубликован в чате тестеров!');
+          loadData();
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось отправить'));
+        }
+      } catch (e) {
+        alert('Ошибка связи: ' + e.message);
+      }
+    }
+
+    async function deleteChatMessage(messageId) {
+      if (!confirm('Вы действительно хотите удалить это сообщение из публичного чата?')) return;
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ action: 'delete_chat_message', messageId: messageId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadData();
+        } else {
+          alert('Ошибка: ' + (data.error || 'Не удалось удалить'));
+        }
+      } catch (e) {
+        alert('Ошибка связи: ' + e.message);
+      }
     }
   </script>
 </body>

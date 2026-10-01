@@ -490,6 +490,8 @@
       <div class="nav-links">
         <a href="#screens" class="nav-link-desktop" data-i18n="nav_screens">Скриншоты</a>
         <a href="#features" class="nav-link-desktop" data-i18n="nav_features">Возможности</a>
+        <a href="#verified-cars" class="nav-link-desktop" style="color: #38bdf8; font-weight: 600;">🚘 Проверено на авто</a>
+        <a href="javascript:void(0)" onclick="toggleTesterChat(true)" class="nav-link-desktop" style="color: #a78bfa; font-weight: 600;">💬 Чат тестеров</a>
         <a href="/obd2scanai.apk" download class="apk-badge-desktop" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.4); padding: 6px 10px; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
           📲 Android APK
         </a>
@@ -524,6 +526,174 @@
         </a>
         <a href="/buy" class="btn-primary" style="display: none !important; padding: 15px 26px; font-size: 15px;" data-i18n="hero_btn_buy">💳 Купить PRO версию (500 ₽)</a>
         <a href="/buy?tab=recover" class="btn-primary" style="background: transparent; border: 1px solid var(--border); padding: 15px 22px; font-size: 15px;" data-i18n="hero_btn_recover">🔑 Восстановить лицензию</a>
+      </div>
+    </section>
+
+    <!-- 1. Блок Бета-Тестирования (Вечный PRO за лог) -->
+    <section style="max-width: 1200px; margin: 0 auto 50px; padding: 0 20px;">
+      <div style="background: linear-gradient(135deg, #131c31 0%, #1e1b4b 50%, #0f172a 100%); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 24px; padding: 32px 28px; box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.2);">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <span style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+              🎁 Программа бета-тестирования
+            </span>
+            <h2 style="font-size: 26px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
+              Требуются тестеры любых марок авто! Получите пожизненный PRO навсегда
+            </h2>
+            <p style="color: #cbd5e1; font-size: 15px; margin: 0; max-width: 800px; line-height: 1.5;">
+              Помогите нам доработать идеальную совместимость со всеми блоками управления. Подключите сканер к вашей машине, протестируйте функции и пришлите лог — в благодарность мы активируем вам <b>вечный тариф PRO Навсегда</b>!
+            </p>
+          </div>
+          
+          <button onclick="toggleTesterChat(true)" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff; border: none; padding: 14px 22px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); white-space: nowrap;">
+            💬 Открыть чат тестеров
+          </button>
+        </div>
+
+        <!-- 4 Шага к вечному PRO -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
+            <div style="font-size: 24px; margin-bottom: 8px;">📲 1. Установите</div>
+            <div style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Скачайте приложение</div>
+            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Бесплатно скачайте APK на Android или ZIP для Windows прямо с этого сайта.</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
+            <div style="font-size: 24px; margin-bottom: 8px;">🔌 2. Подключитесь</div>
+            <div style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Вставьте ELM327</div>
+            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Подключите адаптер (Bluetooth, Wi-Fi или USB) в разъём OBD2 и включите зажигание.</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
+            <div style="font-size: 24px; margin-bottom: 8px;">🧪 3. Протестируйте</div>
+            <div style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Попробуйте все функции</div>
+            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Проверьте живые параметры двигателя, приборную панель, считывание кодов DTC и здоровье авто.</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
+            <div style="font-size: 24px; margin-bottom: 8px;">🎁 4. Получите PRO</div>
+            <div style="font-size: 14px; font-weight: 700; color: #10b981; margin-bottom: 4px;">Отправьте лог</div>
+            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Нажмите в меню «Экспорт лога» и отправьте на <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; font-weight: 600;">autoneuro24@gmail.com</a>. Мы пришлём вечный PRO-код!</div>
+          </div>
+        </div>
+
+        <!-- Щит безопасности -->
+        <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+          <span style="font-size: 28px;">🛡️</span>
+          <div style="font-size: 13px; color: #e2e8f0; line-height: 1.5;">
+            <strong style="color: #10b981;">100% безопасность для вашего автомобиля:</strong>
+            Приложение OBD2 SCAN AI работает строго в защищённом режиме пассивного чтения (Passive Read-Only). Оно не производит чип-тюнинг, не изменяет заводские калибровки и физически не может повредить электронный блок (ЭБУ), проводку или датчики машины.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. Окно проверенных марок авто -->
+    <section id="verified-cars" style="max-width: 1200px; margin: 0 auto 50px; padding: 0 20px;">
+      <div class="section-title" style="text-align: center; margin-bottom: 30px;">
+        <span style="background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase;">
+          🚘 База совместимости
+        </span>
+        <h2 style="font-size: 28px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
+          Проверенные автомобили (100% отображение параметров)
+        </h2>
+        <p style="color: var(--muted); font-size: 14px; margin: 0;">
+          Список моделей, на которых успешно подтверждено подключение, чтение датчиков и диагностика:
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+        
+        <!-- Карточка 1: Peugeot & Citroen -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">🦁 Peugeot & Citroen</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: 307, 206, 406, C4, Xsara</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 14230-4 KWP2000 (Header 8210F1)</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>19 параметров двигателя ME7.4.4:</b> RPM, скорость, ОЖ, впуск, шаговый РХХ, напряжение, лямбда-зонд, коды DTC.
+          </div>
+        </div>
+
+        <!-- Карточка 2: ВАЗ (Lada) -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">🏎️ ВАЗ (Lada)</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Калина, Приора, 2110-2115, Гранта, Веста, 4x4</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Январь 5.1 / 7.2, Bosch M7.9.7, Итэлма M73 / M74</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>Полный охват:</b> диагностика пропусков зажигания, положение дросселя, температура ОЖ, мгновенный расход, сброс ошибок.
+          </div>
+        </div>
+
+        <!-- Карточка 3: Toyota -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇯🇵 Toyota & Lexus</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Corolla, Camry (40/50), RAV4, Avensis, Yaris</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 15765-4 (CAN 11/500) & ISO 9141-2</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>Датчики и приборка:</b> обороты, скорость, MAF, температура ОЖ, долговременная коррекция, считывание и очистка Check Engine.
+          </div>
+        </div>
+
+        <!-- Карточка 4: Renault -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">💎 Renault & Dacia</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Logan 1/2, Sandero, Duster, Megane 2, Fluence</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Siemens EMS3132 / Valeo / EMS3120</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>Параметры работы:</b> температура двигателя, датчик абсолютного давления (ДАД), угол опережения, диагностика кодов DTC.
+          </div>
+        </div>
+
+        <!-- Карточка 5: VAG -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇩🇪 Volkswagen, Skoda, Audi</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Polo Sedan, Golf, Passat B6/B7, Octavia A5/A7, Rapid</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 15765-4 CAN & UDS</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>Мониторинг турбины и ДВС:</b> давление наддува, температура ОЖ, нагрузка, чтение кодов неисправностей.
+          </div>
+        </div>
+
+        <!-- Карточка 6: Hyundai & Kia -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; transition: transform 0.2s;" onmouseover="this.style.borderColor='rgba(6, 182, 212, 0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇰🇷 Hyundai & Kia</div>
+            <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">✅ Проверено</span>
+          </div>
+          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Solaris, Rio, Ceed, Cerato, Sportage, Tucson</div>
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Двигатели: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px;">
+            ⚡ <b>Быстрый опрос:</b> скорость шины CAN 500k, плавные стрелки приборной панели, температура двигателя и катализатора.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Призыв для невошедших марок -->
+      <div style="margin-top: 24px; background: rgba(139, 92, 246, 0.1); border: 1px dashed rgba(139, 92, 246, 0.5); border-radius: 16px; padding: 20px; text-align: center;">
+        <div style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px;">
+          🔍 Вашей марки или модели ещё нет в списке проверенных?
+        </div>
+        <p style="font-size: 13px; color: var(--muted); margin: 0 0 14px;">
+          Станьте первым бета-тестером для вашего автомобиля! Подключитесь, снимите лог, пришлите нам на <b>autoneuro24@gmail.com</b> или напишите в чат тестеров — и мы добавим вашу машину в базу, а вам подарим пожизненную лицензию PRO Навсегда!
+        </p>
+        <button onclick="toggleTesterChat(true)" style="background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">
+          💬 Написать в чат тестеров о своей машине
+        </button>
       </div>
     </section>
 
@@ -1246,6 +1416,162 @@
       }
     });
 
+    // Tester Chat Widget Logic
+    let chatPollTimer = null;
+    let lastChatMessagesCount = 0;
+
+    function toggleTesterChat(forceOpen) {
+      const widget = document.getElementById('testerChatWidget');
+      const floatingBtn = document.getElementById('floatingChatBtn');
+      if (!widget) return;
+      
+      const isCurrentlyOpen = widget.style.display === 'flex';
+      const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isCurrentlyOpen;
+      
+      if (shouldOpen) {
+        widget.style.display = 'flex';
+        loadChatMessages(true);
+        if (!chatPollTimer) {
+          chatPollTimer = setInterval(() => loadChatMessages(false), 10000);
+        }
+      } else {
+        widget.style.display = 'none';
+        if (chatPollTimer) {
+          clearInterval(chatPollTimer);
+          chatPollTimer = null;
+        }
+      }
+    }
+
+    async function loadChatMessages(scrollToBottom = false) {
+      try {
+        const res = await fetch('/api/chat');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.messages)) {
+          renderChatMessages(data.messages, scrollToBottom);
+        }
+      } catch (e) {
+        console.error('Chat load error:', e);
+      }
+    }
+
+    function renderChatMessages(messages, forceScroll = false) {
+      const container = document.getElementById('chatMessagesList');
+      if (!container) return;
+
+      if (messages.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 13px; padding: 30px 10px;">Пока нет сообщений.<br>Напишите первым о вашей марке авто!</div>';
+        return;
+      }
+
+      const shouldScroll = forceScroll || (container.scrollHeight - container.scrollTop - container.clientHeight < 80) || (messages.length !== lastChatMessagesCount);
+      lastChatMessagesCount = messages.length;
+
+      container.innerHTML = messages.map(msg => {
+        const isAi = !!msg.isAi;
+        const isAdmin = !!msg.isAdmin;
+        let timeFormatted = '';
+        if (msg.time) {
+          try {
+            const d = new Date(msg.time);
+            timeFormatted = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' ' + d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+          } catch (e) {
+            timeFormatted = '';
+          }
+        }
+
+        let bgStyle = 'background: #172033; border: 1px solid rgba(51, 65, 85, 0.7);';
+        let authorColor = '#38bdf8';
+        let badgeHtml = '';
+
+        if (isAi) {
+          bgStyle = 'background: linear-gradient(145deg, #1e1b4b 0%, #172554 100%); border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);';
+          authorColor = '#c4b5fd';
+          badgeHtml = '<span style="background: rgba(139, 92, 246, 0.3); color: #ddd6fe; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">🤖 AI Диагност</span>';
+        } else if (isAdmin) {
+          bgStyle = 'background: linear-gradient(145deg, #064e3b 0%, #0f172a 100%); border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);';
+          authorColor = '#34d399';
+          badgeHtml = '<span style="background: rgba(16, 185, 129, 0.3); color: #a7f3d0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">👑 Разработчик</span>';
+        } else {
+          badgeHtml = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">🚗 ${escapeChatHtml(msg.car || 'Авто')}</span>`;
+        }
+
+        const formattedText = escapeChatHtml(msg.text || '').replace(/\n/g, '<br>');
+
+        return `
+          <div style="${bgStyle} border-radius: 12px; padding: 11px 13px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: ${authorColor};">
+                <span>${escapeChatHtml(msg.name || 'Автовладелец')}</span>
+                ${badgeHtml}
+              </div>
+              <span style="font-size: 10px; color: #64748b; font-family: monospace;">${timeFormatted}</span>
+            </div>
+            <div style="font-size: 12.5px; color: #f1f5f9; line-height: 1.5; word-break: break-word;">
+              ${formattedText}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (shouldScroll) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function escapeChatHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function submitChatMessage() {
+      const nameInput = document.getElementById('chatInputName');
+      const carInput = document.getElementById('chatInputCar');
+      const textInput = document.getElementById('chatInputText');
+      const btn = document.getElementById('chatBtnSend');
+
+      const name = (nameInput.value || '').trim() || localStorage.getItem('chat_saved_name') || 'Автовладелец';
+      const car = (carInput.value || '').trim() || localStorage.getItem('chat_saved_car') || 'Авто';
+      const text = (textInput.value || '').trim();
+
+      if (!text) {
+        alert('Пожалуйста, напишите ваше сообщение или вопрос по автомобилю!');
+        textInput.focus();
+        return;
+      }
+
+      localStorage.setItem('chat_saved_name', name);
+      localStorage.setItem('chat_saved_car', car);
+
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, car, text })
+        });
+        const data = await res.json();
+        if (data.success) {
+          textInput.value = '';
+          await loadChatMessages(true);
+        } else {
+          alert(data.error || 'Ошибка отправки сообщения');
+        }
+      } catch (e) {
+        alert('Ошибка связи с сервером: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const savedLang = localStorage.getItem('obd2_lang');
       const userLang = (navigator.language || 'ru').substring(0, 2).toLowerCase();
@@ -1253,8 +1579,83 @@
       
       document.getElementById('langSelect').value = targetLang;
       changeLang(targetLang);
+
+      // Restore saved chat author name and car
+      const savedName = localStorage.getItem('chat_saved_name');
+      const savedCar = localStorage.getItem('chat_saved_car');
+      if (savedName && document.getElementById('chatInputName')) {
+        document.getElementById('chatInputName').value = savedName;
+      }
+      if (savedCar && document.getElementById('chatInputCar')) {
+        document.getElementById('chatInputCar').value = savedCar;
+      }
+
+      // Initial chat load in background so count is cached
+      loadChatMessages(false);
     });
   </script>
+
+  <!-- Floating Tester Chat Button -->
+  <button id="floatingChatBtn" onclick="toggleTesterChat()" style="position: fixed; bottom: 22px; right: 22px; z-index: 998; background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px 18px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.6), 0 0 15px rgba(59, 130, 246, 0.4); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+    <span style="font-size: 18px;">💬</span>
+    <span>Чат тестеров & AI</span>
+    <span style="background: #10b981; color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 800; text-transform: uppercase;">online</span>
+  </button>
+
+  <!-- Tester Chat Widget Popup -->
+  <div id="testerChatWidget" style="display: none; position: fixed; bottom: 78px; right: 20px; width: 440px; max-width: calc(100vw - 28px); height: 580px; max-height: calc(100vh - 96px); background: #0b1120; border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 20px; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.9), 0 0 30px rgba(139, 92, 246, 0.25); z-index: 999; flex-direction: column; overflow: hidden;">
+    
+    <!-- Chat Header -->
+    <div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); padding: 12px 16px; border-bottom: 1px solid rgba(139, 92, 246, 0.3); display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+          🤖
+        </div>
+        <div>
+          <div style="font-size: 13.5px; font-weight: 700; color: #fff;">
+            Чат тестеров & AI Диагност
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
+            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+            Публичный обмен опытом • Ответы ИИ
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button onclick="loadChatMessages(true)" title="Обновить" style="background: rgba(255,255,255,0.08); border: none; color: #cbd5e1; width: 28px; height: 28px; border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px;">🔄</button>
+        <button onclick="toggleTesterChat(false)" title="Закрыть" style="background: rgba(255,255,255,0.08); border: none; color: #cbd5e1; width: 28px; height: 28px; border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px;">✕</button>
+      </div>
+    </div>
+
+    <!-- Alert banner about PRO for logs -->
+    <div style="background: rgba(139, 92, 246, 0.15); border-bottom: 1px solid rgba(139, 92, 246, 0.25); padding: 7px 12px; font-size: 11px; color: #ddd6fe; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+      <span>🎁 <b>Вечный PRO за лог:</b> отправьте файл лога на <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">autoneuro24@gmail.com</a></span>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="chatMessagesList" style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 9px; background: #070d19;">
+      <div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Загрузка сообщений...</div>
+    </div>
+
+    <!-- New Message Form -->
+    <div style="background: #0f172a; border-top: 1px solid rgba(51, 65, 85, 0.6); padding: 10px 12px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+        <input type="text" id="chatInputName" placeholder="Ваше имя (напр. Сергей)" maxlength="40" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
+        <input type="text" id="chatInputCar" placeholder="Авто (напр. ВАЗ Калина)" maxlength="50" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
+      </div>
+      <div style="display: flex; gap: 6px; align-items: flex-end;">
+        <textarea id="chatInputText" placeholder="Задайте вопрос, опишите подключение или коды ошибок..." rows="2" maxlength="1000" style="flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 7px 10px; font-size: 12px; color: #fff; resize: none; outline: none; font-family: inherit;" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitChatMessage();}"></textarea>
+        <button id="chatBtnSend" onclick="submitChatMessage()" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff; border: none; padding: 0 14px; height: 46px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" title="Отправить сообщение">
+          🚀
+        </button>
+      </div>
+      <div style="margin-top: 5px; font-size: 10px; color: #64748b; display: flex; justify-content: space-between;">
+        <span>🛡️ Пассивный режим чтения</span>
+        <span>🤖 AI-диагност отвечает сразу</span>
+      </div>
+    </div>
+
+  </div>
 
   <!-- Lightbox Modal Viewer -->
   <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
