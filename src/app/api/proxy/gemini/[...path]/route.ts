@@ -49,10 +49,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
 
     let pathString = resolvedParams.path ? resolvedParams.path.join('/') : 'v1beta/models';
 
-    // Если используется серверный ключ, принудительно переключаем дорогие модели на ультрадешевую Flash
+    // Если используется серверный ключ, принудительно направляем на актуальную модель Flash из env
     const isUsingDevKey = key === process.env.GEMINI_API_KEY || !key || key.trim() === '';
-    if (isUsingDevKey && pathString.includes('gemini-1.5-pro')) {
-       pathString = pathString.replace('gemini-1.5-pro', 'gemini-1.5-flash');
+    const serverGeminiModel = process.env.GEMINI_DEFAULT_MODEL || 'gemini-2.5-flash';
+    if (isUsingDevKey && pathString.includes(':generateContent')) {
+       pathString = pathString.replace(/models\/[^:]+:generateContent/, `models/${serverGeminiModel}:generateContent`);
     }
     
     // Перенаправляем запрос через зарубежный Vercel шлюз к Google
