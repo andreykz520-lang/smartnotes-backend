@@ -277,7 +277,7 @@ export default function Home() {
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col items-center hover:border-purple-500/40 transition-all">
               <div className="w-full h-80 bg-gradient-to-b from-[#111] to-[#181820] rounded-2xl p-4 border border-white/10 mb-6 flex flex-col justify-between relative overflow-hidden shadow-inner">
                 <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs text-gray-400">
-                  <span className="font-bold text-purple-400 text-sm">✨ Gemini 3.7 Flash</span>
+                  <span className="font-bold text-purple-400 text-sm">✨ Gemini Flash</span>
                   <span>💬</span>
                 </div>
                 <div className="space-y-2">
