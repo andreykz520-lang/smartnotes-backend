@@ -4,6 +4,7 @@ const path = require('path');
 const next = require('next');
 const handleObd2 = require('./obd2/server.js');
 const handleAutomechanic = require('./automechanic/server.js');
+const handleRemontAkpp = require('./remont-akpp31/server.js');
 const handleKontent = require('./kontent/server.js');
 const handlePsihosomatika = require('./psihosomatika/server.js');
 const { recordSmartNotesVisitor } = require('./smartnotes-tracker.js');
@@ -13,12 +14,17 @@ const port = parseInt(process.env.PORT || '3000', 10);
 const app = next({ dev, dir: __dirname });
 const handleNext = app.getRequestHandler();
 
-console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, Kontent AI, and Psihosomatika...`);
+console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, Remont AKPP, Kontent AI, and Psihosomatika...`);
 
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
     const host = (req.headers.host || '').toLowerCase();
     
+    // 0. Ремонт АКПП Белгород: remont-akpp31.obd2scanai.ru
+    if (host.includes('remont-akpp') || host.includes('remontakpp')) {
+      return handleRemontAkpp(req, res);
+    }
+
     // 1. Автомеханик: automechanic.obd2scanai.ru
     if (host.includes('automechanic')) {
       return handleAutomechanic(req, res);
