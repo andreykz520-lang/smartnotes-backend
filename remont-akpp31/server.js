@@ -122,6 +122,13 @@ module.exports = function handleRemontAkpp(req, res) {
   const url = new URL(req.url, 'http://localhost');
   const pathname = url.pathname;
 
+  // Раздача статики Next.js (CSS, JS)
+  if (pathname.startsWith('/_next/')) {
+    const relativePath = pathname.replace('/_next/', '');
+    const assetPath = path.join(PUBLIC_DIR, '_next', relativePath);
+    return serveStatic(res, assetPath);
+  }
+
   // Раздача картинок
   if (pathname.startsWith('/images/')) {
     const imgName = path.basename(pathname);
