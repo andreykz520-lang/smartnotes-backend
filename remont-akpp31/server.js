@@ -250,6 +250,16 @@ module.exports = function handleRemontAkpp(req, res) {
   if (pathname === '/auth.md') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'auth.md'), pathname);
   }
+  if (pathname === '/manifest.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'manifest.json'), pathname);
+  }
+  if (pathname === '/sw.js') {
+    res.writeHead(200, {
+      'Content-Type': 'application/javascript; charset=utf-8',
+      'Service-Worker-Allowed': '/'
+    });
+    return fs.createReadStream(path.join(PUBLIC_DIR, 'sw.js')).pipe(res);
+  }
   if (pathname === '/google466842291cd2c381.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return res.end('google-site-verification: google466842291cd2c381.html');
