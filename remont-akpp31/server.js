@@ -250,6 +250,10 @@ module.exports = function handleRemontAkpp(req, res) {
   if (pathname === '/auth.md') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'auth.md'), pathname);
   }
+  if (pathname === '/google466842291cd2c381.html') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end('google-site-verification: google466842291cd2c381.html');
+  }
 
   // /.well-known discovery
   if (pathname === '/.well-known/api-catalog' || pathname === '/.well-known/api-catalog.json') {
