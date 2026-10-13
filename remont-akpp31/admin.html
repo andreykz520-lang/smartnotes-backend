@@ -82,11 +82,27 @@
         </div>
 
         <div class="flex items-center space-x-2">
-          <button id="soundToggleBtn" onclick="toggleSound()" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1.5 bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
-            <span id="soundIcon">🔊</span>
-            <span id="soundText" class="hidden sm:inline">Звук вкл</span>
+          <!-- Ringtone selector -->
+          <div class="relative">
+            <select id="ringtoneSelect" onchange="changeRingtone(this.value)" class="bg-[#0F1115] border border-[#262B36] text-white text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-[#FF5E14]">
+              <option value="bell">🔔 Колокольчик</option>
+              <option value="car_horn">🚗 Авто-клаксон</option>
+              <option value="modern_chime">✨ Цифровой чим</option>
+              <option value="urgent_radar">🚨 Радар (Громкий)</option>
+              <option value="custom">📁 Своя мелодия...</option>
+            </select>
+            <input type="file" id="customAudioInput" accept="audio/*" class="hidden" onchange="handleCustomAudio(event)" />
+          </div>
+
+          <button id="testSoundBtn" onclick="testSound()" title="Прослушать мелодию" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs">
+            ▶️
           </button>
-          <button onclick="logout()" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 text-xs">
+
+          <button id="soundToggleBtn" onclick="toggleSound()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+            <span id="soundIcon">🔊</span>
+          </button>
+
+          <button onclick="logout()" title="Выйти" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 text-xs">
             🚪
           </button>
         </div>
@@ -170,35 +186,59 @@
       }).catch(() => {});
     }
 
-    document.body.addEventListener('click', () => {
-      if (!audioUnlocked) unlockAudio();
-    }, { once: true });
+    const RINGTONES = {
+      bell: 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3',
+      car_horn: 'https://assets.mixkit.co/active_storage/sfx/1653/1653-preview.mp3',
+      modern_chime: 'https://assets.mixkit.co/active_storage/sfx/2874/2874-preview.mp3',
+      urgent_radar: 'https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3'
+    };
 
-    function toggleSound() {
-      soundEnabled = !soundEnabled;
-      const btn = document.getElementById('soundToggleBtn');
-      const icon = document.getElementById('soundIcon');
-      const text = document.getElementById('soundText');
-      if (soundEnabled) {
-        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1.5 bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
-        icon.innerText = "🔊";
-        text.innerText = "Звук вкл";
-        unlockAudio();
-      } else {
-        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1.5 bg-red-500/15 text-red-400 border-red-500/30";
-        icon.innerText = "🔇";
-        text.innerText = "Без звука";
+    let currentRingtone = localStorage.getItem('akpp_ringtone') || 'bell';
+    const customAudioData = localStorage.getItem('akpp_custom_audio');
+
+    if (customAudioData && currentRingtone === 'custom') {
+      alertAudio.src = customAudioData;
+    } else if (RINGTONES[currentRingtone]) {
+      alertAudio.src = RINGTONES[currentRingtone];
+    }
+    document.getElementById('ringtoneSelect').value = currentRingtone;
+
+    function changeRingtone(val) {
+      if (val === 'custom') {
+        document.getElementById('customAudioInput').click();
+        return;
       }
+      currentRingtone = val;
+      localStorage.setItem('akpp_ringtone', val);
+      alertAudio.src = RINGTONES[val];
+      testSound();
     }
 
-    function playBeep() {
-      if (!soundEnabled) return;
-      try {
-        alertAudio.currentTime = 0;
-        alertAudio.play().catch(() => {});
-        // Вибрация на смартфонах
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      } catch (e) {}
+    function handleCustomAudio(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64Audio = evt.target.result;
+        try {
+          localStorage.setItem('akpp_custom_audio', base64Audio);
+          localStorage.setItem('akpp_ringtone', 'custom');
+          currentRingtone = 'custom';
+          alertAudio.src = base64Audio;
+          testSound();
+        } catch (err) {
+          alert('Файл слишком большой для сохранения в браузере. Выберите аудио до 2 МБ.');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function testSound() {
+      if (!soundEnabled) toggleSound();
+      unlockAudio();
+      alertAudio.currentTime = 0;
+      alertAudio.play().catch(() => {});
+      if (navigator.vibrate) navigator.vibrate([150, 100, 150]);
     }
 
     async function fetchData() {
