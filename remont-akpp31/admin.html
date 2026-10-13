@@ -198,34 +198,39 @@
     // Надежный веб-звуковой синтезатор (работает автономно без внешнего интернета и скачиваний)
     let audioCtx = null;
 
-    function getAudioContext() {
+    function initAudio() {
       if (!audioCtx) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (AudioContext) audioCtx = new AudioContext();
       }
       if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
+        audioCtx.resume();
       }
       return audioCtx;
     }
 
     function playTone(freq, duration, type = 'sine', delay = 0) {
-      const ctx = getAudioContext();
+      const ctx = initAudio();
       if (!ctx) return;
-      setTimeout(() => {
-        try {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
-          gain.gain.setValueAtTime(0.3, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + duration);
-        } catch (e) {}
-      }, delay);
+      
+      const startTime = ctx.currentTime + (delay / 1000);
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, startTime);
+        
+        gain.gain.setValueAtTime(0.5, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      } catch (e) {
+        console.error('Tone error:', e);
+      }
     }
 
     function playSynthesizedSound(type) {
@@ -293,10 +298,14 @@
 
     function playAlertRingtone() {
       if (!soundEnabled) return;
-      getAudioContext();
-      if (currentRingtone === 'custom' && alertAudio.src) {
-        alertAudio.currentTime = 0;
-        alertAudio.play().catch(() => playSynthesizedSound('bell'));
+      initAudio();
+      if (currentRingtone === 'custom' && alertAudio && alertAudio.src && alertAudio.src.startsWith('data:audio')) {
+        try {
+          alertAudio.currentTime = 0;
+          alertAudio.play().catch(() => playSynthesizedSound('bell'));
+        } catch (e) {
+          playSynthesizedSound('bell');
+        }
       } else {
         playSynthesizedSound(currentRingtone);
       }
@@ -304,7 +313,14 @@
     }
 
     function testSound() {
-      if (!soundEnabled) toggleSound();
+      if (!soundEnabled) {
+        soundEnabled = true;
+        const btn = document.getElementById('soundToggleBtn');
+        const icon = document.getElementById('soundIcon');
+        if (btn) btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
+        if (icon) icon.innerText = "🔊";
+      }
+      initAudio();
       playAlertRingtone();
     }
 
