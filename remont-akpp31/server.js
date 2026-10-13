@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const DATA_DIR = path.join(__dirname, 'data');
 const STATS_FILE = path.join(DATA_DIR, 'stats.json');
@@ -7,6 +8,51 @@ const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="service-doc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
+
+const mailTransporter = nodemailer.createTransport({
+  host: 'smtp.yandex.ru',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'andrey.chemarev@yandex.ru',
+    pass: 'rlxuqqlzylxozvwu'
+  }
+});
+
+async function sendLeadEmail(lead) {
+  try {
+    await mailTransporter.sendMail({
+      from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
+      to: 'autoneuro24@gmail.com',
+      subject: `🚨 НОВАЯ ЗАЯВКА: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 24px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14;">
+          <h2 style="color: #ff5e14; margin-top: 0; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
+          <p style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
+          
+          <div style="background-color: #161922; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #262b36;">
+            <p style="margin: 6px 0; font-size: 16px;"><strong>📞 Телефон:</strong> <a href="tel:${lead.phone}" style="color: #22c55e; font-weight: bold; text-decoration: none; font-size: 18px;">${lead.phone}</a></p>
+            <p style="margin: 6px 0; font-size: 15px;"><strong>🚘 Автомобиль:</strong> ${lead.carBrand || 'Не указан'}</p>
+            <p style="margin: 6px 0; font-size: 15px;"><strong>⚙️ Причина обращения:</strong> <span style="color: #f59e0b;">${lead.reason}</span></p>
+            <p style="margin: 6px 0; font-size: 15px;"><strong>📍 Город / Локация:</strong> ${lead.city || 'Белгород'}</p>
+            ${lead.details ? `<p style="margin: 6px 0; font-size: 14px; color: #cbd5e1;"><strong>💬 Симптомы:</strong> <em>«${lead.details}»</em></p>` : ''}
+            <p style="margin: 6px 0; font-size: 12px; color: #6b7280;"><strong>⏰ Время:</strong> ${lead.createdAt}</p>
+          </div>
+
+          <p style="margin: 0; text-align: center;">
+            <a href="tel:${lead.phone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-size: 16px;">Позвонить клиенту</a>
+          </p>
+          
+          <hr style="border: 0; border-top: 1px solid #262b36; margin: 20px 0 10px 0;" />
+          <p style="color: #6b7280; font-size: 11px; text-align: center;">СТО Ремонт АКПП • г. Белгород, ул. Серафимовича, 75</p>
+        </div>
+      `
+    });
+    console.log('[Email] Lead notification sent to autoneuro24@gmail.com');
+  } catch (err) {
+    console.error('[Email] Error sending lead notification:', err);
+  }
+}
 
 function ensureDataFiles() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -347,6 +393,9 @@ module.exports = function handleRemontAkpp(req, res) {
           city: geo.city || '',
           source: 'remont-akpp31.obd2scanai.ru'
         });
+
+        // Отправка email-уведомления на телефон мастера
+        sendLeadEmail(lead).catch(() => {});
 
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ success: true, lead }));
