@@ -43,15 +43,60 @@ function getLeads() {
   }
 }
 
-function recordVisit(userAgent, referer, ip) {
+const http = require('http');
+
+const geoCache = {};
+
+function resolveIpGeo(ip) {
+  if (!ip || ip === '—' || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('10.') || ip.startsWith('192.168.')) {
+    return Promise.resolve({ country: 'Россия', countryCode: 'RU', city: 'Белгород', org: 'Локальная сеть / РФ' });
+  }
+  if (geoCache[ip]) {
+    return Promise.resolve(geoCache[ip]);
+  }
+  return new Promise((resolve) => {
+    const req = http.get(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,city,org`, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json.status === 'success') {
+            const geo = {
+              country: json.country || 'Неизвестно',
+              countryCode: (json.countryCode || '').toUpperCase(),
+              city: json.city || '',
+              org: json.org || ''
+            };
+            geoCache[ip] = geo;
+            return resolve(geo);
+          }
+        } catch (e) {}
+        resolve({ country: 'Неизвестно', countryCode: '', city: '', org: '' });
+      });
+    });
+    req.on('error', () => resolve({ country: 'Неизвестно', countryCode: '', city: '', org: '' }));
+    req.setTimeout(2500, () => {
+      try { req.abort(); } catch (e) {}
+      resolve({ country: 'Неизвестно', countryCode: '', city: '', org: '' });
+    });
+  });
+}
+
+async function recordVisit(userAgent, referer, ip) {
   ensureDataFiles();
+  const geo = await resolveIpGeo(ip);
   const stats = getStats();
   stats.totalVisits += 1;
   stats.visits.unshift({
     timestamp: new Date().toISOString(),
     userAgent: userAgent || 'Unknown',
     referer: referer || 'Прямой заход',
-    ip: ip || '127.0.0.1'
+    ip: ip || '127.0.0.1',
+    city: geo.city || '',
+    country: geo.country || '',
+    countryCode: geo.countryCode || '',
+    org: geo.org || ''
   });
   if (stats.visits.length > 200) {
     stats.visits = stats.visits.slice(0, 200);
@@ -266,7 +311,7 @@ module.exports = function handleRemontAkpp(req, res) {
   if (pathname === '/api/lead' && req.method === 'POST') {
     let bodyStr = '';
     req.on('data', chunk => bodyStr += chunk);
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const body = JSON.parse(bodyStr || '{}');
         if (!body.phone || body.phone.trim().length < 6) {
@@ -274,11 +319,15 @@ module.exports = function handleRemontAkpp(req, res) {
           return res.end(JSON.stringify({ error: 'Укажите номер телефона' }));
         }
 
+        const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+        const geo = await resolveIpGeo(ip);
+
         const lead = addLead({
           phone: body.phone.trim(),
           carBrand: body.carBrand || 'Не указано',
           reason: body.reason || 'Ремонт АКПП',
           details: body.details || '',
+          city: geo.city || '',
           source: 'remont-akpp31.obd2scanai.ru'
         });
 
