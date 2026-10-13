@@ -2,31 +2,31 @@
   "specVersion": "1.0",
   "host": {
     "name": "СТО Ремонт АКПП, DSG и CVT Белгород",
-    "url": "https://remont-akpp31.obd2scanai.ru",
-    "description": "Специализированный автотехцентр по ремонту и диагностике АКПП, вариаторов, DSG и моторов в Белгороде (ул. Серафимовича, 75)."
+    "url": "https://remont-akpp31.obd2scanai.ru"
   },
   "entries": [
     {
-      "id": "urn:air:remont-akpp31.obd2scanai.ru:service:booking",
-      "displayName": "Запись на диагностику и ремонт трансмиссии в Белгороде",
-      "type": "application/json",
-      "url": "https://remont-akpp31.obd2scanai.ru/api/lead",
+      "identifier": "urn:air:remont-akpp31.obd2scanai.ru:app:remontakpp",
+      "displayName": "СТО Ремонт АКПП Белгород",
+      "type": "text/markdown",
+      "url": "https://remont-akpp31.obd2scanai.ru/llms.txt",
       "representativeQueries": [
         "ремонт акпп белгород",
-        "ремонт вариатора белгород серафимовича",
+        "ремонт вариатора серафимовича 75",
         "диагностика dsg белгород",
-        "замена масла в коробке автомат белгород",
-        "замена двигателя белгород"
+        "замена двигателя белгород",
+        "замена масла в акпп белгород"
       ]
     },
     {
-      "id": "urn:air:remont-akpp31.obd2scanai.ru:mcp:server",
-      "displayName": "Ремонт АКПП MCP Server",
+      "identifier": "urn:air:remont-akpp31.obd2scanai.ru:mcp:server",
+      "displayName": "Ремонт АКПП Белгород MCP Server",
       "type": "application/json",
       "url": "https://remont-akpp31.obd2scanai.ru/.well-known/mcp/server-card.json",
       "representativeQueries": [
-        "auto repair transmission mcp server",
-        "obd2 transmission specialist belgorod"
+        "Transmission repair booking Belgorod",
+        "Auto repair consultation MCP",
+        "Diagnose gearbox problems"
       ]
     }
   ]
