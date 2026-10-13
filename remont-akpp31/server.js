@@ -250,6 +250,9 @@ module.exports = function handleRemontAkpp(req, res) {
   if (pathname === '/auth.md') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'auth.md'), pathname);
   }
+  if (pathname === '/sounds.js') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'sounds.js'), pathname);
+  }
   if (pathname === '/manifest.json') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'manifest.json'), pathname);
   }

@@ -17,6 +17,7 @@
       });
     }
   </script>
+  <script src="/sounds.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -298,18 +299,33 @@
 
     function playAlertRingtone() {
       if (!soundEnabled) return;
-      initAudio();
-      if (currentRingtone === 'custom' && alertAudio && alertAudio.src && alertAudio.src.startsWith('data:audio')) {
-        try {
-          alertAudio.currentTime = 0;
-          alertAudio.play().catch(() => playSynthesizedSound('bell'));
-        } catch (e) {
-          playSynthesizedSound('bell');
+      try {
+        let audioSrc = '';
+        if (currentRingtone === 'custom' && alertAudio && alertAudio.src) {
+          audioSrc = alertAudio.src;
+        } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[currentRingtone]) {
+          audioSrc = window.EMBEDDED_SOUNDS[currentRingtone];
+        } else if (window.EMBEDDED_SOUNDS) {
+          audioSrc = window.EMBEDDED_SOUNDS.bell;
         }
-      } else {
+
+        if (audioSrc) {
+          const snd = new Audio(audioSrc);
+          snd.volume = 1.0;
+          const p = snd.play();
+          if (p !== undefined) {
+            p.catch(() => {
+              // fallback на синтезатор
+              playSynthesizedSound(currentRingtone);
+            });
+          }
+        } else {
+          playSynthesizedSound(currentRingtone);
+        }
+      } catch (err) {
         playSynthesizedSound(currentRingtone);
       }
-      if (navigator.vibrate) navigator.vibrate([150, 100, 150]);
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     }
 
     function testSound() {
@@ -320,7 +336,6 @@
         if (btn) btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
         if (icon) icon.innerText = "🔊";
       }
-      initAudio();
       playAlertRingtone();
     }
 
