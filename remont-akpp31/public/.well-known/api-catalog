@@ -1,0 +1,19 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://remont-akpp31.obd2scanai.ru/api/lead",
+      "service-doc": [
+        {
+          "href": "https://remont-akpp31.obd2scanai.ru/llms.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://remont-akpp31.obd2scanai.ru/api/health",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

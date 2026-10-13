@@ -1,0 +1,21 @@
+{
+  "serverInfo": {
+    "name": "remont-akpp-belgorod-mcp",
+    "version": "1.0.0",
+    "description": "MCP Server для автотехцентра по ремонту трансмиссий и моторов в Белгороде"
+  },
+  "transport": {
+    "type": "sse",
+    "endpoint": "https://remont-akpp31.obd2scanai.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": {
+      "list": true,
+      "call": true
+    },
+    "resources": {
+      "list": true,
+      "read": true
+    }
+  }
+}

@@ -1,0 +1,29 @@
+# Ремонт АКПП, Вариаторов CVT и DSG в Белгороде — СТО ул. Серафимовича 75
+
+> Автотехцентр в Белгороде специализируется на профессиональной диагностике, обслуживании и капитальном ремонте автоматических коробок передач (АКПП, вариаторы CVT, DSG), а также замене и ремонте двигателей и ходовой части.
+> Специализированный автосервис по адресу: г. Белгород, ул. Серафимовича, 75. Телефон: +7 (905) 879-14-35.
+
+## Основные услуги / Services
+- Ремонт классических гидромеханических АКПП (любой сложности, всех марок, промывка и ремонт гидроблоков, соленоидов, гидротрансформаторов).
+- Ремонт вариаторов CVT (Jatco, Aisin: замена конусов, подшипников, ремня, шлифовка, регулировка давления).
+- Ремонт роботизированных КПП (DSG-6, DSG-7 DQ200, DQ250, DQ500, PowerShift: замена сцепления, ремонт мехатроников, устранение ошибки P17BF).
+- Капитальный ремонт и замена двигателей на новые агрегаты («из ящика» под ключ).
+- Ремонт ходовой части и полного привода: восстановление шлицевых соединений дифференциала (VW Caravelle, Multivan, Kia/Hyundai 4WD).
+- Аппаратная и частичная замена техжидкостей и масел в АКПП со снятием поддона и заменой фильтров.
+
+## Контактная информация / Contact Info
+- Город: Белгород, Россия
+- Адрес: ул. Серафимовича, 75
+- Телефон мастера: +7 (905) 879-14-35
+- Режим работы: Ежедневно с 09:00 до 19:00
+- Акция: Компьютерная диагностика в подарок при ремонте + PRO-версия приложения SmartNotes AI в подарок!
+
+## AI Discovery & Machine-Readable Endpoints
+- Сайт: https://remont-akpp31.obd2scanai.ru/
+- Robots: https://remont-akpp31.obd2scanai.ru/robots.txt
+- Sitemap: https://remont-akpp31.obd2scanai.ru/sitemap.xml
+- API Catalog: https://remont-akpp31.obd2scanai.ru/.well-known/api-catalog
+- AI Catalog: https://remont-akpp31.obd2scanai.ru/.well-known/ai-catalog.json
+- MCP Server Card: https://remont-akpp31.obd2scanai.ru/.well-known/mcp/server-card.json
+- Agent Skills: https://remont-akpp31.obd2scanai.ru/.well-known/agent-skills/index.json
+- Agent Registration: https://remont-akpp31.obd2scanai.ru/auth.md

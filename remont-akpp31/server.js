@@ -6,6 +6,8 @@ const STATS_FILE = path.join(DATA_DIR, 'stats.json');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
+const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="service-doc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
+
 function ensureDataFiles() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -92,20 +94,45 @@ const MIME_TYPES = {
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.xml': 'application/xml; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8'
 };
 
-function serveStatic(res, filePath) {
+function serveStatic(res, filePath, pathname = '') {
   if (!fs.existsSync(filePath)) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     return res.end('Not Found');
   }
   const ext = path.extname(filePath).toLowerCase();
-  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-  res.writeHead(200, {
+  let contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+  if (pathname.endsWith('/api-catalog')) {
+    contentType = 'application/linkset+json; charset=utf-8';
+  } else if (pathname.endsWith('llms.txt') || pathname.endsWith('auth.md')) {
+    contentType = 'text/markdown; charset=utf-8';
+  } else if (pathname.includes('/.well-known/') && !ext) {
+    contentType = 'application/json; charset=utf-8';
+  }
+
+  const headers = {
     'Content-Type': contentType,
-    'Cache-Control': 'public, max-age=86400'
-  });
+    'Access-Control-Allow-Origin': '*'
+  };
+
+  if (ext === '.html' || ext === '.md' || pathname === '/' || pathname.includes('/.well-known/') || pathname.endsWith('llms.txt')) {
+    headers['Link'] = LINK_HEADERS;
+    headers['Vary'] = 'Accept';
+  }
+
+  if (filePath.includes('/_next/') || filePath.includes('/images/')) {
+    headers['Cache-Control'] = 'public, max-age=86400';
+  } else {
+    headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate';
+  }
+
+  res.writeHead(200, headers);
   fs.createReadStream(filePath).pipe(res);
 }
 
@@ -122,18 +149,84 @@ module.exports = function handleRemontAkpp(req, res) {
   const url = new URL(req.url, 'http://localhost');
   const pathname = url.pathname;
 
+  // Markdown content negotiation (Accept: text/markdown)
+  const acceptHeader = (req.headers['accept'] || '').toLowerCase();
+  const wantsMarkdown = acceptHeader.includes('text/markdown');
+
+  if (wantsMarkdown && (pathname === '/' || pathname === '/index' || pathname === '/main')) {
+    const llmsPath = path.join(PUBLIC_DIR, 'llms.txt');
+    const mdText = fs.existsSync(llmsPath) ? fs.readFileSync(llmsPath, 'utf-8') : '# СТО Ремонт АКПП Белгород\n\nПрофессиональный ремонт автоматических коробок передач.';
+    const tokenCount = Math.ceil(Buffer.byteLength(mdText, 'utf-8') / 3.5);
+    res.writeHead(200, {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      'Vary': 'Accept',
+      'x-markdown-tokens': String(tokenCount),
+      'Link': LINK_HEADERS,
+      'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(mdText, 'utf-8');
+  }
+
+  // API Health
+  if (pathname === '/api/health') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Link': LINK_HEADERS,
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(JSON.stringify({ status: 'ok', service: 'СТО Ремонт АКПП Белгород', timestamp: new Date().toISOString() }));
+  }
+
   // Раздача статики Next.js (CSS, JS)
   if (pathname.startsWith('/_next/')) {
     const relativePath = pathname.replace('/_next/', '');
     const assetPath = path.join(PUBLIC_DIR, '_next', relativePath);
-    return serveStatic(res, assetPath);
+    return serveStatic(res, assetPath, pathname);
   }
 
   // Раздача картинок
   if (pathname.startsWith('/images/')) {
     const imgName = path.basename(pathname);
     const imgPath = path.join(PUBLIC_DIR, 'images', imgName);
-    return serveStatic(res, imgPath);
+    return serveStatic(res, imgPath, pathname);
+  }
+
+  // SEO & Agent Discovery файлы
+  if (pathname === '/robots.txt') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'robots.txt'), pathname);
+  }
+  if (pathname === '/sitemap.xml') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'sitemap.xml'), pathname);
+  }
+  if (pathname === '/llms.txt') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'llms.txt'), pathname);
+  }
+  if (pathname === '/auth.md') {
+    return serveStatic(res, path.join(PUBLIC_DIR, 'auth.md'), pathname);
+  }
+
+  // /.well-known discovery
+  if (pathname === '/.well-known/api-catalog' || pathname === '/.well-known/api-catalog.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'api-catalog'), pathname);
+  }
+  if (pathname === '/.well-known/ai-catalog.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'ai-catalog.json'), pathname);
+  }
+  if (pathname === '/.well-known/mcp/server-card.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'mcp', 'server-card.json'), pathname);
+  }
+  if (pathname === '/.well-known/agent-skills/index.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'agent-skills', 'index.json'), pathname);
+  }
+  if (pathname === '/.well-known/oauth-authorization-server') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'oauth-authorization-server'), pathname);
+  }
+  if (pathname === '/.well-known/oauth-protected-resource') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'oauth-protected-resource'), pathname);
+  }
+  if (pathname === '/.well-known/openid-configuration') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'openid-configuration'), pathname);
   }
 
   // API Трекинг
@@ -231,8 +324,12 @@ module.exports = function handleRemontAkpp(req, res) {
     return res.end(adminHtml);
   }
 
-  // Главная страница HTML
+  // Главная страница HTML с Link header
   const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
-  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Link': LINK_HEADERS,
+    'Vary': 'Accept'
+  });
   return res.end(indexHtml);
 };

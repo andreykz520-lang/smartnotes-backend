@@ -1,0 +1,15 @@
+{
+  "resource": "https://remont-akpp31.obd2scanai.ru",
+  "resource_name": "СТО Ремонт АКПП Белгород",
+  "authorization_servers": [
+    "https://remont-akpp31.obd2scanai.ru"
+  ],
+  "scopes_supported": [
+    "lead:create",
+    "services:read"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://remont-akpp31.obd2scanai.ru/llms.txt"
+}

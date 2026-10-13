@@ -1,0 +1,33 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "СТО Ремонт АКПП, DSG и CVT Белгород",
+    "url": "https://remont-akpp31.obd2scanai.ru",
+    "description": "Специализированный автотехцентр по ремонту и диагностике АКПП, вариаторов, DSG и моторов в Белгороде (ул. Серафимовича, 75)."
+  },
+  "entries": [
+    {
+      "id": "urn:air:remont-akpp31.obd2scanai.ru:service:booking",
+      "displayName": "Запись на диагностику и ремонт трансмиссии в Белгороде",
+      "type": "application/json",
+      "url": "https://remont-akpp31.obd2scanai.ru/api/lead",
+      "representativeQueries": [
+        "ремонт акпп белгород",
+        "ремонт вариатора белгород серафимовича",
+        "диагностика dsg белгород",
+        "замена масла в коробке автомат белгород",
+        "замена двигателя белгород"
+      ]
+    },
+    {
+      "id": "urn:air:remont-akpp31.obd2scanai.ru:mcp:server",
+      "displayName": "Ремонт АКПП MCP Server",
+      "type": "application/json",
+      "url": "https://remont-akpp31.obd2scanai.ru/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "auto repair transmission mcp server",
+        "obd2 transmission specialist belgorod"
+      ]
+    }
+  ]
+}
