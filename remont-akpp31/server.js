@@ -272,7 +272,7 @@ function serveStatic(res, filePath, pathname = '') {
   fs.createReadStream(filePath).pipe(res);
 }
 
-module.exports = function handleRemontAkpp(req, res) {
+module.exports = async function handleRemontAkpp(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
