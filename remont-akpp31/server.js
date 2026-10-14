@@ -488,15 +488,15 @@ module.exports = async function handleRemontAkpp(req, res) {
           };
         }
 
-        // Отправка email-уведомления на телефон мастера
-        try {
-          await sendLeadEmail(lead);
-        } catch (mailErr) {
-          console.error('[Lead Mail Error]:', mailErr);
-        }
-
+        // Мгновенный ответ клиенту на сайте (чтобы форма не зависала)
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        return res.end(JSON.stringify({ success: true, lead }));
+        res.end(JSON.stringify({ success: true, lead }));
+
+        // Отправка email-уведомления на почту мастера в фоновом режиме
+        sendLeadEmail(lead).catch(mailErr => {
+          console.error('[Lead Mail Error]:', mailErr);
+        });
+        return;
       } catch (e) {
         console.error('[API Lead Global Catch]:', e);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
