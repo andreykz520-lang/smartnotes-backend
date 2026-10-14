@@ -51,7 +51,7 @@ async function sendLeadEmail(lead) {
   const mailOptions = {
     from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
     to: 'autoneuro24@gmail.com',
-    subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
+    subject: `[${new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] Заявка: ${lead.phone} (${lead.carBrand || 'Авто'})`,
     text: textBody,
     html: `
       <div style="font-family: Arial, sans-serif; font-size: 16px; color: #111111; line-height: 1.5; max-width: 480px; padding: 12px;">
