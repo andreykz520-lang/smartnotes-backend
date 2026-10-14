@@ -17,15 +17,21 @@ const mailTransporter = nodemailer.createTransport({
   auth: {
     user: 'andrey.chemarev@yandex.ru',
     pass: 'rlxuqqlzylxozvwu'
+  },
+  tls: {
+    rejectUnauthorized: false
   }
 });
 
 async function sendLeadEmail(lead) {
   try {
+    const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nТелефон: ${lead.phone}\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
+
     await mailTransporter.sendMail({
       from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
       to: 'autoneuro24@gmail.com',
-      subject: `🚨 НОВАЯ ЗАЯВКА: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
+      subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
+      text: textBody,
       html: `
         <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 24px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14;">
           <h2 style="color: #ff5e14; margin-top: 0; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
@@ -438,7 +444,11 @@ module.exports = function handleRemontAkpp(req, res) {
         });
 
         // Отправка email-уведомления на телефон мастера
-        sendLeadEmail(lead).catch(() => {});
+        try {
+          await sendLeadEmail(lead);
+        } catch (mailErr) {
+          console.error('[Lead Mail Error]:', mailErr);
+        }
 
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ success: true, lead }));
@@ -538,6 +548,25 @@ module.exports = function handleRemontAkpp(req, res) {
       }
     });
     return;
+  }
+
+  // API Тест отправки письма
+  if (pathname === '/api/admin/test-email') {
+    try {
+      await sendLeadEmail({
+        phone: '+7 (905) 879-14-35',
+        carBrand: 'Тестовая заявка',
+        reason: 'Проверка работы почты',
+        details: 'Уведомление успешно доставлено с сервера СТО',
+        city: 'Белгород',
+        createdAt: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
+      });
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({ success: true, message: 'Письмо отправлено на autoneuro24@gmail.com' }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({ success: false, error: e.message || String(e) }));
+    }
   }
 
   // Админка HTML

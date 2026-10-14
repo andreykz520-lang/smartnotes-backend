@@ -612,10 +612,17 @@
       document.getElementById('loginForm').dispatchEvent(new Event('submit'));
     }
 
-    // Опрос сервера каждые 5 секунд (живой мониторинг!)
+    // Опрос сервера каждые 30 секунд (для сбережения заряда батареи телефона)
     setInterval(() => {
       if (savedPass) fetchData();
-    }, 5000);
+    }, 30000);
+
+    // Мгновенное обновление при разблокировке или возврате на вкладку
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && savedPass) {
+        fetchData();
+      }
+    });
   </script>
 </body>
 </html>
