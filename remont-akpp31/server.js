@@ -120,13 +120,20 @@ function getStats() {
   }
 }
 
+let inMemoryLeads = [];
 function getLeads() {
   ensureDataFiles();
   try {
-    return JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+    if (fs.existsSync(LEADS_FILE)) {
+      const fileData = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+      if (Array.isArray(fileData)) {
+        return fileData;
+      }
+    }
   } catch (e) {
-    return [];
+    console.error('[Leads Read Error]:', e);
   }
+  return inMemoryLeads;
 }
 
 const http = require('http');
@@ -170,48 +177,68 @@ function resolveIpGeo(ip) {
 }
 
 async function recordVisit(userAgent, referer, ip) {
-  ensureDataFiles();
-  const geo = await resolveIpGeo(ip);
-  const stats = getStats();
-  stats.totalVisits += 1;
-  stats.visits.unshift({
-    timestamp: new Date().toISOString(),
-    userAgent: userAgent || 'Unknown',
-    referer: referer || 'Прямой заход',
-    ip: ip || '127.0.0.1',
-    city: geo.city || '',
-    country: geo.country || '',
-    countryCode: geo.countryCode || '',
-    org: geo.org || ''
-  });
-  if (stats.visits.length > 200) {
-    stats.visits = stats.visits.slice(0, 200);
+  try {
+    ensureDataFiles();
+    const geo = await resolveIpGeo(ip);
+    const stats = getStats();
+    stats.totalVisits += 1;
+    stats.visits.unshift({
+      timestamp: new Date().toISOString(),
+      userAgent: userAgent || 'Unknown',
+      referer: referer || 'Прямой заход',
+      ip: ip || '127.0.0.1',
+      city: geo.city || '',
+      country: geo.country || '',
+      countryCode: geo.countryCode || '',
+      org: geo.org || ''
+    });
+    if (stats.visits.length > 200) {
+      stats.visits = stats.visits.slice(0, 200);
+    }
+    fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[recordVisit Error]:', e);
   }
-  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
 }
 
 function recordPhoneClick() {
-  ensureDataFiles();
-  const stats = getStats();
-  stats.phoneClicks += 1;
-  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
-  return stats.phoneClicks;
+  try {
+    ensureDataFiles();
+    const stats = getStats();
+    stats.phoneClicks += 1;
+    fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+    return stats.phoneClicks;
+  } catch (e) {
+    console.error('[recordPhoneClick Error]:', e);
+    return 1;
+  }
 }
 
 function addLead(data) {
-  ensureDataFiles();
-  const leads = getLeads();
   const newLead = {
     ...data,
     id: 'lead_' + Date.now().toString(36),
     createdAt: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
   };
-  leads.unshift(newLead);
-  fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2), 'utf-8');
+  inMemoryLeads.unshift(newLead);
 
-  const stats = getStats();
-  stats.formSubmits += 1;
-  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+  try {
+    ensureDataFiles();
+    const leads = getLeads();
+    if (!leads.some(l => l.id === newLead.id)) {
+      leads.unshift(newLead);
+    }
+    fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('[Leads Write Error]:', err);
+  }
+
+  try {
+    const stats = getStats();
+    stats.formSubmits = (stats.formSubmits || 0) + 1;
+    fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+  } catch (err) {}
+
   return newLead;
 }
 
@@ -432,16 +459,34 @@ module.exports = async function handleRemontAkpp(req, res) {
         }
 
         const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
-        const geo = await resolveIpGeo(ip);
+        let geo = { city: 'Белгород' };
+        try {
+          geo = await resolveIpGeo(ip);
+        } catch (e) {}
 
-        const lead = addLead({
-          phone: body.phone.trim(),
-          carBrand: body.carBrand || 'Не указано',
-          reason: body.reason || 'Ремонт АКПП',
-          details: body.details || '',
-          city: geo.city || '',
-          source: 'remont-akpp31.obd2scanai.ru'
-        });
+        let lead;
+        try {
+          lead = addLead({
+            phone: body.phone.trim(),
+            carBrand: body.carBrand || 'Не указано',
+            reason: body.reason || 'Ремонт АКПП',
+            details: body.details || '',
+            city: geo.city || '',
+            source: 'remont-akpp31.obd2scanai.ru'
+          });
+        } catch (leadErr) {
+          console.error('[addLead Error]:', leadErr);
+          lead = {
+            id: 'lead_' + Date.now().toString(36),
+            phone: body.phone.trim(),
+            carBrand: body.carBrand || 'Не указано',
+            reason: body.reason || 'Ремонт АКПП',
+            details: body.details || '',
+            city: geo.city || '',
+            source: 'remont-akpp31.obd2scanai.ru',
+            createdAt: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
+          };
+        }
 
         // Отправка email-уведомления на телефон мастера
         try {
@@ -453,8 +498,9 @@ module.exports = async function handleRemontAkpp(req, res) {
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ success: true, lead }));
       } catch (e) {
+        console.error('[API Lead Global Catch]:', e);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
-        return res.end(JSON.stringify({ error: 'Ошибка сохранения заявки' }));
+        return res.end(JSON.stringify({ error: 'Ошибка сохранения заявки', details: e.message || String(e) }));
       }
     });
     return;
