@@ -54,66 +54,40 @@ async function sendLeadEmail(lead) {
     subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
     text: textBody,
     html: `
-      <!-- Верхний контрастный блок: сразу при открытии письма -->
-      <div style="background-color: #ffffff; color: #000000; padding: 18px; border-radius: 12px; border: 3px solid #22c55e; max-width: 550px; margin-bottom: 18px; font-family: Arial, sans-serif; box-sizing: border-box;">
-        <div style="font-size: 13px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
-          📞 Номер клиента (нажмите для звонка или скопируйте):
+      <div style="font-family: Arial, sans-serif; font-size: 15px; color: #111111; line-height: 1.5; max-width: 480px; padding: 12px;">
+        <h2 style="color: #d9480f; margin: 0 0 10px 0; font-size: 20px;">🚗 Новая заявка СТО АКПП Белгород</h2>
+
+        <!-- Главный блок: номер для звонка и копирования прямо вверху -->
+        <div style="background-color: #f1f5f9; border-left: 5px solid #22c55e; padding: 12px 14px; margin-bottom: 14px; border-radius: 6px;">
+          <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 3px;">
+            Номер клиента:
+          </div>
+          <div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+            <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: none;">${lead.phone}</a>
+          </div>
+          <div style="font-size: 14px; color: #475569;">
+            Чистый для копирования: <b style="color: #0f172a; font-family: monospace; font-size: 16px;">${cleanPhone}</b>
+          </div>
         </div>
-        <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 10px; font-family: Consolas, monospace; letter-spacing: 1px;">
-          <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: none;">${lead.phone}</a>
-        </div>
-        <div style="font-size: 14px; color: #334155; margin-bottom: 10px;">
-          Чистый номер: <strong style="font-family: Consolas, monospace; font-size: 17px; color: #0f172a;">${cleanPhone}</strong>
-        </div>
-        <div style="display: block; margin-top: 8px;">
-          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; margin-right: 8px; margin-bottom: 6px;">
-            📞 Позвонить
+
+        <!-- Кнопка прямого звонка -->
+        <div style="margin-bottom: 16px;">
+          <a href="tel:${cleanPhone}" style="display: block; text-align: center; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+            📞 Позвонить клиенту
           </a>
-          ${waPhone ? `<a href="https://wa.me/${waPhone}" style="display: inline-block; background-color: #25D366; color: #ffffff; font-weight: bold; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; margin-bottom: 6px;">💬 Написать в WhatsApp</a>` : ''}
-        </div>
-      </div>
-
-      <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 24px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14;">
-        <h2 style="color: #ff5e14; margin-top: 0; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
-        <p style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
-        
-        <div style="background-color: #161922; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #262b36;">
-          <p style="margin: 6px 0; font-size: 16px;"><strong>📞 Телефон:</strong> <a href="tel:${cleanPhone}" style="color: #22c55e; font-weight: bold; text-decoration: none; font-size: 18px;">${lead.phone}</a></p>
-          <p style="margin: 6px 0; font-size: 15px;"><strong>🚘 Автомобиль:</strong> ${lead.carBrand || 'Не указан'}</p>
-          <p style="margin: 6px 0; font-size: 15px;"><strong>⚙️ Причина обращения:</strong> <span style="color: #f59e0b;">${lead.reason}</span></p>
-          <p style="margin: 6px 0; font-size: 15px;"><strong>📍 Город / Локация:</strong> ${lead.city || 'Белгород'}</p>
-          ${lead.details ? `<p style="margin: 6px 0; font-size: 14px; color: #cbd5e1;"><strong>💬 Симптомы:</strong> <em>«${lead.details}»</em></p>` : ''}
-          <p style="margin: 6px 0; font-size: 12px; color: #6b7280;"><strong>⏰ Время:</strong> ${lead.createdAt}</p>
         </div>
 
-        <p style="margin: 0; text-align: center;">
-          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-size: 16px;">Позвонить клиенту</a>
-        </p>
-        
-        <hr style="border: 0; border-top: 1px solid #262b36; margin: 20px 0 10px 0;" />
-        <p style="color: #6b7280; font-size: 11px; text-align: center;">СТО Ремонт АКПП • г. Белгород, ул. Серафимовича, 75</p>
-      </div>
+        <!-- Детали заявки -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 14px;">
+          <tr><td style="padding: 5px 0; color: #64748b; width: 110px;">Авто:</td><td style="padding: 5px 0; font-weight: bold; color: #0f172a;">${lead.carBrand || 'Не указан'}</td></tr>
+          <tr><td style="padding: 5px 0; color: #64748b;">Причина:</td><td style="padding: 5px 0; font-weight: bold; color: #d9480f;">${lead.reason}</td></tr>
+          <tr><td style="padding: 5px 0; color: #64748b;">Город:</td><td style="padding: 5px 0; font-weight: bold; color: #0f172a;">${lead.city || 'Белгород'}</td></tr>
+          ${lead.details ? `<tr><td style="padding: 5px 0; color: #64748b;">Симптомы:</td><td style="padding: 5px 0; font-style: italic; color: #334155;">«${lead.details}»</td></tr>` : ''}
+          <tr><td style="padding: 5px 0; color: #64748b;">Время:</td><td style="padding: 5px 0; color: #64748b;">${lead.createdAt}</td></tr>
+        </table>
 
-      <!-- Блок для удобного копирования и быстрого набора на телефоне -->
-      <div style="margin-top: 16px; padding: 18px; background-color: #ffffff; color: #000000; border-radius: 14px; border: 3px solid #22c55e; max-width: 550px; font-family: Arial, sans-serif;">
-        <div style="font-size: 13px; font-weight: bold; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-          📋 Номер для быстрого копирования и набора:
-        </div>
-        
-        <div style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 12px; font-family: Consolas, 'Courier New', monospace; letter-spacing: 1px; user-select: all; -webkit-user-select: all;">
-          ${lead.phone}
-        </div>
-
-        <div style="margin-bottom: 14px; font-size: 14px; color: #334155;">
-          Чистый номер (для вставки в контакты / WhatsApp):<br />
-          <strong style="font-family: Consolas, monospace; font-size: 18px; color: #0284c7; user-select: all; -webkit-user-select: all;">${cleanPhone}</strong>
-        </div>
-
-        <div style="display: block; margin-top: 10px;">
-          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-size: 15px; margin-right: 8px; margin-bottom: 8px;">
-            📞 Набрать номер в телефоне
-          </a>
-          ${waPhone ? `<a href="https://wa.me/${waPhone}" style="display: inline-block; background-color: #25D366; color: #ffffff; font-weight: bold; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-size: 15px; margin-bottom: 8px;">💬 Написать в WhatsApp</a>` : ''}
+        <div style="font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+          СТО Ремонт АКПП • Белгород, ул. Серафимовича 75
         </div>
       </div>
     `
