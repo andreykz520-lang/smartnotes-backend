@@ -593,6 +593,38 @@ module.exports = async function handleRemontAkpp(req, res) {
     return;
   }
 
+  // Диагностика подключения к SMTP портам
+  if (pathname === '/api/admin/check-smtp') {
+    const net = require('net');
+    function testPort(host, port) {
+      return new Promise((resolve) => {
+        const socket = new net.Socket();
+        socket.setTimeout(4000);
+        socket.on('connect', () => {
+          socket.destroy();
+          resolve({ port, status: 'OPEN' });
+        });
+        socket.on('timeout', () => {
+          socket.destroy();
+          resolve({ port, status: 'TIMED_OUT' });
+        });
+        socket.on('error', (err) => {
+          socket.destroy();
+          resolve({ port, status: 'ERROR: ' + err.message });
+        });
+        socket.connect(port, host);
+      });
+    }
+
+    const [res465, res587] = await Promise.all([
+      testPort('smtp.yandex.ru', 465),
+      testPort('smtp.yandex.ru', 587)
+    ]);
+
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ host: 'smtp.yandex.ru', ports: { 465: res465, 587: res587 } }));
+  }
+
   // API Тест отправки письма
   if (pathname === '/api/admin/test-email') {
     try {
