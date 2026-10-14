@@ -202,19 +202,12 @@
 
     function unlockAudio() {
       initAudio();
-      if (typeof setupAudioSource === 'function') setupAudioSource();
-      if (alertAudio && alertAudio.src) {
-        alertAudio.volume = 1.0;
-        const playPromise = alertAudio.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            alertAudio.pause();
-            alertAudio.currentTime = 0;
-            audioUnlocked = true;
-            const banner = document.getElementById('audioUnlockBanner');
-            if (banner) banner.classList.add('hidden');
-          }).catch(() => {});
-        }
+      audioUnlocked = true;
+      const banner = document.getElementById('audioUnlockBanner');
+      if (banner) banner.classList.add('hidden');
+
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
       }
     }
 
@@ -299,6 +292,9 @@
 
     function setupAudioSource() {
       if (!alertAudio) return;
+      // Если аудио прямо сейчас проигрывается - не прерываем его!
+      if (!alertAudio.paused && alertAudio.currentTime > 0) return;
+
       let targetSrc = '';
       if (currentRingtone === 'custom') {
         targetSrc = serverCustomSoundUrl || customAudioData || '/custom-alert.mp3';
@@ -307,8 +303,16 @@
       } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
         targetSrc = window.EMBEDDED_SOUNDS.bell;
       }
-      if (targetSrc && alertAudio.src !== targetSrc) {
-        alertAudio.src = targetSrc;
+      if (targetSrc) {
+        let isSame = false;
+        try {
+          isSame = (alertAudio.src === targetSrc) || (new URL(targetSrc, window.location.href).href === alertAudio.src);
+        } catch (e) {
+          isSame = (alertAudio.src === targetSrc);
+        }
+        if (!isSame) {
+          alertAudio.src = targetSrc;
+        }
       }
     }
 
@@ -436,6 +440,12 @@
     }
 
     function testSound() {
+      // Если мелодия уже играет - повторный клик останавливает воспроизведение
+      if (alertAudio && !alertAudio.paused && alertAudio.currentTime > 0) {
+        alertAudio.pause();
+        alertAudio.currentTime = 0;
+        return;
+      }
       if (!soundEnabled) {
         soundEnabled = true;
         const btn = document.getElementById('soundToggleBtn');
@@ -466,15 +476,20 @@
 
     function renderDashboard(stats, leads, settings) {
       if (settings) {
+        let changed = false;
         if (settings.ringtone && settings.ringtone !== currentRingtone) {
           currentRingtone = settings.ringtone;
           localStorage.setItem('akpp_ringtone', currentRingtone);
+          changed = true;
         }
-        if (settings.customSoundUrl) {
+        if (settings.customSoundUrl && settings.customSoundUrl !== serverCustomSoundUrl) {
           serverCustomSoundUrl = settings.customSoundUrl;
           localStorage.setItem('akpp_server_sound_url', settings.customSoundUrl);
+          changed = true;
         }
-        syncRingtoneUI();
+        if (changed) {
+          syncRingtoneUI();
+        }
       }
 
       document.getElementById('statVisits').innerText = stats.totalVisits || 0;
