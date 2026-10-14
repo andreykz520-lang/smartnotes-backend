@@ -54,37 +54,38 @@ async function sendLeadEmail(lead) {
     subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
     text: textBody,
     html: `
-      <div style="font-family: Arial, sans-serif; font-size: 15px; color: #111111; line-height: 1.5; max-width: 480px; padding: 12px;">
+      <div style="font-family: Arial, sans-serif; font-size: 16px; color: #111111; line-height: 1.5; max-width: 480px; padding: 12px;">
         <h2 style="color: #d9480f; margin: 0 0 10px 0; font-size: 20px;">🚗 Новая заявка СТО АКПП Белгород</h2>
 
-        <!-- Главный блок: номер для звонка и копирования прямо вверху -->
-        <div style="background-color: #f1f5f9; border-left: 5px solid #22c55e; padding: 12px 14px; margin-bottom: 14px; border-radius: 6px;">
-          <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 3px;">
-            Номер клиента:
+        <!-- Блок номера телефона -->
+        <div style="background-color: #f1f5f9; border-left: 5px solid #22c55e; padding: 14px; margin-bottom: 14px; border-radius: 6px;">
+          <div style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">
+            Номер клиента для звонка:
           </div>
-          <div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
-            <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: none;">${lead.phone}</a>
+          <div style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 8px; font-family: monospace;">
+            <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: underline;">${lead.phone}</a>
           </div>
-          <div style="font-size: 14px; color: #475569;">
-            Чистый для копирования: <b style="color: #0f172a; font-family: monospace; font-size: 16px;">${cleanPhone}</b>
+          <div style="font-size: 15px; color: #334155; margin-bottom: 6px;">
+            Прямой вызов: <a href="tel:${cleanPhone}" style="font-weight: bold; color: #0284c7; text-decoration: underline; font-size: 18px; font-family: monospace;">${cleanPhone}</a>
           </div>
-        </div>
-
-        <!-- Кнопка прямого звонка -->
-        <div style="margin-bottom: 16px;">
-          <a href="tel:${cleanPhone}" style="display: block; text-align: center; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-size: 16px;">
-            📞 Позвонить клиенту
-          </a>
+          <div style="font-size: 12px; color: #64748b;">
+            (Нажмите на номер для звонка или зажмите для копирования)
+          </div>
         </div>
 
         <!-- Детали заявки -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 14px;">
-          <tr><td style="padding: 5px 0; color: #64748b; width: 110px;">Авто:</td><td style="padding: 5px 0; font-weight: bold; color: #0f172a;">${lead.carBrand || 'Не указан'}</td></tr>
-          <tr><td style="padding: 5px 0; color: #64748b;">Причина:</td><td style="padding: 5px 0; font-weight: bold; color: #d9480f;">${lead.reason}</td></tr>
-          <tr><td style="padding: 5px 0; color: #64748b;">Город:</td><td style="padding: 5px 0; font-weight: bold; color: #0f172a;">${lead.city || 'Белгород'}</td></tr>
-          ${lead.details ? `<tr><td style="padding: 5px 0; color: #64748b;">Симптомы:</td><td style="padding: 5px 0; font-style: italic; color: #334155;">«${lead.details}»</td></tr>` : ''}
-          <tr><td style="padding: 5px 0; color: #64748b;">Время:</td><td style="padding: 5px 0; color: #64748b;">${lead.createdAt}</td></tr>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 15px;">
+          <tr><td style="padding: 6px 0; color: #64748b; width: 110px;">Авто:</td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${lead.carBrand || 'Не указан'}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b;">Причина:</td><td style="padding: 6px 0; font-weight: bold; color: #d9480f;">${lead.reason}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b;">Город:</td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${lead.city || 'Белгород'}</td></tr>
+          ${lead.details ? `<tr><td style="padding: 6px 0; color: #64748b;">Симптомы:</td><td style="padding: 6px 0; font-style: italic; color: #334155;">«${lead.details}»</td></tr>` : ''}
+          <tr><td style="padding: 6px 0; color: #64748b;">Время:</td><td style="padding: 6px 0; color: #64748b;">${lead.createdAt}</td></tr>
         </table>
+
+        <!-- Номер отдельной чистой строкой внизу для копирования -->
+        <div style="background-color: #ffffff; border: 1px dashed #94a3b8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 20px; font-weight: bold; text-align: center; color: #0f172a; margin-bottom: 14px;">
+          ${cleanPhone}
+        </div>
 
         <div style="font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 8px;">
           СТО Ремонт АКПП • Белгород, ул. Серафимовича 75
