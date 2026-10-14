@@ -97,7 +97,8 @@
               <option value="car_horn">🚗 Авто-клаксон</option>
               <option value="modern_chime">✨ Цифровой чим</option>
               <option value="urgent_radar">🚨 Радар (Громкий)</option>
-              <option value="custom">📁 Своя мелодия...</option>
+              <option value="custom" id="customRingtoneOpt">📁 Своя мелодия</option>
+              <option value="upload">⬆️ Выбрать файл MP3/WAV...</option>
             </select>
             <input type="file" id="customAudioInput" accept="audio/*" class="hidden" onchange="handleCustomAudio(event)" />
           </div>
@@ -201,11 +202,9 @@
 
     function unlockAudio() {
       initAudio();
-      if (alertAudio) {
+      if (typeof setupAudioSource === 'function') setupAudioSource();
+      if (alertAudio && alertAudio.src) {
         alertAudio.volume = 1.0;
-        if (!alertAudio.src && window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
-          alertAudio.src = window.EMBEDDED_SOUNDS.bell;
-        }
         const playPromise = alertAudio.play();
         if (playPromise !== undefined) {
           playPromise.then(() => {
@@ -295,43 +294,114 @@
     }
 
     let currentRingtone = localStorage.getItem('akpp_ringtone') || 'bell';
+    let serverCustomSoundUrl = localStorage.getItem('akpp_server_sound_url') || '';
     const customAudioData = localStorage.getItem('akpp_custom_audio');
 
-    if (customAudioData && currentRingtone === 'custom' && alertAudio) {
-      alertAudio.src = customAudioData;
+    function setupAudioSource() {
+      if (!alertAudio) return;
+      let targetSrc = '';
+      if (currentRingtone === 'custom') {
+        targetSrc = serverCustomSoundUrl || customAudioData || '/custom-alert.mp3';
+      } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[currentRingtone]) {
+        targetSrc = window.EMBEDDED_SOUNDS[currentRingtone];
+      } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
+        targetSrc = window.EMBEDDED_SOUNDS.bell;
+      }
+      if (targetSrc && alertAudio.src !== targetSrc) {
+        alertAudio.src = targetSrc;
+      }
     }
-    const selectEl = document.getElementById('ringtoneSelect');
-    if (selectEl) selectEl.value = currentRingtone;
+
+    function syncRingtoneUI() {
+      const sel = document.getElementById('ringtoneSelect');
+      if (sel) {
+        sel.value = currentRingtone;
+        const customOpt = document.getElementById('customRingtoneOpt');
+        if (customOpt) {
+          if (serverCustomSoundUrl || customAudioData) {
+            customOpt.innerText = '📁 Своя мелодия (активна)';
+          } else {
+            customOpt.innerText = '📁 Своя мелодия';
+          }
+        }
+      }
+      setupAudioSource();
+    }
+
+    // Первичная инициализация
+    syncRingtoneUI();
 
     function changeRingtone(val) {
-      if (val === 'custom') {
+      if (val === 'upload') {
         document.getElementById('customAudioInput').click();
         return;
       }
+      if (val === 'custom') {
+        if (!serverCustomSoundUrl && !customAudioData) {
+          document.getElementById('customAudioInput').click();
+          return;
+        }
+      }
       currentRingtone = val;
       localStorage.setItem('akpp_ringtone', val);
-      if (alertAudio && window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[val]) {
-        alertAudio.src = window.EMBEDDED_SOUNDS[val];
+      syncRingtoneUI();
+
+      if (savedPass) {
+        fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: savedPass, ringtone: val })
+        }).catch(() => {});
       }
       testSound();
     }
 
     function handleCustomAudio(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+      const file = e.target.files && e.target.files[0];
+      if (!file) {
+        syncRingtoneUI();
+        return;
+      }
+
+      const customOpt = document.getElementById('customRingtoneOpt');
+      const sel = document.getElementById('ringtoneSelect');
+      if (customOpt) customOpt.innerText = '⏳ Сохранение на сервер...';
+      if (sel) sel.value = 'custom';
+
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = async function(evt) {
         const base64Audio = evt.target.result;
         try {
-          localStorage.setItem('akpp_custom_audio', base64Audio);
-          localStorage.setItem('akpp_ringtone', 'custom');
-          currentRingtone = 'custom';
-          if (alertAudio) alertAudio.src = base64Audio;
-          const sel = document.getElementById('ringtoneSelect');
-          if (sel) sel.value = 'custom';
-          testSound();
+          // Отправка на сервер для вечного сохранения
+          const res = await fetch('/api/admin/upload-sound', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: savedPass,
+              audioData: base64Audio,
+              fileName: file.name
+            })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            serverCustomSoundUrl = data.soundUrl;
+            localStorage.setItem('akpp_server_sound_url', data.soundUrl);
+            currentRingtone = 'custom';
+            localStorage.setItem('akpp_ringtone', 'custom');
+            syncRingtoneUI();
+            testSound();
+          } else {
+            throw new Error(data.error || 'Ошибка загрузки');
+          }
         } catch (err) {
-          alert('Файл слишком большой для сохранения в браузере. Выберите аудио до 2 МБ.');
+          console.warn('Server upload failed, using local fallback:', err);
+          try {
+            localStorage.setItem('akpp_custom_audio', base64Audio);
+          } catch (e) {}
+          currentRingtone = 'custom';
+          localStorage.setItem('akpp_ringtone', 'custom');
+          syncRingtoneUI();
+          testSound();
         }
       };
       reader.readAsDataURL(file);
@@ -340,17 +410,8 @@
     function playAlertRingtone() {
       if (!soundEnabled) return;
       try {
-        let audioSrc = '';
-        if (currentRingtone === 'custom' && localStorage.getItem('akpp_custom_audio')) {
-          audioSrc = localStorage.getItem('akpp_custom_audio');
-        } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[currentRingtone]) {
-          audioSrc = window.EMBEDDED_SOUNDS[currentRingtone];
-        } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
-          audioSrc = window.EMBEDDED_SOUNDS.bell;
-        }
-
-        if (alertAudio && audioSrc) {
-          alertAudio.src = audioSrc;
+        setupAudioSource();
+        if (alertAudio && alertAudio.src) {
           alertAudio.volume = 1.0;
           alertAudio.currentTime = 0;
           const p = alertAudio.play();
@@ -396,14 +457,26 @@
         });
         const data = await res.json();
         if (res.ok && data.success) {
-          renderDashboard(data.stats, data.leads);
+          renderDashboard(data.stats, data.leads, data.settings);
         } else {
           logout();
         }
       } catch (e) {}
     }
 
-    function renderDashboard(stats, leads) {
+    function renderDashboard(stats, leads, settings) {
+      if (settings) {
+        if (settings.ringtone && settings.ringtone !== currentRingtone) {
+          currentRingtone = settings.ringtone;
+          localStorage.setItem('akpp_ringtone', currentRingtone);
+        }
+        if (settings.customSoundUrl) {
+          serverCustomSoundUrl = settings.customSoundUrl;
+          localStorage.setItem('akpp_server_sound_url', settings.customSoundUrl);
+        }
+        syncRingtoneUI();
+      }
+
       document.getElementById('statVisits').innerText = stats.totalVisits || 0;
       document.getElementById('statCalls').innerText = stats.phoneClicks || 0;
       document.getElementById('statLeads').innerText = leads.length || 0;
@@ -498,7 +571,7 @@
           localStorage.setItem('akpp_admin_pass', pass);
           document.getElementById('loginScreen').classList.add('hidden');
           document.getElementById('mainDashboard').classList.remove('hidden');
-          renderDashboard(data.stats, data.leads);
+          renderDashboard(data.stats, data.leads, data.settings);
           unlockAudio();
         } else {
           errBox.innerText = data.error || 'Неверный пароль';

@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const DATA_DIR = path.join(__dirname, 'data');
 const STATS_FILE = path.join(DATA_DIR, 'stats.json');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="service-doc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
@@ -69,6 +70,30 @@ function ensureDataFiles() {
   if (!fs.existsSync(LEADS_FILE)) {
     fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf-8');
   }
+  if (!fs.existsSync(SETTINGS_FILE)) {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
+      ringtone: 'bell',
+      customSoundUrl: ''
+    }, null, 2), 'utf-8');
+  }
+}
+
+function getSettings() {
+  ensureDataFiles();
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+    }
+  } catch (e) {}
+  return { ringtone: 'bell', customSoundUrl: '' };
+}
+
+function saveSettings(newSettings) {
+  ensureDataFiles();
+  const current = getSettings();
+  const updated = { ...current, ...newSettings };
+  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(updated, null, 2), 'utf-8');
+  return updated;
 }
 
 function getStats() {
@@ -188,7 +213,12 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon',
   '.xml': 'application/xml; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
-  '.md': 'text/markdown; charset=utf-8'
+  '.md': 'text/markdown; charset=utf-8',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg',
+  '.m4a': 'audio/mp4',
+  '.aac': 'audio/aac'
 };
 
 function serveStatic(res, filePath, pathname = '') {
@@ -301,6 +331,10 @@ module.exports = function handleRemontAkpp(req, res) {
   }
   if (pathname === '/manifest.json') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'manifest.json'), pathname);
+  }
+  if (pathname === '/custom-alert.mp3' || pathname.startsWith('/custom-alert.')) {
+    const ext = path.extname(pathname) || '.mp3';
+    return serveStatic(res, path.join(PUBLIC_DIR, 'custom-alert' + ext), pathname);
   }
   if (pathname === '/sw.js') {
     res.writeHead(200, {
@@ -422,11 +456,75 @@ module.exports = function handleRemontAkpp(req, res) {
         return res.end(JSON.stringify({
           success: true,
           stats: getStats(),
-          leads: getLeads()
+          leads: getLeads(),
+          settings: getSettings()
         }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ error: 'Ошибка сервера' }));
+      }
+    });
+    return;
+  }
+
+  // API Сохранение настроек звука
+  if (pathname === '/api/admin/settings' && req.method === 'POST') {
+    let bodyStr = '';
+    req.on('data', chunk => bodyStr += chunk);
+    req.on('end', () => {
+      try {
+        const body = JSON.parse(bodyStr || '{}');
+        if (body.password !== 'admin2026') {
+          res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: 'Неверный пароль' }));
+        }
+        const updated = saveSettings({ ringtone: body.ringtone });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ success: true, settings: updated }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'Ошибка сохранения настроек' }));
+      }
+    });
+    return;
+  }
+
+  // API Загрузка своей мелодии на сервер (без ограничений localStorage)
+  if (pathname === '/api/admin/upload-sound' && req.method === 'POST') {
+    let bodyStr = '';
+    req.on('data', chunk => bodyStr += chunk);
+    req.on('end', () => {
+      try {
+        const body = JSON.parse(bodyStr || '{}');
+        if (body.password !== 'admin2026') {
+          res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: 'Неверный пароль' }));
+        }
+        if (!body.audioData) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ error: 'Файл не передан' }));
+        }
+
+        const parts = body.audioData.split(',');
+        const rawBase64 = parts.length > 1 ? parts[1] : parts[0];
+        const buffer = Buffer.from(rawBase64, 'base64');
+
+        if (!fs.existsSync(PUBLIC_DIR)) {
+          fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+        }
+
+        const filePath = path.join(PUBLIC_DIR, 'custom-alert.mp3');
+        fs.writeFileSync(filePath, buffer);
+
+        const soundUrl = '/custom-alert.mp3?v=' + Date.now();
+        const updated = saveSettings({ ringtone: 'custom', customSoundUrl: soundUrl });
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ success: true, settings: updated, soundUrl }));
+      } catch (e) {
+        console.error('[Sound Upload] Error:', e);
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'Ошибка сохранения файла на сервере' }));
       }
     });
     return;
