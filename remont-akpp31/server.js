@@ -54,6 +54,25 @@ async function sendLeadEmail(lead) {
     subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
     text: textBody,
     html: `
+      <!-- Верхний контрастный блок: сразу при открытии письма -->
+      <div style="background-color: #ffffff; color: #000000; padding: 18px; border-radius: 12px; border: 3px solid #22c55e; max-width: 550px; margin-bottom: 18px; font-family: Arial, sans-serif; box-sizing: border-box;">
+        <div style="font-size: 13px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
+          📞 Номер клиента (нажмите для звонка или скопируйте):
+        </div>
+        <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 10px; font-family: Consolas, monospace; letter-spacing: 1px;">
+          <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: none;">${lead.phone}</a>
+        </div>
+        <div style="font-size: 14px; color: #334155; margin-bottom: 10px;">
+          Чистый номер: <strong style="font-family: Consolas, monospace; font-size: 17px; color: #0f172a;">${cleanPhone}</strong>
+        </div>
+        <div style="display: block; margin-top: 8px;">
+          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; margin-right: 8px; margin-bottom: 6px;">
+            📞 Позвонить
+          </a>
+          ${waPhone ? `<a href="https://wa.me/${waPhone}" style="display: inline-block; background-color: #25D366; color: #ffffff; font-weight: bold; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; margin-bottom: 6px;">💬 Написать в WhatsApp</a>` : ''}
+        </div>
+      </div>
+
       <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 24px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14;">
         <h2 style="color: #ff5e14; margin-top: 0; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
         <p style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
