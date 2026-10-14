@@ -202,30 +202,14 @@
     }
 
     function unlockAudio() {
-      initAudio();
+      if (audioUnlocked) return;
       audioUnlocked = true;
+      initAudio();
       const banner = document.getElementById('audioUnlockBanner');
       if (banner) banner.classList.add('hidden');
 
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume().catch(() => {});
-      }
-
-      // Разблокировка audio элемента для мобильного Chrome
-      if (alertAudio) {
-        setupAudioSource();
-        const prevMuted = alertAudio.muted;
-        alertAudio.muted = true;
-        const p = alertAudio.play();
-        if (p !== undefined) {
-          p.then(() => {
-            alertAudio.pause();
-            alertAudio.currentTime = 0;
-            alertAudio.muted = prevMuted;
-          }).catch(() => {
-            alertAudio.muted = prevMuted;
-          });
-        }
       }
     }
 
@@ -233,7 +217,7 @@
     ['click', 'touchstart', 'touchend', 'keydown'].forEach(evt => {
       document.addEventListener(evt, () => {
         if (!audioUnlocked) unlockAudio();
-      }, { passive: true });
+      }, { passive: true, once: true });
     });
 
     function toggleSound() {
@@ -471,7 +455,6 @@
         if (btn) btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
         if (icon) icon.innerText = "🔊";
       }
-      unlockAudio();
       playAlertRingtone();
     }
 
