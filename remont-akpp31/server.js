@@ -10,7 +10,23 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const LINK_HEADERS = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/ai-catalog.json>; rel="service-desc", </llms.txt>; rel="service-doc", </llms.txt>; rel="describedby", </auth.md>; rel="authorizing-agent"';
 
-const mailTransporter = nodemailer.createTransport({
+const transporter587 = nodemailer.createTransport({
+  host: 'smtp.yandex.ru',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'andrey.chemarev@yandex.ru',
+    pass: 'rlxuqqlzylxozvwu'
+  },
+  connectionTimeout: 8000,
+  greetingTimeout: 8000,
+  socketTimeout: 10000,
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+const transporter465 = nodemailer.createTransport({
   host: 'smtp.yandex.ru',
   port: 465,
   secure: true,
@@ -18,6 +34,9 @@ const mailTransporter = nodemailer.createTransport({
     user: 'andrey.chemarev@yandex.ru',
     pass: 'rlxuqqlzylxozvwu'
   },
+  connectionTimeout: 8000,
+  greetingTimeout: 8000,
+  socketTimeout: 10000,
   tls: {
     rejectUnauthorized: false
   }
@@ -26,7 +45,7 @@ const mailTransporter = nodemailer.createTransport({
 async function sendLeadEmail(lead) {
   const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nТелефон: ${lead.phone}\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
 
-  const info = await mailTransporter.sendMail({
+  const mailOptions = {
     from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
     to: 'autoneuro24@gmail.com',
     subject: `Новая заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.city || 'Белгород'})`,
@@ -53,9 +72,18 @@ async function sendLeadEmail(lead) {
         <p style="color: #6b7280; font-size: 11px; text-align: center;">СТО Ремонт АКПП • г. Белгород, ул. Серафимовича, 75</p>
       </div>
     `
-  });
-  console.log('[Email] Lead notification sent:', info.messageId);
-  return info;
+  };
+
+  try {
+    const info = await transporter587.sendMail(mailOptions);
+    console.log('[Email Port 587] Lead notification sent:', info.messageId);
+    return info;
+  } catch (err587) {
+    console.warn('[Email Port 587 failed, trying 465]:', err587.message);
+    const info = await transporter465.sendMail(mailOptions);
+    console.log('[Email Port 465] Lead notification sent:', info.messageId);
+    return info;
+  }
 }
 
 function ensureDataFiles() {

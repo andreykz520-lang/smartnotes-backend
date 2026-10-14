@@ -184,6 +184,7 @@
     let audioUnlocked = false;
     let lastLeadsCount = -1;
     let lastPhoneClicks = -1;
+    let lastLeadId = '';
     const alertAudio = document.getElementById('alertSound');
 
     // Надежный веб-звуковой синтезатор (работает автономно без внешнего интернета и скачиваний)
@@ -208,6 +209,23 @@
 
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume().catch(() => {});
+      }
+
+      // Разблокировка audio элемента для мобильного Chrome
+      if (alertAudio) {
+        setupAudioSource();
+        const prevMuted = alertAudio.muted;
+        alertAudio.muted = true;
+        const p = alertAudio.play();
+        if (p !== undefined) {
+          p.then(() => {
+            alertAudio.pause();
+            alertAudio.currentTime = 0;
+            alertAudio.muted = prevMuted;
+          }).catch(() => {
+            alertAudio.muted = prevMuted;
+          });
+        }
       }
     }
 
@@ -498,7 +516,11 @@
       document.getElementById('leadsBadge').innerText = leads.length || 0;
 
       // Проверка на новые события для звукового сигнала
-      if (lastLeadsCount !== -1 && leads.length > lastLeadsCount) {
+      const latestLead = leads && leads[0];
+      const isNewLead = (lastLeadsCount !== -1 && leads.length > lastLeadsCount) || 
+                        (latestLead && lastLeadId && latestLead.id !== lastLeadId);
+
+      if (isNewLead) {
         playAlertRingtone();
       }
       if (lastPhoneClicks !== -1 && stats.phoneClicks > lastPhoneClicks) {
@@ -506,6 +528,7 @@
       }
       lastLeadsCount = leads.length;
       lastPhoneClicks = stats.phoneClicks;
+      if (latestLead) lastLeadId = latestLead.id;
 
       // Отрисовка заявок
       const leadsContainer = document.getElementById('leadsList');
