@@ -572,7 +572,10 @@ module.exports = async function handleRemontAkpp(req, res) {
   // Админка HTML
   if (pathname === '/admin') {
     const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    });
     return res.end(adminHtml);
   }
 
