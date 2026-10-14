@@ -44,52 +44,53 @@ const transporter465 = nodemailer.createTransport({
 
 async function sendLeadEmail(lead) {
   const cleanPhone = (lead.phone || '').replace(/[^0-9+]/g, '');
-  const waPhone = cleanPhone.replace(/^\+/, '');
 
-  const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nНОМЕР ТЕЛЕФОНА (ДЛЯ КОПИРОВАНИЯ):\n${lead.phone}\n${cleanPhone}\n\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
+  const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nНОМЕР ТЕЛЕФОНА (ДЛЯ ЗВОНКА И КОПИРОВАНИЯ):\n${lead.phone}\n${cleanPhone}\n\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
+
+  const callUrl = `https://remont-akpp31.obd2scanai.ru/call?phone=${encodeURIComponent(cleanPhone)}`;
 
   const mailOptions = {
     from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
     to: 'autoneuro24@gmail.com',
-    subject: `[${new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] Заявка: ${lead.phone} (${lead.carBrand || 'Авто'})`,
+    subject: `[${new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', second: '2-digit' })}] Заявка: ${lead.phone} • ${lead.carBrand || 'Авто'} (${lead.reason})`,
     text: textBody,
     html: `
-      <div style="font-family: Arial, sans-serif; font-size: 16px; color: #111111; line-height: 1.5; max-width: 480px; padding: 12px;">
-        <h2 style="color: #d9480f; margin: 0 0 10px 0; font-size: 20px;">🚗 Новая заявка СТО АКПП Белгород</h2>
+      <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 22px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14; box-sizing: border-box;">
+        <h2 style="color: #ff5e14; margin-top: 0; margin-bottom: 6px; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
+        <p style="font-size: 13px; color: #9ca3af; margin-top: 0; margin-bottom: 18px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
 
-        <!-- Блок номера телефона -->
-        <div style="background-color: #f1f5f9; border-left: 5px solid #22c55e; padding: 14px; margin-bottom: 14px; border-radius: 6px;">
-          <div style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">
-            Номер клиента для звонка:
+        <!-- Основная карточка с деталями заявки -->
+        <div style="background-color: #161922; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #262b36;">
+          <p style="margin: 6px 0; font-size: 16px;"><strong>📞 Телефон:</strong> <a href="${callUrl}" target="_blank" style="color: #22c55e; font-weight: 900; text-decoration: underline; font-size: 20px;">${lead.phone}</a></p>
+          <p style="margin: 6px 0; font-size: 15px;"><strong>🚘 Автомобиль:</strong> <span style="color: #ffffff; font-weight: bold;">${lead.carBrand || 'Не указан'}</span></p>
+          <p style="margin: 6px 0; font-size: 15px;"><strong>⚙️ Причина обращения:</strong> <span style="color: #ff7849; font-weight: 900; font-size: 16px;">${lead.reason}</span></p>
+          <p style="margin: 6px 0; font-size: 15px;"><strong>📍 Город / Локация:</strong> <span style="color: #ffffff;">${lead.city || 'Белгород'}</span></p>
+          ${lead.details ? `<p style="margin: 6px 0; font-size: 15px;"><strong>📝 Симптомы:</strong> <span style="color: #93c5fd; font-style: italic;">«${lead.details}»</span></p>` : ''}
+          <p style="margin: 6px 0; font-size: 13px; color: #9ca3af;"><strong>⏱️ Время заявки:</strong> ${lead.createdAt}</p>
+        </div>
+
+        <!-- Кнопка вызова через HTTPS редиректор (обход блокировок tel: в Gmail на Android) -->
+        <p style="margin: 0 0 14px 0; text-align: center;">
+          <a href="${callUrl}" target="_blank" style="display: block; background-color: #22c55e; color: #ffffff !important; font-weight: 900; padding: 16px 20px; border-radius: 12px; text-decoration: none; font-size: 19px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); text-align: center;">
+            📞 ПОЗВОНИТЬ КЛИЕНТУ
+          </a>
+        </p>
+
+        <!-- Блок номера для копирования в 1 нажатие -->
+        <div style="background-color: #161922; border: 1px dashed #38bdf8; border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: #94a3af; text-transform: uppercase; font-weight: bold; margin-bottom: 4px;">
+            Номер для быстрого копирования:
           </div>
-          <div style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 8px; font-family: monospace;">
-            <a href="tel:${cleanPhone}" style="color: #16a34a; text-decoration: underline;">${lead.phone}</a>
+          <div style="font-size: 24px; font-weight: 900; color: #38bdf8; font-family: Consolas, monospace; letter-spacing: 1px; user-select: all; -webkit-user-select: all;">
+            ${cleanPhone}
           </div>
-          <div style="font-size: 15px; color: #334155; margin-bottom: 6px;">
-            Прямой вызов: <a href="tel:${cleanPhone}" style="font-weight: bold; color: #0284c7; text-decoration: underline; font-size: 18px; font-family: monospace;">${cleanPhone}</a>
-          </div>
-          <div style="font-size: 12px; color: #64748b;">
-            (Нажмите на номер для звонка или зажмите для копирования)
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
+            (Нажмите на номер, чтобы выделить его сразу целиком)
           </div>
         </div>
 
-        <!-- Детали заявки -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 15px;">
-          <tr><td style="padding: 6px 0; color: #64748b; width: 110px;">Авто:</td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${lead.carBrand || 'Не указан'}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b;">Причина:</td><td style="padding: 6px 0; font-weight: bold; color: #d9480f;">${lead.reason}</td></tr>
-          <tr><td style="padding: 6px 0; color: #64748b;">Город:</td><td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${lead.city || 'Белгород'}</td></tr>
-          ${lead.details ? `<tr><td style="padding: 6px 0; color: #64748b;">Симптомы:</td><td style="padding: 6px 0; font-style: italic; color: #334155;">«${lead.details}»</td></tr>` : ''}
-          <tr><td style="padding: 6px 0; color: #64748b;">Время:</td><td style="padding: 6px 0; color: #64748b;">${lead.createdAt}</td></tr>
-        </table>
-
-        <!-- Номер отдельной чистой строкой внизу для копирования -->
-        <div style="background-color: #ffffff; border: 1px dashed #94a3b8; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 20px; font-weight: bold; text-align: center; color: #0f172a; margin-bottom: 14px;">
-          ${cleanPhone}
-        </div>
-
-        <div style="font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 8px;">
-          СТО Ремонт АКПП • Белгород, ул. Серафимовича 75
-        </div>
+        <hr style="border: 0; border-top: 1px solid #262b36; margin: 16px 0 10px 0;" />
+        <p style="color: #6b7280; font-size: 11px; text-align: center; margin: 0;">СТО Ремонт АКПП • г. Белгород, ул. Серафимовича, 75</p>
       </div>
     `
   };
@@ -407,6 +408,93 @@ module.exports = async function handleRemontAkpp(req, res) {
       'Access-Control-Allow-Origin': '*'
     });
     return res.end(JSON.stringify({ status: 'ok', service: 'СТО Ремонт АКПП Белгород', timestamp: new Date().toISOString() }));
+  }
+
+  // Редиректор вызова для почты (обход блокировки tel: схем в Gmail Android)
+  if (pathname === '/call') {
+    const rawPhone = url.searchParams.get('phone') || '';
+    const cleanPhone = rawPhone.replace(/[^0-9+]/g, '');
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(`<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Звонок: ${cleanPhone}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0b0e14;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      text-align: center;
+    }
+    .card {
+      background: #161922;
+      border: 2px solid #ff5e14;
+      border-radius: 16px;
+      padding: 28px 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .badge {
+      display: inline-block;
+      background: #ff5e14;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .phone {
+      font-size: 26px;
+      font-weight: 900;
+      color: #22c55e;
+      letter-spacing: 1px;
+      margin: 14px 0 22px 0;
+      font-family: monospace;
+    }
+    .btn {
+      display: block;
+      background: #22c55e;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+    }
+    .hint {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">СТО АКПП Белгород</div>
+    <h2 style="margin: 0 0 10px 0; font-size: 22px;">Вызов клиента</h2>
+    <div class="phone">${cleanPhone}</div>
+    <a href="tel:${cleanPhone}" class="btn" id="callBtn">📞 Нажмите для звонка</a>
+    <div class="hint">Открываем номеронабиратель телефона...<br>Если вызов не начался автоматически, нажмите на кнопку выше.</div>
+  </div>
+  <script>
+    window.location.href = "tel:${cleanPhone}";
+  </script>
+</body>
+</html>`);
   }
 
   // Раздача статики Next.js (CSS, JS)
