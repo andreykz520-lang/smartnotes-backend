@@ -56,25 +56,29 @@ async function sendLeadEmail(lead) {
 }
 
 function ensureDataFiles() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(STATS_FILE)) {
-    fs.writeFileSync(STATS_FILE, JSON.stringify({
-      totalVisits: 0,
-      phoneClicks: 0,
-      formSubmits: 0,
-      visits: []
-    }, null, 2), 'utf-8');
-  }
-  if (!fs.existsSync(LEADS_FILE)) {
-    fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf-8');
-  }
-  if (!fs.existsSync(SETTINGS_FILE)) {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
-      ringtone: 'bell',
-      customSoundUrl: ''
-    }, null, 2), 'utf-8');
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(STATS_FILE)) {
+      fs.writeFileSync(STATS_FILE, JSON.stringify({
+        totalVisits: 0,
+        phoneClicks: 0,
+        formSubmits: 0,
+        visits: []
+      }, null, 2), 'utf-8');
+    }
+    if (!fs.existsSync(LEADS_FILE)) {
+      fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf-8');
+    }
+    if (!fs.existsSync(SETTINGS_FILE)) {
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
+        ringtone: 'bell',
+        customSoundUrl: ''
+      }, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    console.error('[Data Files] Error ensuring files:', err);
   }
 }
 
@@ -89,11 +93,16 @@ function getSettings() {
 }
 
 function saveSettings(newSettings) {
-  ensureDataFiles();
-  const current = getSettings();
-  const updated = { ...current, ...newSettings };
-  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(updated, null, 2), 'utf-8');
-  return updated;
+  try {
+    ensureDataFiles();
+    const current = getSettings();
+    const updated = { ...current, ...newSettings };
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(updated, null, 2), 'utf-8');
+    return updated;
+  } catch (e) {
+    console.error('[Settings] Error saving:', e);
+    return { ringtone: 'bell', customSoundUrl: '', ...newSettings };
+  }
 }
 
 function getStats() {
@@ -460,8 +469,9 @@ module.exports = function handleRemontAkpp(req, res) {
           settings: getSettings()
         }));
       } catch (e) {
+        console.error('[Admin API] Error:', e);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
-        return res.end(JSON.stringify({ error: 'Ошибка сервера' }));
+        return res.end(JSON.stringify({ error: 'Ошибка сервера: ' + (e.message || String(e)) }));
       }
     });
     return;
