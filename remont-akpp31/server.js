@@ -63,22 +63,37 @@ function ensureDataFiles() {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    if (!fs.existsSync(STATS_FILE)) {
-      fs.writeFileSync(STATS_FILE, JSON.stringify({
-        totalVisits: 0,
-        phoneClicks: 0,
-        formSubmits: 0,
-        visits: []
-      }, null, 2), 'utf-8');
+    // Проверка и самовосстановление STATS_FILE
+    try {
+      if (!fs.existsSync(STATS_FILE) || !fs.readFileSync(STATS_FILE, 'utf-8').trim()) {
+        fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] }, null, 2), 'utf-8');
+      } else {
+        JSON.parse(fs.readFileSync(STATS_FILE, 'utf-8'));
+      }
+    } catch (e) {
+      fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] }, null, 2), 'utf-8');
     }
-    if (!fs.existsSync(LEADS_FILE)) {
+
+    // Проверка и самовосстановление LEADS_FILE
+    try {
+      if (!fs.existsSync(LEADS_FILE) || !fs.readFileSync(LEADS_FILE, 'utf-8').trim()) {
+        fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf-8');
+      } else {
+        JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+      }
+    } catch (e) {
       fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf-8');
     }
-    if (!fs.existsSync(SETTINGS_FILE)) {
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
-        ringtone: 'bell',
-        customSoundUrl: ''
-      }, null, 2), 'utf-8');
+
+    // Проверка и самовосстановление SETTINGS_FILE
+    try {
+      if (!fs.existsSync(SETTINGS_FILE) || !fs.readFileSync(SETTINGS_FILE, 'utf-8').trim()) {
+        fs.writeFileSync(SETTINGS_FILE, JSON.stringify({ ringtone: 'bell', customSoundUrl: '' }, null, 2), 'utf-8');
+      } else {
+        JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      }
+    } catch (e) {
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify({ ringtone: 'bell', customSoundUrl: '' }, null, 2), 'utf-8');
     }
   } catch (err) {
     console.error('[Data Files] Error ensuring files:', err);
@@ -86,12 +101,15 @@ function ensureDataFiles() {
 }
 
 function getSettings() {
-  ensureDataFiles();
   try {
+    ensureDataFiles();
     if (fs.existsSync(SETTINGS_FILE)) {
-      return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      const raw = fs.readFileSync(SETTINGS_FILE, 'utf-8').trim();
+      if (raw) return JSON.parse(raw);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('[Settings Read Error]:', e);
+  }
   return { ringtone: 'bell', customSoundUrl: '' };
 }
 
@@ -109,22 +127,27 @@ function saveSettings(newSettings) {
 }
 
 function getStats() {
-  ensureDataFiles();
   try {
-    return JSON.parse(fs.readFileSync(STATS_FILE, 'utf-8'));
+    ensureDataFiles();
+    if (fs.existsSync(STATS_FILE)) {
+      const raw = fs.readFileSync(STATS_FILE, 'utf-8').trim();
+      if (raw) return JSON.parse(raw);
+    }
   } catch (e) {
-    return { totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] };
+    console.error('[Stats Read Error]:', e);
   }
+  return { totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] };
 }
 
 let inMemoryLeads = [];
 function getLeads() {
-  ensureDataFiles();
   try {
+    ensureDataFiles();
     if (fs.existsSync(LEADS_FILE)) {
-      const fileData = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
-      if (Array.isArray(fileData)) {
-        return fileData;
+      const raw = fs.readFileSync(LEADS_FILE, 'utf-8').trim();
+      if (raw) {
+        const fileData = JSON.parse(raw);
+        if (Array.isArray(fileData)) return fileData;
       }
     }
   } catch (e) {
