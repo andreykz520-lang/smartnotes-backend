@@ -43,7 +43,10 @@ const transporter465 = nodemailer.createTransport({
 });
 
 async function sendLeadEmail(lead) {
-  const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nТелефон: ${lead.phone}\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
+  const cleanPhone = (lead.phone || '').replace(/[^0-9+]/g, '');
+  const waPhone = cleanPhone.replace(/^\+/, '');
+
+  const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nНОМЕР ТЕЛЕФОНА (ДЛЯ КОПИРОВАНИЯ):\n${lead.phone}\n${cleanPhone}\n\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
 
   const mailOptions = {
     from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
@@ -56,7 +59,7 @@ async function sendLeadEmail(lead) {
         <p style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
         
         <div style="background-color: #161922; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #262b36;">
-          <p style="margin: 6px 0; font-size: 16px;"><strong>📞 Телефон:</strong> <a href="tel:${lead.phone}" style="color: #22c55e; font-weight: bold; text-decoration: none; font-size: 18px;">${lead.phone}</a></p>
+          <p style="margin: 6px 0; font-size: 16px;"><strong>📞 Телефон:</strong> <a href="tel:${cleanPhone}" style="color: #22c55e; font-weight: bold; text-decoration: none; font-size: 18px;">${lead.phone}</a></p>
           <p style="margin: 6px 0; font-size: 15px;"><strong>🚘 Автомобиль:</strong> ${lead.carBrand || 'Не указан'}</p>
           <p style="margin: 6px 0; font-size: 15px;"><strong>⚙️ Причина обращения:</strong> <span style="color: #f59e0b;">${lead.reason}</span></p>
           <p style="margin: 6px 0; font-size: 15px;"><strong>📍 Город / Локация:</strong> ${lead.city || 'Белгород'}</p>
@@ -65,11 +68,34 @@ async function sendLeadEmail(lead) {
         </div>
 
         <p style="margin: 0; text-align: center;">
-          <a href="tel:${lead.phone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-size: 16px;">Позвонить клиенту</a>
+          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-size: 16px;">Позвонить клиенту</a>
         </p>
         
         <hr style="border: 0; border-top: 1px solid #262b36; margin: 20px 0 10px 0;" />
         <p style="color: #6b7280; font-size: 11px; text-align: center;">СТО Ремонт АКПП • г. Белгород, ул. Серафимовича, 75</p>
+      </div>
+
+      <!-- Блок для удобного копирования и быстрого набора на телефоне -->
+      <div style="margin-top: 16px; padding: 18px; background-color: #ffffff; color: #000000; border-radius: 14px; border: 3px solid #22c55e; max-width: 550px; font-family: Arial, sans-serif;">
+        <div style="font-size: 13px; font-weight: bold; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+          📋 Номер для быстрого копирования и набора:
+        </div>
+        
+        <div style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 12px; font-family: Consolas, 'Courier New', monospace; letter-spacing: 1px; user-select: all; -webkit-user-select: all;">
+          ${lead.phone}
+        </div>
+
+        <div style="margin-bottom: 14px; font-size: 14px; color: #334155;">
+          Чистый номер (для вставки в контакты / WhatsApp):<br />
+          <strong style="font-family: Consolas, monospace; font-size: 18px; color: #0284c7; user-select: all; -webkit-user-select: all;">${cleanPhone}</strong>
+        </div>
+
+        <div style="display: block; margin-top: 10px;">
+          <a href="tel:${cleanPhone}" style="display: inline-block; background-color: #22c55e; color: #ffffff; font-weight: bold; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-size: 15px; margin-right: 8px; margin-bottom: 8px;">
+            📞 Набрать номер в телефоне
+          </a>
+          ${waPhone ? `<a href="https://wa.me/${waPhone}" style="display: inline-block; background-color: #25D366; color: #ffffff; font-weight: bold; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-size: 15px; margin-bottom: 8px;">💬 Написать в WhatsApp</a>` : ''}
+        </div>
       </div>
     `
   };
