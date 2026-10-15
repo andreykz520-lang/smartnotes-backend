@@ -818,9 +818,14 @@ export default function AdminPage() {
                                   let icon = '🤖';
                                   let style = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
 
-                                  if (lower.startsWith('web_') || lower.includes('web')) {
+                                  if (lower.startsWith('aurora_') || lower.includes('aurora') || lower.includes('sailfish')) {
+                                    label = 'ОС Аврора';
+                                    icon = '🛡️';
+                                    style = 'bg-red-500/15 text-red-300 border-red-500/40';
+                                  } else if (lower.startsWith('web_') || lower.includes('web')) {
                                     let os = '';
-                                    if (lower.includes('android')) os = ' (Android)';
+                                    if (lower.includes('aurora') || lower.includes('sailfish')) os = ' (Аврора)';
+                                    else if (lower.includes('android')) os = ' (Android)';
                                     else if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) os = ' (iOS)';
                                     else if (lower.includes('win')) os = ' (Windows)';
                                     else if (lower.includes('mac')) os = ' (macOS)';

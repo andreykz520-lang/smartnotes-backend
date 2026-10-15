@@ -20,7 +20,20 @@ export async function POST(req: NextRequest) {
     }
 
     if (!deviceId) {
-      deviceId = 'device_win_' + Math.random().toString(36).substring(2);
+      const ua = req.headers.get("user-agent")?.toLowerCase() || "";
+      if (ua.includes("aurora") || ua.includes("sailfish")) {
+        deviceId = 'aurora_' + Math.random().toString(36).substring(2);
+      } else if (ua.includes("android")) {
+        deviceId = 'android_' + Math.random().toString(36).substring(2);
+      } else if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("ios")) {
+        deviceId = 'ios_' + Math.random().toString(36).substring(2);
+      } else if (ua.includes("linux")) {
+        deviceId = 'linux_' + Math.random().toString(36).substring(2);
+      } else if (ua.includes("mac")) {
+        deviceId = 'mac_' + Math.random().toString(36).substring(2);
+      } else {
+        deviceId = 'web_win_' + Math.random().toString(36).substring(2);
+      }
     }
 
     const email = String(rawEmail).trim().toLowerCase();

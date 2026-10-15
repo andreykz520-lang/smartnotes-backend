@@ -212,6 +212,13 @@ export default function Home() {
               📥 {isRu ? 'Прямой APK' : 'Direct APK'}
             </a>
             <a
+              href="/SmartNotes-Aurora-arm64.rpm"
+              download="SmartNotes-Aurora-arm64.rpm"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs sm:text-sm border border-white/10 transition-all"
+            >
+              🛡️ {isRu ? 'ОС Аврора (.rpm)' : 'Aurora OS (.rpm)'}
+            </a>
+            <a
               href="#pricing"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(147,51,234,0.4)]"
             >
@@ -423,6 +430,9 @@ export default function Home() {
                 </a>
                 <a href="/SmartNotes-Linux.tar.gz" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
                   🐧 {t('download_linux_tar')}
+                </a>
+                <a href="/SmartNotes-Aurora-arm64.rpm" download="SmartNotes-Aurora-arm64.rpm" className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-center text-xs font-semibold hover:bg-white/10 transition-colors">
+                  🛡️ {isRu ? 'ОС Аврора (RPM)' : 'Aurora OS (RPM)'}
                 </a>
               </div>
             </div>

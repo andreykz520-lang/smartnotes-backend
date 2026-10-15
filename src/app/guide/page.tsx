@@ -116,7 +116,7 @@ export default function GuidePage() {
             {isRu ? "📱 Как вынести иконку блокнота на рабочий стол (в 1 клик):" : "📱 Add to Home Screen (1 Click):"}
           </h3>
 
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl bg-black/40 border border-white/10 print:border-gray-200 print:bg-gray-50">
               <div className="font-bold mb-1 text-sm text-purple-400 print:text-purple-900">🤖 Android (Chrome/Яндекс)</div>
               <ol className="text-xs text-gray-300 space-y-1.5 list-decimal list-inside print:text-gray-700">
@@ -136,12 +136,27 @@ export default function GuidePage() {
             </div>
 
             <div className="p-4 rounded-2xl bg-black/40 border border-white/10 print:border-gray-200 print:bg-gray-50">
-              <div className="font-bold mb-1 text-sm text-purple-400 print:text-purple-900">💻 ПК / Ноутбук / Аврора</div>
+              <div className="font-bold mb-1 text-sm text-purple-400 print:text-purple-900">💻 ПК / Ноутбук</div>
               <ol className="text-xs text-gray-300 space-y-1.5 list-decimal list-inside print:text-gray-700">
                 <li>Откройте сайт в Chrome / Edge / Яндекс</li>
                 <li>В адресной строке справа нажмите значок <strong>⊕ («Установить»)</strong></li>
                 <li>Иконка появится на рабочем столе как отдельная программа!</li>
               </ol>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-black/40 border border-white/10 print:border-gray-200 print:bg-gray-50">
+              <div className="font-bold mb-1 text-sm text-purple-400 print:text-purple-900">🛡️ ОС Аврора (RPM)</div>
+              <p className="text-xs text-gray-300 mb-2 print:text-gray-700">
+                {isRu ? "Нативные пакеты для устройств с ОС Аврора:" : "Native RPM packages for Aurora OS devices:"}
+              </p>
+              <div className="flex flex-col gap-1.5 pt-1">
+                <a href="/SmartNotes-Aurora-arm64.rpm" download="SmartNotes-Aurora-arm64.rpm" className="text-xs text-blue-400 hover:text-blue-300 underline font-medium">
+                  📦 {isRu ? "Пакет 64-бит (.rpm)" : "64-bit package (.rpm)"}
+                </a>
+                <a href="/SmartNotes-Aurora-arm32.rpm" download="SmartNotes-Aurora-arm32.rpm" className="text-xs text-blue-400 hover:text-blue-300 underline font-medium">
+                  📦 {isRu ? "Пакет 32-бит (.rpm)" : "32-bit package (.rpm)"}
+                </a>
+              </div>
             </div>
           </div>
         </section>
