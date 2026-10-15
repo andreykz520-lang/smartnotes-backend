@@ -93,6 +93,9 @@ export default function Home() {
             <a href="#screenshots" className="hover:text-white transition-colors">{t('screenshots_nav')}</a>
             <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
             <a href="#faq" className="hover:text-white transition-colors">{t('faq_nav')}</a>
+            <Link href="/guide" className="hover:text-purple-300 transition-colors font-semibold text-purple-400 flex items-center gap-1.5">
+              📖 {t('guide_nav')}
+            </Link>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
@@ -217,6 +220,38 @@ export default function Home() {
           </div>
 
 
+        </div>
+      </section>
+
+      {/* UNIVERSAL WEB APP & GUIDE PROMO BANNER */}
+      <section className="relative px-6 -mt-8 mb-16 z-20 max-w-5xl mx-auto">
+        <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-purple-900/40 border border-purple-500/40 backdrop-blur-xl shadow-[0_0_50px_rgba(168,85,247,0.2)] flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold">
+              {t('promo_badge')}
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              {t('promo_title')}
+            </h2>
+            <p className="text-gray-300 text-sm max-w-xl leading-relaxed">
+              {t('promo_desc')}
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            <a
+              href="/app"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm text-center shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:brightness-110 transition-all whitespace-nowrap"
+            >
+              🌐 {t('launch_web_btn')}
+            </a>
+            <Link
+              href="/guide"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-sm text-center transition-all whitespace-nowrap"
+            >
+              📖 {t('read_guide_btn')}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -724,6 +759,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FEEDBACK & FEATURE REQUEST SECTION */}
+      <section className="py-20 relative bg-gradient-to-b from-[#070707] to-[#0A0A0A] border-t border-white/5">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold uppercase tracking-wider mb-4">
+            💡 {t('feedback_title')}
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
+            {t('feedback_title')}
+          </h2>
+          <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+            {t('feedback_desc')}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="mailto:autoneuro24@gmail.com?subject=SmartNotes%20AI%20Feedback"
+              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:brightness-110 transition-all flex items-center gap-2"
+            >
+              ✉️ {t('feedback_btn')} (autoneuro24@gmail.com)
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/10 text-gray-400 text-xs sm:text-sm">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
@@ -737,6 +795,7 @@ export default function Home() {
             <a href="#screenshots" className="hover:text-white transition-colors">{t('screenshots_nav')}</a>
             <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
             <a href="#faq" className="hover:text-white transition-colors">{t('faq_nav')}</a>
+            <Link href="/guide" className="hover:text-purple-400 transition-colors font-medium text-purple-300">📖 {isRu ? 'Инструкция пользователя' : 'User Guide'}</Link>
             <Link href="/privacy" className="hover:text-purple-400 transition-colors">Политика конфиденциальности</Link>
             <Link href="/terms" className="hover:text-purple-400 transition-colors">Оферта</Link>
             <Link href="/refund" className="hover:text-purple-400 transition-colors">Оплата и возврат</Link>
