@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 export const metadata = {
   title: 'Пользовательское соглашение и Оферта — SmartNotes AI',
@@ -28,7 +28,7 @@ export default function TermsPage() {
             <ul className="list-disc list-inside space-y-2 text-gray-400">
               <li><strong>Базовый тариф:</strong> Бесплатно. Локальное создание заметок, распознавание речи и возможность ввода собственных API-ключей.</li>
               <li><strong>Тариф PRO (Бессрочный):</strong> 500 рублей (разовый платеж). Включает облачную синхронизацию до 3 устройств, экспорт в PDF и секретные заметки.</li>
-              <li><strong>Тариф PRO+ (С подпиской на ИИ):</strong> 150 рублей в месяц. Включает все функции PRO и встроенный искусственный интеллект Gemini 3.7 Flash без необходимости настройки личных ключей.</li>
+              <li><strong>Тариф PRO+ (С подпиской на ИИ):</strong> 150 рублей в месяц. Включает все функции PRO и встроенный искусственный интеллект Gemini 3.8 Flash без необходимости настройки личных ключей.</li>
             </ul>
           </section>
 

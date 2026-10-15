@@ -1,4 +1,4 @@
-{
+﻿{
   "Index": {
     "title": "SmartNotes AI",
     "subtitle": "Smart Notes with Artificial Intelligence",
@@ -19,7 +19,7 @@
     "features_title": "Everything you need for productivity",
     "features_subtitle": "Powerful tools in a clean and elegant interface",
     "feature_1_title": "Smart AI Analysis",
-    "feature_1_desc": "Gemini 3.7 Flash AI summarizes long texts and highlights key points.",
+    "feature_1_desc": "Gemini 3.8 Flash AI summarizes long texts and highlights key points.",
     "feature_2_title": "Cloud Sync",
     "feature_2_desc": "Your notes are always at hand across all your devices in real-time.",
     "feature_3_title": "AI Chat Assistant",
@@ -51,7 +51,7 @@
     "pro_lifetime_feat_1": "Cloud sync up to 3 devices",
     "pro_lifetime_feat_2": "Export to PDF & printing",
     "pro_lifetime_feat_3": "Secret folders with PIN lock",
-    "pro_plan": "PRO+ (Gemini 3.7)",
+    "pro_plan": "PRO+ (Gemini 3.8)",
     "pro_plan_desc": "Built-in AI without having to configure keys",
     "pro_price": "$3",
     "pro_period": "/ month",
@@ -64,7 +64,7 @@
     "pro_6m_gift": "🎁 Lifetime PRO included as a gift!",
     "pro_3m_discount": "save 13%",
     "pro_6m_discount": "save 12%",
-    "pro_feat_1": "Built-in Gemini 3.7 Flash without API keys",
+    "pro_feat_1": "Built-in Gemini 3.8 Flash without API keys",
     "pro_feat_2": "Smart analytics, summaries & auto-reminders",
     "pro_feat_3": "All PRO features & multi-device cloud sync",
     "buy_pro": "Get PRO+",
@@ -76,7 +76,7 @@
     "faq_1_q": "How does real-time voice dictation work?",
     "faq_1_a": "When tapping the mic button inside a note, speech is converted into text on the fly in real time without delays.",
     "faq_2_q": "What is the difference between PRO and PRO+?",
-    "faq_2_a": "PRO+ ($3/mo) includes built-in Gemini 3.7 Flash AI without requiring any API keys. PRO ($10 one-time) includes lifetime cloud sync, PDF export, and PIN lock, with the option to bring your own personal API keys.",
+    "faq_2_a": "PRO+ ($3/mo) includes built-in Gemini 3.8 Flash AI without requiring any API keys. PRO ($10 one-time) includes lifetime cloud sync, PDF export, and PIN lock, with the option to bring your own personal API keys.",
     "faq_3_q": "How is the subscription activated?",
     "faq_3_a": "Right after payment, an activation code is sent to your email. In the app, open Settings → enter your email or code, and features unlock immediately.",
     "faq_4_q": "Does the app work offline?",

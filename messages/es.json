@@ -1,4 +1,4 @@
-{
+﻿{
   "Index": {
     "title": "SmartNotes AI",
     "subtitle": "Notas inteligentes con Inteligencia Artificial",
@@ -19,7 +19,7 @@
     "features_title": "Todo lo necesario para tu productividad",
     "features_subtitle": "Herramientas potentes en una interfaz limpia y elegante",
     "feature_1_title": "Análisis inteligente",
-    "feature_1_desc": "Gemini 3.7 Flash resume textos largos y resalta puntos clave.",
+    "feature_1_desc": "Gemini 3.8 Flash resume textos largos y resalta puntos clave.",
     "feature_2_title": "Sincronización en la nube",
     "feature_2_desc": "Tus notas siempre disponibles en todos tus dispositivos en tiempo real.",
     "feature_3_title": "Asistente de chat con IA",
@@ -51,11 +51,11 @@
     "pro_lifetime_feat_1": "Sincronización en hasta 3 dispositivos",
     "pro_lifetime_feat_2": "Exportación a PDF e impresión",
     "pro_lifetime_feat_3": "Carpetas secretas con PIN",
-    "pro_plan": "PRO+ (Gemini 3.7)",
+    "pro_plan": "PRO+ (Gemini 3.8)",
     "pro_plan_desc": "IA integrada sin necesidad de configurar claves",
     "pro_price": "$3",
     "pro_period": "/ mes",
-    "pro_feat_1": "Gemini 3.7 Flash integrado",
+    "pro_feat_1": "Gemini 3.8 Flash integrado",
     "pro_feat_2": "Análisis inteligente, resúmenes y recordatorios",
     "pro_feat_3": "Todas las funciones PRO y nube incluidas",
     "buy_pro": "Comprar PRO+",
@@ -67,7 +67,7 @@
     "faq_1_q": "¿Cómo funciona el dictado por voz en tiempo real?",
     "faq_1_a": "Al tocar el micrófono dentro de una nota, tus palabras se transcriben al instante en tu dispositivo en tiempo real.",
     "faq_2_q": "¿Cuál es la diferencia entre PRO y PRO+?",
-    "faq_2_a": "PRO+ ($3/mes) incluye IA Gemini 3.7 Flash integrada sin necesidad de claves API. PRO ($10 pago único) incluye sincronización en la nube, exportación a PDF y bloqueo con PIN.",
+    "faq_2_a": "PRO+ ($3/mes) incluye IA Gemini 3.8 Flash integrada sin necesidad de claves API. PRO ($10 pago único) incluye sincronización en la nube, exportación a PDF y bloqueo con PIN.",
     "faq_3_q": "¿Cómo se activa la suscripción?",
     "faq_3_a": "Inmediatamente después del pago, recibirás tu código de activación por correo electrónico. Ingrésalo en Ajustes en la app.",
     "faq_4_q": "¿La aplicación funciona sin internet?",

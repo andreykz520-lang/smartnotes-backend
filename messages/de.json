@@ -1,4 +1,4 @@
-{
+﻿{
   "Index": {
     "title": "SmartNotes AI",
     "subtitle": "Smarte Notizen mit künstlicher Intelligenz",
@@ -19,7 +19,7 @@
     "features_title": "Alles für Ihre Produktivität",
     "features_subtitle": "Leistungsstarke Tools in einer eleganten Oberfläche",
     "feature_1_title": "Smarte KI-Analyse",
-    "feature_1_desc": "Gemini 3.7 Flash fasst lange Texte zusammen und hebt Schlüsselpunkte hervor.",
+    "feature_1_desc": "Gemini 3.8 Flash fasst lange Texte zusammen und hebt Schlüsselpunkte hervor.",
     "feature_2_title": "Cloud-Synchronisation",
     "feature_2_desc": "Ihre Notizen in Echtzeit auf allen Geräten verfügbar.",
     "feature_3_title": "KI-Chat-Assistent",
@@ -51,11 +51,11 @@
     "pro_lifetime_feat_1": "Cloud-Sync für bis zu 3 Geräte",
     "pro_lifetime_feat_2": "PDF-Export & Drucken",
     "pro_lifetime_feat_3": "Geheime Notizen mit PIN",
-    "pro_plan": "PRO+ (Gemini 3.7)",
+    "pro_plan": "PRO+ (Gemini 3.8)",
     "pro_plan_desc": "Integrierte KI ohne eigene Schlüssel",
     "pro_price": "$3",
     "pro_period": "/ Monat",
-    "pro_feat_1": "Integriertes Gemini 3.7 Flash",
+    "pro_feat_1": "Integriertes Gemini 3.8 Flash",
     "pro_feat_2": "Smarte Analyse, Zusammenfassungen & Erinnerungen",
     "pro_feat_3": "Alle PRO-Funktionen & Cloud-Sync",
     "buy_pro": "PRO+ Kaufen",
@@ -67,7 +67,7 @@
     "faq_1_q": "Wie funktioniert die Echtzeit-Spracheingabe?",
     "faq_1_a": "Tippen Sie auf das Mikrofon in einer Notiz — Ihre Sprache wird sofort und ohne Verzögerung in Text umgewandelt.",
     "faq_2_q": "Was ist der Unterschied zwischen PRO und PRO+?",
-    "faq_2_a": "PRO+ ($3/Monat) enthält integriertes Gemini 3.7 Flash ohne eigene API-Schlüssel. PRO ($10 einmalig) enthält lebenslangen Cloud-Sync, PDF-Export und PIN-Schutz.",
+    "faq_2_a": "PRO+ ($3/Monat) enthält integriertes Gemini 3.8 Flash ohne eigene API-Schlüssel. PRO ($10 einmalig) enthält lebenslangen Cloud-Sync, PDF-Export und PIN-Schutz.",
     "faq_3_q": "Wie wird das Abonnement aktiviert?",
     "faq_3_a": "Direkt nach der Zahlung erhalten Sie einen Aktivierungscode per E-Mail. Geben Sie ihn in den Einstellungen der App ein.",
     "faq_4_q": "Funktioniert die App offline?",

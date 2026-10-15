@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useLanguage } from "../context/LanguageContext";
@@ -193,7 +193,7 @@ export default function GuidePage() {
             {/* Feature 2 */}
             <div className="border-b border-white/10 pb-5 last:border-0 print:border-gray-200">
               <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2 print:text-black">
-                ✨ {isRu ? "Умный анализ и ИИ-помощник (Gemini 3.7)" : "Smart AI Summaries (Gemini 3.7)"}
+                ✨ {isRu ? "Умный анализ и ИИ-помощник (Gemini 3.8)" : "Smart AI Summaries (Gemini 3.8)"}
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed print:text-gray-700">
                 {isRu

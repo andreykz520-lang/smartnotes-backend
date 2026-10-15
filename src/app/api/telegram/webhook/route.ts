@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { users, activationCodes } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -31,7 +31,7 @@ async function sendMessage(chatId: number | string, text: string, replyMarkup?: 
 async function sendStarsInvoice(chatId: number | string, plan: 'pro_plus_1m' | 'pro_plus_3m' | 'pro_plus_6m' | 'pro_plus' | 'pro', userEmail?: string) {
   let starsAmount = 150;
   let title = '👑 SmartNotes PRO+ (1 месяц)';
-  let description = 'Встроенный ИИ Gemini 3.7 Flash, распознавание фото, голосовая диктовка на лету и облачная синхронизация на 3 устройства.';
+  let description = 'Встроенный ИИ Gemini 3.8 Flash, распознавание фото, голосовая диктовка на лету и облачная синхронизация на 3 устройства.';
   let label = 'SmartNotes PRO+ (30 дней)';
 
   if (plan === 'pro') {
@@ -42,12 +42,12 @@ async function sendStarsInvoice(chatId: number | string, plan: 'pro_plus_1m' | '
   } else if (plan === 'pro_plus_3m') {
     starsAmount = 390;
     title = '👑 SmartNotes PRO+ (3 месяца, скидка)';
-    description = 'Встроенный ИИ Gemini 3.7 Flash на 90 дней со скидкой и облачная синхронизация на 3 устройства.';
+    description = 'Встроенный ИИ Gemini 3.8 Flash на 90 дней со скидкой и облачная синхронизация на 3 устройства.';
     label = 'SmartNotes PRO+ (90 дней)';
   } else if (plan === 'pro_plus_6m') {
     starsAmount = 790;
     title = '🎁👑 SmartNotes PRO+ (6 мес) + Вечный PRO!';
-    description = 'ИИ Gemini 3.7 Flash на 180 дней + ПОЖИЗНЕННЫЙ статус PRO (вечная синхронизация и PDF) в подарок навсегда!';
+    description = 'ИИ Gemini 3.8 Flash на 180 дней + ПОЖИЗНЕННЫЙ статус PRO (вечная синхронизация и PDF) в подарок навсегда!';
     label = 'SmartNotes PRO+ (180 дн + Вечный PRO)';
   }
 
@@ -271,7 +271,7 @@ export async function POST(request: Request) {
           ],
         };
 
-        const welcomeText = `👋 <b>Добро пожаловать в SmartNotes AI!</b>\n\nОфициальный бот для мгновенной оплаты подписки через <b>Telegram Stars (Звёзды)</b> по всему миру.\n\n<b>Выберите тариф для выставления счета:</b>\n\n🎁 <b>PRO+ 6 месяцев</b> — 790 ⭐\n• Встроенный ИИ Gemini 3.7 Flash на 180 дней\n• <b>БОНУС:</b> Пожизненный статус PRO навсегда в подарок!\n\n🔥 <b>PRO+ 3 месяца</b> — 390 ⭐ (скидка)\n• Встроенный ИИ на 90 дней\n\n👑 <b>PRO+ 1 месяц</b> — 150 ⭐\n• Встроенный ИИ на 30 дней\n\n⭐ <b>PRO Версия</b> — 500 ⭐\n• Бессрочный доступ (облако на 3 устройства, PDF, PIN)`;
+        const welcomeText = `👋 <b>Добро пожаловать в SmartNotes AI!</b>\n\nОфициальный бот для мгновенной оплаты подписки через <b>Telegram Stars (Звёзды)</b> по всему миру.\n\n<b>Выберите тариф для выставления счета:</b>\n\n🎁 <b>PRO+ 6 месяцев</b> — 790 ⭐\n• Встроенный ИИ Gemini 3.8 Flash на 180 дней\n• <b>БОНУС:</b> Пожизненный статус PRO навсегда в подарок!\n\n🔥 <b>PRO+ 3 месяца</b> — 390 ⭐ (скидка)\n• Встроенный ИИ на 90 дней\n\n👑 <b>PRO+ 1 месяц</b> — 150 ⭐\n• Встроенный ИИ на 30 дней\n\n⭐ <b>PRO Версия</b> — 500 ⭐\n• Бессрочный доступ (облако на 3 устройства, PDF, PIN)`;
 
         await sendMessage(chatId, welcomeText, keyboard);
         return NextResponse.json({ ok: true });

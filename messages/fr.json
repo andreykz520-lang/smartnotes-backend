@@ -1,4 +1,4 @@
-{
+﻿{
   "Index": {
     "title": "SmartNotes AI",
     "subtitle": "Notes intelligentes avec Intelligence Artificielle",
@@ -19,7 +19,7 @@
     "features_title": "Tout pour votre productivité",
     "features_subtitle": "Des outils puissants dans une interface épurée et élégante",
     "feature_1_title": "Analyse intelligente",
-    "feature_1_desc": "Gemini 3.7 Flash résume les longs textes et met en valeur les points clés.",
+    "feature_1_desc": "Gemini 3.8 Flash résume les longs textes et met en valeur les points clés.",
     "feature_2_title": "Synchronisation Cloud",
     "feature_2_desc": "Vos notes toujours à portée de main sur tous vos appareils en temps réel.",
     "feature_3_title": "Assistant de chat IA",
@@ -51,11 +51,11 @@
     "pro_lifetime_feat_1": "Sync cloud jusqu'à 3 appareils",
     "pro_lifetime_feat_2": "Export PDF & impression",
     "pro_lifetime_feat_3": "Dossiers secrets avec PIN",
-    "pro_plan": "PRO+ (Gemini 3.7)",
+    "pro_plan": "PRO+ (Gemini 3.8)",
     "pro_plan_desc": "IA intégrée sans configuration de clé",
     "pro_price": "$3",
     "pro_period": "/ mois",
-    "pro_feat_1": "Gemini 3.7 Flash intégré",
+    "pro_feat_1": "Gemini 3.8 Flash intégré",
     "pro_feat_2": "Analyse intelligente, résumés & rappels",
     "pro_feat_3": "Toutes les fonctions PRO et cloud incluses",
     "buy_pro": "Acheter PRO+",
@@ -67,7 +67,7 @@
     "faq_1_q": "Comment fonctionne la dictée vocale en direct ?",
     "faq_1_a": "En appuyant sur le microphone dans une note, vos paroles sont instantanément retranscrites en texte en temps réel.",
     "faq_2_q": "Quelle est la différence entre PRO et PRO+ ?",
-    "faq_2_a": "PRO+ (3 $/mois) intègre directement l'IA Gemini 3.7 Flash sans clé API. PRO (10 $ à vie) inclut la synchronisation cloud, l'export PDF et le verrouillage PIN.",
+    "faq_2_a": "PRO+ (3 $/mois) intègre directement l'IA Gemini 3.8 Flash sans clé API. PRO (10 $ à vie) inclut la synchronisation cloud, l'export PDF et le verrouillage PIN.",
     "faq_3_q": "Comment la souscription est-elle activée ?",
     "faq_3_a": "Dès le paiement validé, vous recevez un code par email. Entrez-le dans les Paramètres de l'application.",
     "faq_4_q": "L'application fonctionne-t-elle hors ligne ?",

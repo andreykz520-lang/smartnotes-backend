@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+﻿export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { activationCodes, users, payments } from '@/db/schema';
@@ -112,8 +112,8 @@ export async function POST(request: Request) {
       step2: 'Введите ваш email и этот код на экране входа (или в Настройках)',
       step3: isProPlus 
         ? (isGiftPro 
-            ? 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash на 6 месяцев + пожизненным PRO навсегда!' 
-            : 'Наслаждайтесь встроенным ИИ Gemini 3.7 Flash и облачной синхронизацией!') 
+            ? 'Наслаждайтесь встроенным ИИ Gemini 3.8 Flash на 6 месяцев + пожизненным PRO навсегда!' 
+            : 'Наслаждайтесь встроенным ИИ Gemini 3.8 Flash и облачной синхронизацией!') 
         : 'Наслаждайтесь неограниченными возможностями и облачной синхронизацией!',
       support: 'Нужна помощь? Напишите нам: support@smartnotes-ai.ru',
       footer: 'Этот код действителен для активации до 3-х устройств (один аккаунт).'
