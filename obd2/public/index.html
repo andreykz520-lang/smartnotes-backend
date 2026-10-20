@@ -537,48 +537,51 @@
     </section>
 
     <!-- 1. Блок Бета-Тестирования (Вечный PRO за серию логов) -->
+    <!-- 1. Программа бета-тестирования (Воронка привлечения логов) -->
     <section style="max-width: 1200px; margin: 0 auto 50px; padding: 0 20px;">
       <div style="background: linear-gradient(135deg, #131c31 0%, #1e1b4b 50%, #0f172a 100%); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 24px; padding: 32px 28px; box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.2);">
         
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
           <div>
-            <span style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            <span data-i18n="beta_badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
               🎁 Программа бета-тестирования
             </span>
-            <h2 style="font-size: 26px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
+            <h2 data-i18n="beta_title" style="font-size: 26px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
               Требуются тестеры автомобилей! Получите пожизненный PRO Навсегда
             </h2>
-            <p style="color: #cbd5e1; font-size: 15px; margin: 0; max-width: 850px; line-height: 1.5;">
+            <p data-i18n-html="beta_desc" style="color: #cbd5e1; font-size: 15px; margin: 0; max-width: 850px; line-height: 1.5;">
               Помогите нам довести совместимость приложения до идеала! Для качественной отладки протоколов <b>процедуру тестирования нужно провести не один раз, а несколько раз в разных режимах</b> (на холодную, на горячую, при движении). В благодарность за серию логов мы активируем вам <b>вечный тариф PRO Навсегда</b>!
             </p>
           </div>
           
           <button onclick="toggleTesterChat(true)" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff; border: none; padding: 14px 22px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); white-space: nowrap;">
-            💬 Открыть чат тестеров
+            <span data-i18n="beta_btn_chat">💬 Открыть чат тестеров</span>
           </button>
         </div>
 
         <!-- 4 Шага к вечному PRO (Несколько тестов!) -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
           <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
-            <div style="font-size: 24px; margin-bottom: 8px;">📲 1. Установите</div>
-            <div style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Скачайте приложение</div>
-            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Бесплатно скачайте APK на Android или ZIP для Windows прямо с этого сайта.</div>
+            <div data-i18n="beta_s1_step" style="font-size: 24px; margin-bottom: 8px;">📲 1. Установите</div>
+            <div data-i18n="beta_s1_title" style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Скачайте приложение</div>
+            <div data-i18n="beta_s1_desc" style="font-size: 12px; color: var(--muted); line-height: 1.4;">Бесплатно скачайте APK на Android или ZIP для Windows прямо с этого сайта.</div>
           </div>
           <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(51, 65, 85, 0.6); border-radius: 16px; padding: 18px;">
-            <div style="font-size: 24px; margin-bottom: 8px;">🔌 2. Подключитесь</div>
-            <div style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Вставьте адаптер ELM327</div>
-            <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Подключите сканер (Bluetooth, Wi-Fi или USB-COM) в разъём OBD2 вашего автомобиля.</div>
+            <div data-i18n="beta_s2_step" style="font-size: 24px; margin-bottom: 8px;">🔌 2. Подключитесь</div>
+            <div data-i18n="beta_s2_title" style="font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px;">Вставьте адаптер ELM327</div>
+            <div data-i18n="beta_s2_desc" style="font-size: 12px; color: var(--muted); line-height: 1.4;">Подключите сканер (Bluetooth, Wi-Fi или USB-COM) в разъём OBD2 вашего автомобиля.</div>
           </div>
           <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 16px; padding: 18px;">
-            <div style="font-size: 24px; margin-bottom: 8px;">🧪 3. Серия тестов (Не один раз!)</div>
-            <div style="font-size: 14px; font-weight: 700; color: #c4b5fd; margin-bottom: 4px;">Протестируйте несколько раз</div>
-            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">Попробуйте приложение <b>несколько раз в разных режимах</b>: при включенном зажигании, при холодном пуске двигателя, на прогретом моторе и на ходу. Опробуйте все экраны: приборку, датчики и чтение кодов DTC.</div>
+            <div data-i18n="beta_s3_step" style="font-size: 24px; margin-bottom: 8px;">🧪 3. Порядок тестов</div>
+            <div data-i18n="beta_s3_title" style="font-size: 14px; font-weight: 700; color: #c4b5fd; margin-bottom: 4px;">Пошаговый порядок проверки</div>
+            <div data-i18n="beta_s3_desc" style="font-size: 12px; color: #cbd5e1; line-height: 1.45;">
+              После подключения заведите авто и проверьте ошибки DTC. Затем включите приборку. Далее откройте расширенные параметры: сначала двигатель, затем АКПП и остальные блоки (дождитесь, чтобы обновились бейджи, даже если временно нет цифр, и только потом переходите дальше). Затем проверьте реальный пробег, снимите общий лог и пришлите на e-mail (даже если цифры не показывало)!
+            </div>
           </div>
           <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 18px;">
-            <div style="font-size: 24px; margin-bottom: 8px;">🎁 4. Получите вечный PRO</div>
-            <div style="font-size: 14px; font-weight: 700; color: #10b981; margin-bottom: 4px;">Отправьте логи на e-mail</div>
-            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">В боковом меню нажимайте «Экспорт отладочного лога» после тестов и отправьте файлы на <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; font-weight: 600;">autoneuro24@gmail.com</a>. Разработчик пришлёт вам пожизненный PRO-ключ!</div>
+            <div data-i18n="beta_s4_step" style="font-size: 24px; margin-bottom: 8px;">🎁 4. Получите вечный PRO</div>
+            <div data-i18n="beta_s4_title" style="font-size: 14px; font-weight: 700; color: #10b981; margin-bottom: 4px;">Отправьте логи на e-mail</div>
+            <div data-i18n-html="beta_s4_desc" style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">В боковом меню нажимайте «Экспорт отладочного лога» после тестов и отправьте файлы на <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; font-weight: 600;">autoneuro24@gmail.com</a>. Разработчик пришлёт вам пожизненный PRO-ключ!</div>
           </div>
         </div>
 
@@ -586,8 +589,8 @@
         <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
           <span style="font-size: 28px;">🛡️</span>
           <div style="font-size: 13px; color: #e2e8f0; line-height: 1.5;">
-            <strong style="color: #10b981;">100% безопасность для вашего автомобиля:</strong>
-            Приложение OBD2 SCAN AI работает строго в защищённом режиме пассивного чтения (Passive Read-Only). Оно не производит чип-тюнинг, не изменяет заводские калибровки и физически не может повредить электронный блок (ЭБУ), проводку или датчики машины.
+            <strong data-i18n="beta_shield_title" style="color: #10b981;">100% безопасность для вашего автомобиля:</strong>
+            <span data-i18n="beta_shield_desc">Приложение OBD2 SCAN AI работает строго в защищённом режиме пассивного чтения (Passive Read-Only). Оно не производит чип-тюнинг, не изменяет заводские калибровки и физически не может повредить электронный блок (ЭБУ), проводку или датчики машины.</span>
           </div>
         </div>
 
@@ -597,67 +600,79 @@
     <!-- 2. Статус совместимости протоколов и поиск тестеров -->
     <section id="verified-cars" style="max-width: 1200px; margin: 0 auto 50px; padding: 0 20px;">
       <div class="section-title" style="text-align: center; margin-bottom: 30px;">
-        <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase;">
+        <span data-i18n="verified_badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase;">
           🚘 Статус отладки протоколов
         </span>
-        <h2 style="font-size: 28px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
+        <h2 data-i18n="verified_title" style="font-size: 28px; font-weight: 800; color: #fff; margin: 12px 0 6px;">
           Статус совместимости: ищем тестеров по маркам авто!
         </h2>
-        <p style="color: var(--muted); font-size: 14px; margin: 0; max-width: 800px; margin-left: auto; margin-right: auto;">
+        <p data-i18n-html="verified_sub" style="color: var(--muted); font-size: 14px; margin: 0; max-width: 800px; margin-left: auto; margin-right: auto;">
           Сейчас в активной отладке находится автомобиль Peugeot 307. Для всех остальных марок <b>критически необходимы тестеры с ELM327</b> для сбора логов и адаптации протоколов опроса ЭБУ:
         </p>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
         
-        <!-- Карточка 1: Peugeot 307 (Единственная в активной отладке) -->
-        <div style="background: var(--card); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 18px; padding: 20px; box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);">
+        <!-- Карточка 1: Peugeot & Citroën -->
+        <div style="background: var(--card); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 18px; padding: 20px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">🦁 Peugeot 307 (1.6 NFU)</div>
-            <span style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🟡 В активной отладке</span>
+            <div data-i18n="car_peugeot_title" style="font-size: 18px; font-weight: 700; color: #fff;">🦁 Peugeot & Citroën</div>
+            <span data-i18n="car_peugeot_status" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🟢 НАСТРОЕНО (307)</span>
           </div>
-          <div style="font-size: 13px; color: #fbbf24; font-weight: 600; margin-bottom: 6px;">ЭБУ: Bosch ME7.4.4 (K-Line)</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 14230-4 KWP2000 (Header 8210F1)</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
-            ⚡ <b>Текущий статус:</b> Уже считывает 19 параметров двигателя и коды DTC. Разработчик продолжает серию испытаний в разных режимах для доводки до совершенства.
+          <div data-i18n="car_peugeot_ecu" style="font-size: 13px; color: #34d399; font-weight: 600; margin-bottom: 6px;">ЭБУ: Bosch ME7.4.4 + АКПП AL4/DP0</div>
+          <div data-i18n-html="car_peugeot_proto" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b></div>
+          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 10px 12px; border-radius: 8px; line-height: 1.5; margin-bottom: 10px;">
+            <div data-i18n="car_peugeot_tested" style="color: #34d399; font-weight: 700; margin-bottom: 4px;">
+              ✅ Peugeot 307 (1.6 NFU) — Настроено и протестировано!
+            </div>
+            <div data-i18n="car_peugeot_tested_desc" style="color: #94a3b8; font-size: 11.5px; line-height: 1.4; margin-bottom: 6px;">
+              Все 19 параметров двигателя, давление масла АКПП AL4, DTC и ИИ-анализ здоровья полностью откалиброваны.
+            </div>
+            <div data-i18n-html="car_peugeot_waiting" style="padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11.5px; color: #cbd5e1;">
+              <b>Остальные модели (ждут тестов):</b><br>
+              ❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4
+            </div>
           </div>
+          <a href="/peugeot-307-health-check" style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-size: 12.5px; font-weight: 700; text-decoration: none;">
+            <span data-i18n="car_peugeot_link">📖 Читать отчёт проверки Peugeot 307 и вердикт ИИ →</span>
+          </a>
         </div>
 
         <!-- Карточка 2: ВАЗ (Lada) -->
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">🏎️ ВАЗ (Lada)</div>
-            <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
+            <div data-i18n="car_vaz_title" style="font-size: 18px; font-weight: 700; color: #fff;">🏎️ ВАЗ (Lada)</div>
+            <span data-i18n="car_need_testers" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
           </div>
-          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Калина, Приора, 2110-2115, Гранта, Веста</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
-            🔍 <b>Требуется проверка:</b> подключитесь через ELM327 v1.5, проведите серию тестов (на холодную, прогретую, на ходу) и пришлите несколько логов за вечный PRO!
+          <div data-i18n="car_vaz_models" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Калина, Приора, 2110-2115, Гранта, Веста</div>
+          <div data-i18n-html="car_vaz_ecu" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74</b></div>
+          <div data-i18n-html="car_vaz_desc" style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
+            🔍 <b>Требуется проверка:</b> чтение АЦП датчиков (ДМРВ, ДПДЗ), пропусков зажигания и сброс с инициализацией. Пришлите логи!
           </div>
         </div>
 
         <!-- Карточка 3: Toyota & Lexus -->
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇯🇵 Toyota & Lexus</div>
-            <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
+            <div data-i18n="car_toyota_title" style="font-size: 18px; font-weight: 700; color: #fff;">🇯🇵 Toyota & Lexus</div>
+            <span data-i18n="car_need_testers" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
           </div>
-          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Corolla, Camry, RAV4, Avensis, Yaris</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протоколы: <b>CAN 11/500 & K-Line ISO 9141-2</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
-            🔍 <b>Требуется проверка:</b> опрос датчиков скорости, оборотов, температуры и считывания ошибок. Снимите несколько отладочных логов!
+          <div data-i18n="car_toyota_models" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Corolla, Camry, RAV4, Avensis, Yaris, Prius</div>
+          <div data-i18n-html="car_toyota_proto" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 14230 KWP / ISO 15765 CAN</b></div>
+          <div data-i18n-html="car_toyota_desc" style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
+            🔍 <b>Требуется проверка:</b> чтение расширенных параметров гибридной установки (ВВБ), коррекций топлива и АКПП.
           </div>
         </div>
 
         <!-- Карточка 4: Renault & Dacia -->
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">💎 Renault & Dacia</div>
-            <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
+            <div data-i18n="car_renault_title" style="font-size: 18px; font-weight: 700; color: #fff;">⚡ Renault & Dacia</div>
+            <span data-i18n="car_need_testers" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
           </div>
-          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Logan, Sandero, Duster, Megane 2, Fluence</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Siemens EMS3132 / Valeo / EMS3120</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
+          <div data-i18n="car_renault_models" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Logan, Sandero, Duster, Megane, Clio, Kaptur</div>
+          <div data-i18n-html="car_renault_ecu" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">ЭБУ: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b></div>
+          <div data-i18n-html="car_renault_desc" style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
             🔍 <b>Требуется проверка:</b> тестирование чтения французских ЭБУ по K-Line/CAN. Нужны тестеры для проверки в разных режимах работы авто!
           </div>
         </div>
@@ -665,12 +680,12 @@
         <!-- Карточка 5: VAG (Volkswagen, Skoda, Audi) -->
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇩🇪 VW, Skoda, Audi</div>
-            <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
+            <div data-i18n="car_vag_title" style="font-size: 18px; font-weight: 700; color: #fff;">🇩🇪 VW, Skoda, Audi</div>
+            <span data-i18n="car_need_testers" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
           </div>
-          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Polo Sedan, Golf, Passat, Octavia, Rapid</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 15765-4 CAN & UDS</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
+          <div data-i18n="car_vag_models" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Polo Sedan, Golf, Passat, Octavia, Rapid</div>
+          <div data-i18n-html="car_vag_proto" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Протокол: <b>ISO 15765-4 CAN & UDS</b></div>
+          <div data-i18n-html="car_vag_desc" style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
             🔍 <b>Требуется проверка:</b> опрос блоков управления VAG и чтение живых параметров двигателя. Проведите серию тестов и пришлите логи!
           </div>
         </div>
@@ -678,12 +693,12 @@
         <!-- Карточка 6: Hyundai & Kia -->
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 700; color: #fff;">🇰🇷 Hyundai & Kia</div>
-            <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
+            <div data-i18n="car_kiahundai_title" style="font-size: 18px; font-weight: 700; color: #fff;">🇰🇷 Hyundai & Kia</div>
+            <span data-i18n="car_need_testers" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">🔴 НУЖНЫ ТЕСТЕРЫ</span>
           </div>
-          <div style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Solaris, Rio, Ceed, Cerato, Sportage</div>
-          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Двигатели: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b></div>
-          <div style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
+          <div data-i18n="car_kiahundai_models" style="font-size: 13px; color: #38bdf8; font-weight: 600; margin-bottom: 6px;">Модели: Solaris, Rio, Ceed, Cerato, Sportage</div>
+          <div data-i18n-html="car_kiahundai_proto" style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Двигатели: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b></div>
+          <div data-i18n-html="car_kiahundai_desc" style="font-size: 12px; color: #cbd5e1; background: var(--card-inner); padding: 8px 10px; border-radius: 8px; line-height: 1.45;">
             🔍 <b>Требуется проверка:</b> скорость опроса шины CAN 500k, живые параметры ДВС и чтение кодов ошибок. Ждём ваши логи!
           </div>
         </div>
@@ -692,18 +707,18 @@
 
       <!-- Призыв для автовладельцев любых марок -->
       <div style="margin-top: 24px; background: rgba(139, 92, 246, 0.1); border: 1px dashed rgba(139, 92, 246, 0.5); border-radius: 16px; padding: 20px; text-align: center;">
-        <div style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px;">
+        <div data-i18n="verified_other_title" style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px;">
           📢 Владеете другой маркой или моделью автомобиля?
         </div>
-        <p style="font-size: 13px; color: var(--muted); margin: 0 0 14px; max-width: 800px; margin-left: auto; margin-right: auto;">
+        <p data-i18n-html="verified_other_desc" style="font-size: 13px; color: var(--muted); margin: 0 0 14px; max-width: 800px; margin-left: auto; margin-right: auto;">
           Нам нужны тестеры <b>абсолютно любых машин</b>! Подключите ваш ELM327, проведите серию тестов (на холодную, на горячую, в движении), снимите 2-3 лога и пришлите нам на <b>autoneuro24@gmail.com</b> — и мы подарим вам сразу 2 вечных тарифа PRO Навсегда: OBD2 SCAN AI + SmartNotes AI!
         </p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
           <a href="/testers" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);">
-            🚀 Открыть Клуб & Форум по маркам авто (/testers)
+            <span data-i18n="verified_other_btn">🚀 Открыть Клуб & Форум по маркам авто (/testers)</span>
           </a>
           <button onclick="toggleTesterChat(true)" style="background: var(--card-inner); border: 1px solid var(--accent); color: var(--accent); padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;">
-            💬 Быстрый чат на странице
+            <span data-i18n="verified_quick_chat">💬 Быстрый чат на странице</span>
           </button>
         </div>
       </div>
@@ -893,6 +908,83 @@
   <script>
     const translations = {
       "ru": {
+      "beta_badge": "🎁 Программа бета-тестирования",
+      "beta_title": "Требуются тестеры автомобилей! Получите пожизненный PRO Навсегда",
+      "beta_desc": "Помогите нам довести совместимость приложения до идеала! Для качественной отладки протоколов <b>процедуру тестирования нужно провести не один раз, а несколько раз в разных режимах</b> (на холодную, на горячую, при движении). В благодарность за серию логов мы активируем вам <b>вечный тариф PRO Навсегда</b>!",
+      "beta_btn_chat": "💬 Открыть чат тестеров",
+      "beta_s1_step": "📲 1. Установите",
+      "beta_s1_title": "Скачайте приложение",
+      "beta_s1_desc": "Бесплатно скачайте APK на Android или ZIP для Windows прямо с этого сайта.",
+      "beta_s2_step": "🔌 2. Подключитесь",
+      "beta_s2_title": "Вставьте адаптер ELM327",
+      "beta_s2_desc": "Подключите сканер (Bluetooth, Wi-Fi или USB-COM) в разъём OBD2 вашего автомобиля.",
+      "beta_s3_step": "🧪 3. Порядок тестов",
+      "beta_s3_title": "Пошаговый порядок проверки",
+      "beta_s3_desc": "После подключения заведите авто и проверьте ошибки DTC. Затем включите приборку. Далее откройте расширенные параметры: сначала двигатель, затем АКПП и остальные блоки (дождитесь, чтобы обновились бейджи, даже если временно нет цифр, и только потом переходите дальше). Затем проверьте реальный пробег, снимите общий лог и пришлите на e-mail (даже если цифры не показывало)!",
+      "beta_s4_step": "🎁 4. Получите вечный PRO",
+      "beta_s4_title": "Отправьте логи на e-mail",
+      "beta_s4_desc": "В боковом меню нажимайте «Экспорт отладочного лога» после тестов и отправьте файлы на <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a>. Разработчик пришлёт вам пожизненный PRO-ключ!",
+      "beta_shield_title": "100% безопасность для вашего автомобиля:",
+      "beta_shield_desc": "Приложение OBD2 SCAN AI работает строго в защищённом режиме пассивного чтения (Passive Read-Only). Оно не производит чип-тюнинг, не изменяет заводские калибровки и физически не может повредить электронный блок (ЭБУ), проводку или датчики машины.",
+      "verified_badge": "🚘 Статус отладки протоколов",
+      "verified_title": "Статус совместимости: ищем тестеров по маркам авто!",
+      "verified_sub": "Сейчас в активной отладке находится автомобиль Peugeot 307. Для всех остальных марок <b>критически необходимы тестеры с ELM327</b> для сбора логов и адаптации протоколов опроса ЭБУ:",
+      "car_peugeot_title": "🦁 Peugeot & Citroën",
+      "car_peugeot_status": "🟢 НАСТРОЕНО (307)",
+      "car_peugeot_ecu": "ЭБУ: Bosch ME7.4.4 + АКПП AL4/DP0",
+      "car_peugeot_proto": "Протокол: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ Peugeot 307 (1.6 NFU) — Настроено и протестировано!",
+      "car_peugeot_tested_desc": "Все 19 параметров двигателя, давление масла АКПП AL4, DTC и ИИ-анализ здоровья полностью откалиброваны.",
+      "car_peugeot_waiting": "<b>Остальные модели (ждут тестов):</b><br>❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4",
+      "car_peugeot_link": "📖 Читать отчёт проверки Peugeot 307 и вердикт ИИ →",
+      "car_need_testers": "🔴 НУЖНЫ ТЕСТЕРЫ",
+      "car_vaz_title": "🏎️ ВАЗ (Lada)",
+      "car_vaz_models": "Модели: Калина, Приора, 2110-2115, Гранта, Веста",
+      "car_vaz_ecu": "ЭБУ: <b>Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>Требуется проверка:</b> чтение АЦП датчиков (ДМРВ, ДПДЗ), пропусков зажигания и сброс с инициализацией. Пришлите логи!",
+      "car_toyota_title": "🇯🇵 Toyota & Lexus",
+      "car_toyota_models": "Модели: Corolla, Camry, RAV4, Avensis, Yaris, Prius",
+      "car_toyota_proto": "Протокол: <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>Требуется проверка:</b> чтение расширенных параметров гибридной установки (ВВБ), коррекций топлива и АКПП.",
+      "car_renault_title": "⚡ Renault & Dacia",
+      "car_renault_models": "Модели: Logan, Sandero, Duster, Megane, Clio, Kaptur",
+      "car_renault_ecu": "ЭБУ: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>Требуется проверка:</b> тестирование чтения французских ЭБУ по K-Line/CAN. Нужны тестеры для проверки в разных режимах работы авто!",
+      "car_vag_title": "🇩🇪 VW, Skoda, Audi",
+      "car_vag_models": "Модели: Polo Sedan, Golf, Passat, Octavia, Rapid",
+      "car_vag_proto": "Протокол: <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>Требуется проверка:</b> опрос блоков управления VAG и чтение живых параметров двигателя. Проведите серию тестов и пришлите логи!",
+      "car_kiahundai_title": "🇰🇷 Hyundai & Kia",
+      "car_kiahundai_models": "Модели: Solaris, Rio, Ceed, Cerato, Sportage",
+      "car_kiahundai_proto": "Двигатели: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>Требуется проверка:</b> скорость опроса шины CAN 500k, живые параметры ДВС и чтение кодов ошибок. Ждём ваши логи!",
+      "verified_other_title": "📢 Владеете другой маркой или моделью автомобиля?",
+      "verified_other_desc": "Нам нужны тестеры <b>абсолютно любых машин</b>! Подключите ваш ELM327, проведите серию тестов (на холодную, на горячую, в движении), снимите 2-3 лога и пришлите нам на <b>autoneuro24@gmail.com</b> — и мы подарим вам сразу 2 вечных тарифа PRO Навсегда: OBD2 SCAN AI + SmartNotes AI!",
+      "verified_other_btn": "🚀 Открыть Клуб & Форум по маркам авто (/testers)",
+      "verified_quick_chat": "💬 Быстрый чат на странице",
+      "widget_float_btn": "Чат тестеров & AI",
+      "widget_title": "Чат тестеров & AI Диагност",
+      "widget_sub": "Публичный обмен опытом • Ответы ИИ",
+      "widget_banner": "🎁 <b>Вечный PRO за лог:</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "Хаб по маркам ↗",
+      "widget_pill_all": "🌐 Все",
+      "widget_pill_peugeot": "🦁 Peugeot",
+      "widget_pill_vaz": "🏎️ ВАЗ",
+      "widget_pill_toyota": "🇯🇵 Toyota",
+      "widget_pill_renault": "🇫🇷 Renault",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 Kia/Hyu",
+      "widget_loading": "Загрузка сообщений...",
+      "widget_empty": "В этой ветке пока нет сообщений.<br>Напишите первым о вашей марке авто!",
+      "widget_ph_name": "Ваше имя (напр. Сергей)",
+      "widget_ph_car": "Авто (напр. ВАЗ Калина)",
+      "widget_ph_msg": "Задайте вопрос, опишите подключение или коды ошибок...",
+      "widget_hint_passive": "🛡️ Пассивный режим чтения",
+      "widget_hint_ai": "🤖 AI-диагност отвечает сразу",
+      "chat_badge_ai": "🤖 AI Диагност",
+      "chat_badge_admin": "👑 Разработчик",
+      "chat_badge_car": "🚗 Авто",
+
             "nav_verified": "🚘 Проверено на авто",
             "nav_testers": "👥 Клуб тестеров",
             "verified_badge": "🚘 Статус отладки протоколов",
@@ -1018,6 +1110,83 @@
             "legal_refund": "💳 Оплата и условия возврата"
       },
       "en": {
+      "beta_badge": "🎁 Beta Testing Program",
+      "beta_title": "Car Testers Wanted! Get Lifetime PRO Forever",
+      "beta_desc": "Help us bring car compatibility to perfection! For high-quality protocol fine-tuning, <b>perform the test procedure not just once, but multiple times in different modes</b> (cold start, warm engine, and while driving). In return for a series of logs, we will activate your <b>Lifetime PRO Forever license</b>!",
+      "beta_btn_chat": "💬 Open Testers Chat",
+      "beta_s1_step": "📲 1. Install",
+      "beta_s1_title": "Download the App",
+      "beta_s1_desc": "Download free APK for Android or ZIP for Windows directly from this website.",
+      "beta_s2_step": "🔌 2. Connect",
+      "beta_s2_title": "Plug in ELM327",
+      "beta_s2_desc": "Plug the scanner (Bluetooth, Wi-Fi or USB-COM) into your vehicle's OBD2 diagnostic port.",
+      "beta_s3_step": "🧪 3. Testing Sequence",
+      "beta_s3_title": "Step-by-Step Test Order",
+      "beta_s3_desc": "After connecting, start the engine and read DTC trouble codes. Then switch on the dashboard. Next, open extended parameters: engine first, then gearbox/AT and remaining ECUs (wait for sensor badges to refresh, even if digits are temporarily empty, before switching). Then verify real mileage, export debug log and email it to us (even if values were zero)!",
+      "beta_s4_step": "🎁 4. Get Lifetime PRO",
+      "beta_s4_title": "Send Logs via Email",
+      "beta_s4_desc": "In the side menu tap \"Export Debug Log\" after tests and send files to <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a>. The developer will email you a Lifetime PRO key!",
+      "beta_shield_title": "100% Safety for your vehicle:",
+      "beta_shield_desc": "OBD2 SCAN AI operates strictly in a Passive Read-Only mode. It never writes to ECU memory, does not alter factory calibrations, and physically cannot harm your electronic control units, sensors, or wiring.",
+      "verified_badge": "🚘 Protocol Debugging Status",
+      "verified_title": "Compatibility Status: Looking for Brand Testers!",
+      "verified_sub": "Peugeot 307 is currently fully calibrated. For all other car brands, <b>testers with ELM327 adapters are critically needed</b> to capture logs and adapt ECU query protocols:",
+      "car_peugeot_title": "🦁 Peugeot & Citroën",
+      "car_peugeot_status": "🟢 CONFIGURED (307)",
+      "car_peugeot_ecu": "ECU: Bosch ME7.4.4 + AL4/DP0 AT",
+      "car_peugeot_proto": "Protocol: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ Peugeot 307 (1.6 NFU) — Configured & Verified!",
+      "car_peugeot_tested_desc": "All 19 engine parameters, AL4 transmission line pressure, DTCs and AI Health diagnostics are fully calibrated.",
+      "car_peugeot_waiting": "<b>Other models (testers needed):</b><br>❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4",
+      "car_peugeot_link": "📖 Read Peugeot 307 health check report & AI analysis →",
+      "car_need_testers": "🔴 TESTERS NEEDED",
+      "car_vaz_title": "🏎️ LADA / VAZ",
+      "car_vaz_models": "Models: Kalina, Priora, 2110-2115, Granta, Vesta",
+      "car_vaz_ecu": "ECU: <b>January 5.1/7.2, Bosch M7.9.7, Itelma M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>Verification needed:</b> ADC sensor reading (MAF, TPS), misfire counters, ECU initialization. Send logs!",
+      "car_toyota_title": "🇯🇵 Toyota & Lexus",
+      "car_toyota_models": "Models: Corolla, Camry, RAV4, Avensis, Yaris, Prius",
+      "car_toyota_proto": "Protocol: <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>Verification needed:</b> Hybrid battery metrics (HV batt), short/long fuel trims, AT oil temperature.",
+      "car_renault_title": "⚡ Renault & Dacia",
+      "car_renault_models": "Models: Logan, Sandero, Duster, Megane, Clio, Kaptur",
+      "car_renault_ecu": "ECU: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>Verification needed:</b> Testing French ECU queries via K-Line/CAN in various engine run cycles!",
+      "car_vag_title": "🇩🇪 VW, Skoda, Audi",
+      "car_vag_models": "Models: Polo Sedan, Golf, Passat, Octavia, Rapid",
+      "car_vag_proto": "Protocol: <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>Verification needed:</b> Querying VAG modules and reading live engine parameters. Send multiple test logs!",
+      "car_kiahundai_title": "🇰🇷 Hyundai & Kia",
+      "car_kiahundai_models": "Models: Solaris, Rio, Ceed, Cerato, Sportage",
+      "car_kiahundai_proto": "Engines: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>Verification needed:</b> CAN 500k stream rate, live engine telemetry, and DTC reading. Awaiting logs!",
+      "verified_other_title": "📢 Own another car make or model?",
+      "verified_other_desc": "We need testers for <b>any vehicle make and year</b>! Plug in your ELM327, perform tests (cold, warm, driving), capture 2-3 logs and send them to <b>autoneuro24@gmail.com</b> — we will reward you with 2 Lifetime PRO licenses: OBD2 SCAN AI + SmartNotes AI!",
+      "verified_other_btn": "🚀 Open Testers Club & Forum (/testers)",
+      "verified_quick_chat": "💬 Quick Chat on Page",
+      "widget_float_btn": "Testers Chat & AI",
+      "widget_title": "Testers Chat & AI Diagnostics",
+      "widget_sub": "Public experience exchange • AI answers",
+      "widget_banner": "🎁 <b>Lifetime PRO for logs:</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "Brand Hub ↗",
+      "widget_pill_all": "🌐 All",
+      "widget_pill_peugeot": "🦁 Peugeot",
+      "widget_pill_vaz": "🏎️ LADA",
+      "widget_pill_toyota": "🇯🇵 Toyota",
+      "widget_pill_renault": "🇫🇷 Renault",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 Kia/Hyu",
+      "widget_loading": "Loading messages...",
+      "widget_empty": "No messages in this brand thread yet.<br>Be the first to share your car findings!",
+      "widget_ph_name": "Your name / nickname",
+      "widget_ph_car": "Car make & model",
+      "widget_ph_msg": "Ask a question, describe connection or trouble codes...",
+      "widget_hint_passive": "🛡️ Passive Read-Only Mode",
+      "widget_hint_ai": "🤖 Dedicated AI Diagnostic Engine",
+      "chat_badge_ai": "🤖 AI Diagnostics",
+      "chat_badge_admin": "👑 Developer",
+      "chat_badge_car": "🚗 Car",
+
             "nav_verified": "🚘 Tested Cars",
             "nav_testers": "👥 Beta Testers Hub",
             "verified_badge": "🚘 Protocol Debug Status",
@@ -1143,6 +1312,83 @@
             "legal_refund": "💳 Payment & Refund Policy"
       },
       "de": {
+      "beta_badge": "🎁 Beta-Testprogramm",
+      "beta_title": "Fahrzeugtester gesucht! Erhalten Sie dauerhaftes PRO auf Lebenszeit",
+      "beta_desc": "Helfen Sie uns, die Fahrzeugkompatibilität zu perfektionieren! Für präzise Protokolle <b>führen Sie die Prüfung mehrmals in verschiedenen Modi durch</b> (Kaltstart, betriebswarm, während der Fahrt). Als Dank für Ihre Protokolle schalten wir Ihnen den <b>dauerhaften Tarif PRO auf Lebenszeit</b> frei!",
+      "beta_btn_chat": "💬 Tester-Chat öffnen",
+      "beta_s1_step": "📲 1. Installieren",
+      "beta_s1_title": "App herunterladen",
+      "beta_s1_desc": "Laden Sie die kostenlose Android-APK oder ZIP für Windows direkt von dieser Website herunter.",
+      "beta_s2_step": "🔌 2. Verbinden",
+      "beta_s2_title": "ELM327 Adapter einstecken",
+      "beta_s2_desc": "Schließen Sie den Scanner (Bluetooth, Wi-Fi oder USB-COM) an die OBD2-Buchse Ihres Autos an.",
+      "beta_s3_step": "🧪 3. Testablauf",
+      "beta_s3_title": "Schrittweise Prüfreihenfolge",
+      "beta_s3_desc": "Nach dem Verbinden Motor starten und DTC-Fehler auslesen. Dann Kombiinstrument aktivieren. Anschließend erweiterte Parameter öffnen: erst Motor, dann Getriebe und übrige Steuergeräte (warten Sie, bis Badges laden, auch wenn Werte anfangs fehlen). Danach echten Kilometerstand prüfen, Gesamtlog exportieren und per E-Mail senden!",
+      "beta_s4_step": "🎁 4. Dauerhaftes PRO erhalten",
+      "beta_s4_title": "Logs per E-Mail senden",
+      "beta_s4_desc": "Im Seitenmenü auf «Debug-Log exportieren» tippen und die Dateien an <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a> senden. Der Entwickler sendet Ihnen Ihren lebenslangen PRO-Schlüssel!",
+      "beta_shield_title": "100% Sicherheit für Ihr Fahrzeug:",
+      "beta_shield_desc": "OBD2 SCAN AI arbeitet streng im passiven Lesemodus (Passive Read-Only). Es führt kein Chiptuning durch, verändert keine Kalibrierungen und kann Steuergeräte, Sensoren oder Elektronik nicht beschädigen.",
+      "verified_badge": "🚘 Status der Protokoll-Optimierung",
+      "verified_title": "Kompatibilitätsstatus: Tester nach Automarken gesucht!",
+      "verified_sub": "Der Peugeot 307 ist aktuell vollständig kalibriert. Für alle weiteren Marken werden <b>dringend Tester mit ELM327</b> gesucht, um Logs zu sammeln und Steuergeräte-Protokolle abzustimmen:",
+      "car_peugeot_title": "🦁 Peugeot & Citroën",
+      "car_peugeot_status": "🟢 KONFIGURIERT (307)",
+      "car_peugeot_ecu": "ECU: Bosch ME7.4.4 + AL4/DP0 Automatik",
+      "car_peugeot_proto": "Protokoll: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ Peugeot 307 (1.6 NFU) — Konfiguriert & Verifiziert!",
+      "car_peugeot_tested_desc": "Alle 19 Motorparameter, AL4 Getriebeöldruck, Fehlercodes und KI-Zustandsdiagnose sind voll kalibriert.",
+      "car_peugeot_waiting": "<b>Weitere Modelle (warten auf Tests):</b><br>❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4",
+      "car_peugeot_link": "📖 Diagnosebericht zum Peugeot 307 & KI-Urteil lesen →",
+      "car_need_testers": "🔴 TESTER GESUCHT",
+      "car_vaz_title": "🏎️ LADA / VAZ",
+      "car_vaz_models": "Modelle: Kalina, Priora, 2110-2115, Granta, Vesta",
+      "car_vaz_ecu": "ECU: <b>Januar 5.1/7.2, Bosch M7.9.7, Itelma M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>Prüfung erforderlich:</b> Sensoren-ADC (LMM, Drosselklappe), Zündaussetzer und Steuergeräte-Reset. Senden Sie Logs!",
+      "car_toyota_title": "🇯🇵 Toyota & Lexus",
+      "car_toyota_models": "Modelle: Corolla, Camry, RAV4, Avensis, Yaris, Prius",
+      "car_toyota_proto": "Protokoll: <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>Prüfung erforderlich:</b> Hybridbatterie-Werte (HV), Kraftstoffkorrektur und Getriebedaten.",
+      "car_renault_title": "⚡ Renault & Dacia",
+      "car_renault_models": "Modelle: Logan, Sandero, Duster, Megane, Clio, Kaptur",
+      "car_renault_ecu": "ECU: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>Prüfung erforderlich:</b> Französische Steuergeräte über K-Line/CAN in unterschiedlichen Fahrzyklen testen!",
+      "car_vag_title": "🇩🇪 VW, Skoda, Audi",
+      "car_vag_models": "Modelle: Polo Sedan, Golf, Passat, Octavia, Rapid",
+      "car_vag_proto": "Protokoll: <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>Prüfung erforderlich:</b> VAG Steuergeräteabfrage und Live-Motorparameter. Testreihe durchführen und Logs senden!",
+      "car_kiahundai_title": "🇰🇷 Hyundai & Kia",
+      "car_kiahundai_models": "Modelle: Solaris, Rio, Ceed, Cerato, Sportage",
+      "car_kiahundai_proto": "Motoren: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>Prüfung erforderlich:</b> CAN 500k Busgeschwindigkeit, Live-Motordaten und Fehlercodes. Wir freuen uns auf Logs!",
+      "verified_other_title": "📢 Besitzen Sie ein anderes Fahrzeugmodell?",
+      "verified_other_desc": "Wir suchen Tester für <b>Fahrzeuge aller Hersteller und Baujahre</b>! ELM327 anstecken, Testreihe durchführen (Kaltstart, warm, Fahrt), 2-3 Logs speichern und an <b>autoneuro24@gmail.com</b> senden — Sie erhalten 2 dauerhafte PRO-Lizenzen: OBD2 SCAN AI + SmartNotes AI!",
+      "verified_other_btn": "🚀 Tester-Club & Markenforum öffnen (/testers)",
+      "verified_quick_chat": "💬 Schneller Chat auf der Seite",
+      "widget_float_btn": "Tester-Chat & KI",
+      "widget_title": "Tester-Chat & KI-Diagnose",
+      "widget_sub": "Öffentlicher Erfahrungsaustausch • KI-Antworten",
+      "widget_banner": "🎁 <b>Lebenslanges PRO für Logs:</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "Marken-Hub ↗",
+      "widget_pill_all": "🌐 Alle",
+      "widget_pill_peugeot": "🦁 Peugeot",
+      "widget_pill_vaz": "🏎️ LADA",
+      "widget_pill_toyota": "🇯🇵 Toyota",
+      "widget_pill_renault": "🇫🇷 Renault",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 Kia/Hyu",
+      "widget_loading": "Nachrichten werden geladen...",
+      "widget_empty": "In diesem Kanal gibt es noch keine Beiträge.<br>Seien Sie der Erste mit einem Erfahrungsbericht!",
+      "widget_ph_name": "Ihr Name / Pseudonym",
+      "widget_ph_car": "Fahrzeugmarke & Modell",
+      "widget_ph_msg": "Frage stellen, Verbindung oder Fehlercodes beschreiben...",
+      "widget_hint_passive": "🛡️ Passiver Lesemodus",
+      "widget_hint_ai": "🤖 Spezialisierte KI antwortet sofort",
+      "chat_badge_ai": "🤖 KI-Diagnose",
+      "chat_badge_admin": "👑 Entwickler",
+      "chat_badge_car": "🚗 Auto",
+
             "nav_verified": "🚘 Getestete Autos",
             "nav_testers": "👥 Tester-Club",
             "verified_badge": "🚘 Protokoll-Debug-Status",
@@ -1268,6 +1514,83 @@
             "legal_refund": "💳 Zahlung & Rückgabe"
       },
       "fr": {
+      "beta_badge": "🎁 Programme de Test Bêta",
+      "beta_title": "Testeurs de véhicules recherchés ! Obtenez PRO à Vie Gratuitement",
+      "beta_desc": "Aidez-nous à parfaire la compatibilité du scanner ! Pour un étalonnage précis des protocoles, <b>effectuez les tests plusieurs fois dans différentes conditions</b> (à froid, moteur chaud, en roulant). En récompense de vos logs, nous vous offrons <b>la licence PRO à Vie</b> !",
+      "beta_btn_chat": "💬 Ouvrir le chat des testeurs",
+      "beta_s1_step": "📲 1. Installez",
+      "beta_s1_title": "Téléchargez l'application",
+      "beta_s1_desc": "Téléchargez gratuitement l'APK Android ou le ZIP Windows directement depuis ce site.",
+      "beta_s2_step": "🔌 2. Connectez",
+      "beta_s2_title": "Branchez l'adaptateur ELM327",
+      "beta_s2_desc": "Connectez le scanner (Bluetooth, Wi-Fi ou USB-COM) sur la prise OBD2 de votre véhicule.",
+      "beta_s3_step": "🧪 3. Procédure de test",
+      "beta_s3_title": "Ordre des vérifications",
+      "beta_s3_desc": "Après connexion, démarrez le moteur et lisez les codes défauts DTC. Activez le tableau de bord. Ouvrez les paramètres étendus : d'abord le moteur, puis la boîte automatique et les autres calculateurs (attendez que les badges se rafraîchissent avant de changer). Vérifiez le kilométrage réel, exportez le log et envoyez-le par e-mail !",
+      "beta_s4_step": "🎁 4. Recevez PRO à Vie",
+      "beta_s4_title": "Envoyez les logs par e-mail",
+      "beta_s4_desc": "Dans le menu latéral, cliquez sur « Exporter le log de débogage » et envoyez les fichiers à <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a>. Le développeur vous transmettra votre clé PRO à vie !",
+      "beta_shield_title": "100% de sécurité pour votre véhicule :",
+      "beta_shield_desc": "L'application OBD2 SCAN AI opère exclusivement en mode passif sécurisé (Passive Read-Only). Elle n'effectue aucun remappage, ne modifie pas les calibrations d'origine et ne peut en aucun cas endommager les calculateurs ou capteurs.",
+      "verified_badge": "🚘 État d'optimisation des protocoles",
+      "verified_title": "Statut de compatibilité : testeurs recherchés par marque !",
+      "verified_sub": "La Peugeot 307 est actuellement entièrement étalonnée. Pour toutes les autres marques, <b>des testeurs équipés d'adaptateurs ELM327 sont indispensables</b> pour adapter les protocoles :",
+      "car_peugeot_title": "🦁 Peugeot & Citroën",
+      "car_peugeot_status": "🟢 CONFIGURÉ (307)",
+      "car_peugeot_ecu": "Calculateur : Bosch ME7.4.4 + BVA AL4/DP0",
+      "car_peugeot_proto": "Protocole : <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ Peugeot 307 (1.6 NFU) — Configuré et validé !",
+      "car_peugeot_tested_desc": "Les 19 paramètres moteur, la pression d'huile de la BVA AL4, les DTC et le bilan santé IA sont parfaitement étalonnés.",
+      "car_peugeot_waiting": "<b>Autres modèles (en attente de tests) :</b><br>❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4",
+      "car_peugeot_link": "📖 Lire le rapport d'analyse Peugeot 307 & le verdict IA →",
+      "car_need_testers": "🔴 TESTEURS RECHERCHÉS",
+      "car_vaz_title": "🏎️ LADA / VAZ",
+      "car_vaz_models": "Modèles : Kalina, Priora, 2110-2115, Granta, Vesta",
+      "car_vaz_ecu": "Calculateur : <b>Janvier 5.1/7.2, Bosch M7.9.7, Itelma M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>Tests nécessaires :</b> lecture CAN/ADC des sondes (débitmètre, papillon), ratés d'allumage et réinitialisation ECU.",
+      "car_toyota_title": "🇯🇵 Toyota & Lexus",
+      "car_toyota_models": "Modèles : Corolla, Camry, RAV4, Avensis, Yaris, Prius",
+      "car_toyota_proto": "Protocole : <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>Tests nécessaires :</b> métriques batterie hybride (HV), corrections de carburant et boîte auto.",
+      "car_renault_title": "⚡ Renault & Dacia",
+      "car_renault_models": "Modèles : Logan, Sandero, Duster, Megane, Clio, Kaptur",
+      "car_renault_ecu": "Calculateur : <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>Tests nécessaires :</b> interrogez les calculateurs français via K-Line/CAN sous divers régimes de fonctionnement !",
+      "car_vag_title": "🇩🇪 VW, Skoda, Audi",
+      "car_vag_models": "Modèles : Polo Sedan, Golf, Passat, Octavia, Rapid",
+      "car_vag_proto": "Protocole : <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>Tests nécessaires :</b> interrogation des modules VAG et lecture des paramètres moteur en direct. Envoyez vos logs !",
+      "car_kiahundai_title": "🇰🇷 Hyundai & Kia",
+      "car_kiahundai_models": "Modèles : Solaris, Rio, Ceed, Cerato, Sportage",
+      "car_kiahundai_proto": "Moteurs : <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>Tests nécessaires :</b> flux CAN 500k, flux des sondes en temps réel et DTC. Nous attendons vos fichiers de logs !",
+      "verified_other_title": "📢 Vous possédez une autre marque de voiture ?",
+      "verified_other_desc": "Nous recherchons des testeurs pour <b>absolument tous les véhicules</b> ! Branchez votre adaptateur ELM327, faites 2-3 sessions d'essais et envoyez-les à <b>autoneuro24@gmail.com</b> — nous vous offrirons 2 licences PRO à vie : OBD2 SCAN AI + SmartNotes AI !",
+      "verified_other_btn": "🚀 Ouvrir le Club & Forum des marques (/testers)",
+      "verified_quick_chat": "💬 Chat direct sur la page",
+      "widget_float_btn": "Chat Testeurs & IA",
+      "widget_title": "Chat Testeurs & Diagnostic IA",
+      "widget_sub": "Échange d'expériences • Réponses IA",
+      "widget_banner": "🎁 <b>PRO à vie pour vos logs :</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "Hub Marques ↗",
+      "widget_pill_all": "🌐 Toutes",
+      "widget_pill_peugeot": "🦁 Peugeot",
+      "widget_pill_vaz": "🏎️ LADA",
+      "widget_pill_toyota": "🇯🇵 Toyota",
+      "widget_pill_renault": "🇫🇷 Renault",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 Kia/Hyu",
+      "widget_loading": "Chargement des messages...",
+      "widget_empty": "Aucun message pour cette marque pour le moment.<br>Soyez le premier à poster vos données !",
+      "widget_ph_name": "Votre nom / pseudo",
+      "widget_ph_car": "Marque et modèle du véhicule",
+      "widget_ph_msg": "Posez une question, décrivez la connexion ou les codes d'erreur...",
+      "widget_hint_passive": "🛡️ Mode lecture passive sécurisé",
+      "widget_hint_ai": "🤖 L'IA spécialisée répond en direct",
+      "chat_badge_ai": "🤖 Diagnostic IA",
+      "chat_badge_admin": "👑 Développeur",
+      "chat_badge_car": "🚗 Auto",
+
             "nav_verified": "🚘 Voitures Testées",
             "nav_testers": "👥 Club des Testeurs",
             "verified_badge": "🚘 Statut du Débogage Protocoles",
@@ -1393,6 +1716,83 @@
             "legal_refund": "💳 Paiement et Remboursement"
       },
       "es": {
+      "beta_badge": "🎁 Programa de Pruebas Beta",
+      "beta_title": "¡Buscamos probadores de coches! Obtén PRO de por vida Gratis",
+      "beta_desc": "¡Ayúdanos a perfeccionar la compatibilidad! Para un ajuste óptimo de protocolos, <b>realiza la prueba varias veces en diferentes modos</b> (en frío, motor caliente, en conducción). ¡En agradecimiento por tus registros, te regalamos la <b>licencia PRO de por vida</b>!",
+      "beta_btn_chat": "💬 Abrir chat de probadores",
+      "beta_s1_step": "📲 1. Instala",
+      "beta_s1_title": "Descarga la aplicación",
+      "beta_s1_desc": "Descarga gratis el APK para Android o ZIP para Windows directamente desde este sitio web.",
+      "beta_s2_step": "🔌 2. Conecta",
+      "beta_s2_title": "Inserta el adaptador ELM327",
+      "beta_s2_desc": "Conecta el escáner (Bluetooth, Wi-Fi o USB-COM) en el puerto OBD2 de tu coche.",
+      "beta_s3_step": "🧪 3. Procedimiento",
+      "beta_s3_title": "Secuencia de pruebas",
+      "beta_s3_desc": "Tras conectar, arranca el coche y lee los códigos DTC. Luego enciende el cuadro de instrumentos. Abre los parámetros avanzados: primero motor, luego caja automática y demás módulos (espera a que actualicen los indicadores antes de continuar). ¡Verifica el kilometraje real, exporta el registro y envíalo por email!",
+      "beta_s4_step": "🎁 4. Recibe PRO Vitalicio",
+      "beta_s4_title": "Envía los registros por email",
+      "beta_s4_desc": "En el menú lateral pulsa «Exportar registro de depuración» y envía los archivos a <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a>. ¡El desarrollador te enviará tu clave PRO de por vida!",
+      "beta_shield_title": "100% de seguridad para tu automóvil:",
+      "beta_shield_desc": "La aplicación OBD2 SCAN AI funciona estrictamente en modo pasivo de solo lectura (Passive Read-Only). No realiza reprogramaciones, no altera calibraciones y no puede dañar centralitas, sensores ni el cableado.",
+      "verified_badge": "🚘 Estado de calibración de protocolos",
+      "verified_title": "Estado de compatibilidad: ¡Buscamos probadores por marcas!",
+      "verified_sub": "El Peugeot 307 está actualmente totalmente calibrado. Para el resto de marcas, <b>necesitamos probadores con ELM327</b> para recopilar registros y adaptar los protocolos:",
+      "car_peugeot_title": "🦁 Peugeot & Citroën",
+      "car_peugeot_status": "🟢 CONFIGURADO (307)",
+      "car_peugeot_ecu": "ECU: Bosch ME7.4.4 + Cambio AL4/DP0",
+      "car_peugeot_proto": "Protocolo: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ Peugeot 307 (1.6 NFU) — ¡Configurado y probado!",
+      "car_peugeot_tested_desc": "Los 19 parámetros del motor, presión de aceite AL4, DTCs y diagnóstico de salud por IA están totalmente calibrados.",
+      "car_peugeot_waiting": "<b>Otros modelos (esperan pruebas):</b><br>❌ Peugeot 206 &nbsp;|&nbsp; ❌ Peugeot 207 &nbsp;|&nbsp; ❌ Peugeot 308 &nbsp;|&nbsp; ❌ Peugeot 406/407 &nbsp;|&nbsp; ❌ Partner &nbsp;|&nbsp; ❌ Citroën C3/C4",
+      "car_peugeot_link": "📖 Leer informe de diagnóstico del Peugeot 307 y veredicto IA →",
+      "car_need_testers": "🔴 SE NECESITAN PROBADORES",
+      "car_vaz_title": "🏎️ LADA / VAZ",
+      "car_vaz_models": "Modelos: Kalina, Priora, 2110-2115, Granta, Vesta",
+      "car_vaz_ecu": "ECU: <b>January 5.1/7.2, Bosch M7.9.7, Itelma M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>Pruebas necesarias:</b> lectura ADC de sensores (MAF, TPS), fallos de encendido y reinicio de centralita.",
+      "car_toyota_title": "🇯🇵 Toyota & Lexus",
+      "car_toyota_models": "Modelos: Corolla, Camry, RAV4, Avensis, Yaris, Prius",
+      "car_toyota_proto": "Protocolo: <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>Pruebas necesarias:</b> parámetros del sistema híbrido (HV), correcciones de combustible y caja automática.",
+      "car_renault_title": "⚡ Renault & Dacia",
+      "car_renault_models": "Modelos: Logan, Sandero, Duster, Megane, Clio, Kaptur",
+      "car_renault_ecu": "ECU: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>Pruebas necesarias:</b> comprobar centralitas francesas mediante K-Line/CAN en varios ciclos de conducción.",
+      "car_vag_title": "🇩🇪 VW, Skoda, Audi",
+      "car_vag_models": "Modelos: Polo Sedan, Golf, Passat, Octavia, Rapid",
+      "car_vag_proto": "Protocolo: <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>Pruebas necesarias:</b> lectura de módulos VAG y parámetros en vivo del motor. ¡Envíanos tus registros!",
+      "car_kiahundai_title": "🇰🇷 Hyundai & Kia",
+      "car_kiahundai_models": "Modelos: Solaris, Rio, Ceed, Cerato, Sportage",
+      "car_kiahundai_proto": "Motores: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>Pruebas necesarias:</b> velocidad de bus CAN 500k, sensores de motor y códigos DTC. ¡Esperamos tus logs!",
+      "verified_other_title": "📢 ¿Tienes otra marca o modelo de coche?",
+      "verified_other_desc": "¡Buscamos probadores para <b>cualquier automóvil</b>! Conecta tu ELM327, haz varias pruebas (en frío, caliente, marcha) y envía los archivos a <b>autoneuro24@gmail.com</b>. ¡Te regalamos 2 licencias PRO de por vida: OBD2 SCAN AI + SmartNotes AI!",
+      "verified_other_btn": "🚀 Abrir Club y Foro de marcas (/testers)",
+      "verified_quick_chat": "💬 Chat rápido en la página",
+      "widget_float_btn": "Chat Probadores e IA",
+      "widget_title": "Chat Probadores y Diagnóstico IA",
+      "widget_sub": "Intercambio de experiencias • Respuestas IA",
+      "widget_banner": "🎁 <b>PRO de por vida por registros:</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "Hub Marcas ↗",
+      "widget_pill_all": "🌐 Todas",
+      "widget_pill_peugeot": "🦁 Peugeot",
+      "widget_pill_vaz": "🏎️ LADA",
+      "widget_pill_toyota": "🇯🇵 Toyota",
+      "widget_pill_renault": "🇫🇷 Renault",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 Kia/Hyu",
+      "widget_loading": "Cargando mensajes...",
+      "widget_empty": "Todavía no hay mensajes en este canal.<br>¡Sé el primero en compartir datos de tu coche!",
+      "widget_ph_name": "Tu nombre / alias",
+      "widget_ph_car": "Marca y modelo del coche",
+      "widget_ph_msg": "Escribe una pregunta, síntomas o códigos de error...",
+      "widget_hint_passive": "🛡️ Modo lectura pasiva segura",
+      "widget_hint_ai": "🤖 La IA responde al instante",
+      "chat_badge_ai": "🤖 Diagnóstico IA",
+      "chat_badge_admin": "👑 Desarrollador",
+      "chat_badge_car": "🚗 Coche",
+
             "nav_verified": "🚘 Autos Probados",
             "nav_testers": "👥 Club de Testers",
             "verified_badge": "🚘 Estado de Depuración de Protocolos",
@@ -1518,6 +1918,83 @@
             "legal_refund": "💳 Pago y Reembolsos"
       },
       "ar": {
+      "beta_badge": "🎁 برنامج الاختبار التجريبي",
+      "beta_title": "مطلوب مختبرو سيارات! احصل على ترخيص PRO مدى الحياة مجاناً",
+      "beta_desc": "ساعدنا في جعل التوافق مع السيارات مثالياً! لضبط البروتوكولات بدقة، <b>يُرجى إجراء الاختبار عدة مرات في ظروف تشغيل مختلفة</b> (عند بدء التشغيل البارد، والمحرك ساخن، وأثناء القيادة). كهدية مقابل سجلاتك، سنفعل لك <b>ترخيص PRO الدائم مدى الحياة</b>!",
+      "beta_btn_chat": "💬 فتح محادثة المختبرين",
+      "beta_s1_step": "📲 1. التثبيت",
+      "beta_s1_title": "تحميل التطبيق",
+      "beta_s1_desc": "قم بتحميل ملف APK للأندرويد أو ZIP للويندوز مجاناً مباشرة من هذا الموقع.",
+      "beta_s2_step": "🔌 2. الاتصال",
+      "beta_s2_title": "توصيل محول ELM327",
+      "beta_s2_desc": "صل الماسح (بلوتوث أو واي فاي أو USB) بمنفذ فحص OBD2 في سيارتك.",
+      "beta_s3_step": "🧪 3. خطوات الفحص",
+      "beta_s3_title": "تسلسل الفحص خطوة بخطوة",
+      "beta_s3_desc": "بعد الاتصال، شغل المحرك وافحص أعطال DTC. ثم شغل لوحة العدادات. افتح المؤشرات الموسعة: المحرك أولاً، ثم ناقل الحركة وبقية الوحدات (انتظر تحديث الشارات قبل الانتقال). افحص المسافة الحقيقية، ثم صدّر السجل وأرسله عبر البريد الإلكتروني!",
+      "beta_s4_step": "🎁 4. احصل على PRO الدائم",
+      "beta_s4_title": "أرسل السجلات بالبريد",
+      "beta_s4_desc": "في القائمة الجانبية اضغط «تصدير سجل التصحيح» وأرسل الملفات إلى <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; font-weight: 600;\">autoneuro24@gmail.com</a> وسيرسل لك المطور مفتاح PRO الدائم!",
+      "beta_shield_title": "أمان تام 100% لسيارتك الإلكترونية:",
+      "beta_shield_desc": "يعمل تطبيق OBD2 SCAN AI في وضع القراءة السلبية الآمنة فقط (Passive Read-Only). التطبيق لا يغير البرمجة أو المعايرات الأصلية، ولا يمكنه إلحاق أي ضرر بوحدات التحكم أو الحساسات.",
+      "verified_badge": "🚘 حالة ضبط البروتوكولات",
+      "verified_title": "حالة التوافق: نبحث عن مختبرين لمختلف أنواع السيارات!",
+      "verified_sub": "تمت معايرة بيجو 307 بالكامل حالياً. لجميع السيارات الأخرى، <b>نحتاج بشدة إلى مختبرين يملكون محولات ELM327</b> لجمع السجلات ومواءمة البروتوكولات:",
+      "car_peugeot_title": "🦁 بيجو وستروين",
+      "car_peugeot_status": "🟢 تم الضبط (307)",
+      "car_peugeot_ecu": "كمبيوتر: Bosch ME7.4.4 + قير AL4/DP0",
+      "car_peugeot_proto": "البروتوكول: <b>ISO 14230-4 KWP2000 (8210F1 / 8224F1)</b>",
+      "car_peugeot_tested": "✅ بيجو 307 (1.6 NFU) — تم الضبط والاختبار بنجاح!",
+      "car_peugeot_tested_desc": "تمت معايرة جميع مؤشرات المحرك الـ 19 وضغط زيت قير AL4 وأكواد الأعطال وتحليل الذكاء الاصطناعي بدقة.",
+      "car_peugeot_waiting": "<b>بقية الموديلات (في انتظار الاختبار):</b><br>❌ بيجو 206 &nbsp;|&nbsp; ❌ بيجو 207 &nbsp;|&nbsp; ❌ بيجو 308 &nbsp;|&nbsp; ❌ بيجو 406/407 &nbsp;|&nbsp; ❌ بارتنر &nbsp;|&nbsp; ❌ ستروين C3/C4",
+      "car_peugeot_link": "📖 قراءة تقرير فحص بيجو 307 وتحليل الذكاء الاصطناعي ←",
+      "car_need_testers": "🔴 مطلوب مختبرون",
+      "car_vaz_title": "🏎️ لادا / فاز",
+      "car_vaz_models": "الموديلات: كالينا، بريورا، 2110-2115، غرانتا، فيستا",
+      "car_vaz_ecu": "كمبيوتر: <b>January 5.1/7.2, Bosch M7.9.7, Itelma M73/M74</b>",
+      "car_vaz_desc": "🔍 <b>مطلوب التحقق:</b> قراءة حساسات الهواء والخانق، عدادات فقد الإشعال وإعادة الضبط.",
+      "car_toyota_title": "🇯🇵 تويوتا ولكزس",
+      "car_toyota_models": "الموديلات: كورولا، كامري، راف فور، أفينسيس، يارس، بريوس",
+      "car_toyota_proto": "البروتوكول: <b>ISO 14230 KWP / ISO 15765 CAN</b>",
+      "car_toyota_desc": "🔍 <b>مطلوب التحقق:</b> بيانات منظومة الهايبرد، تصحيح حقن الوقود، وحرارة زيت ناقل الحركة.",
+      "car_renault_title": "⚡ رينو وداسيا",
+      "car_renault_models": "الموديلات: لوغان، سانديرو، داستر، ميغان، كليو، كابتشر",
+      "car_renault_ecu": "كمبيوتر: <b>Siemens EMS3132 / EMS3134 / Valeo V42</b>",
+      "car_renault_desc": "🔍 <b>مطلوب التحقق:</b> فحص وحدات التحكم الفرنسية عبر K-Line/CAN في ظروف قيادة مختلفة!",
+      "car_vag_title": "🇩🇪 فولكس فاجن، سكودا، أودي",
+      "car_vag_models": "الموديلات: بولو، غولف، باسات، أوكتافيا، رابيد",
+      "car_vag_proto": "البروتوكول: <b>ISO 15765-4 CAN & UDS</b>",
+      "car_vag_desc": "🔍 <b>مطلوب التحقق:</b> فحص وحدات VAG وقراءة مؤشرات المحرك الحية. ننتظر سجلاتكم!",
+      "car_kiahundai_title": "🇰🇷 هيونداي وكيا",
+      "car_kiahundai_models": "الموديلات: إلنترا/سولاريس، ريو، سيراتو، سبورتاج",
+      "car_kiahundai_proto": "المحركات: <b>1.4 / 1.6 / 2.0 (Gamma, Nu)</b>",
+      "car_kiahundai_desc": "🔍 <b>مطلوب التحقق:</b> سرعة قراءة شاحنة CAN 500k، مؤشرات المحرك الحية وأعطال DTC.",
+      "verified_other_title": "📢 هل تملك سيارة من نوع أو موديل آخر؟",
+      "verified_other_desc": "نحن بحاجة إلى مختبرين <b>لكافة أنواع وموديلات السيارات</b>! صل جهاز ELM327، وقم بعدة اختبارات (بارد، ساخن، قيادة)، وأرسل السجلات إلى <b>autoneuro24@gmail.com</b> — وسنمنحك ترخيصين دائمين مدى الحياة مجاناً: OBD2 SCAN AI + SmartNotes AI!",
+      "verified_other_btn": "🚀 فتح منتدى ومجتمع السيارات (/testers)",
+      "verified_quick_chat": "💬 محادثة سريعة في الصفحة",
+      "widget_float_btn": "شات المختبرين والذكاء الاصطناعي",
+      "widget_title": "محادثة المختبرين وتشخيص الذكاء الاصطناعي",
+      "widget_sub": "تبادل خبرات • إجابات الذكاء الاصطناعي الفورية",
+      "widget_banner": "🎁 <b>ترخيص PRO مدى الحياة مقابل السجلات:</b> <a href=\"mailto:autoneuro24@gmail.com\" style=\"color: #38bdf8; text-decoration: underline; font-weight: 600;\">autoneuro24@gmail.com</a>",
+      "widget_hub_link": "مركز الماركات ↗",
+      "widget_pill_all": "🌐 الكل",
+      "widget_pill_peugeot": "🦁 بيجو",
+      "widget_pill_vaz": "🏎️ لادا",
+      "widget_pill_toyota": "🇯🇵 تويوتا",
+      "widget_pill_renault": "🇫🇷 رينو",
+      "widget_pill_vag": "🇩🇪 VAG",
+      "widget_pill_kia": "🇰🇷 كيا/هيونداي",
+      "widget_loading": "جاري تحميل الرسائل...",
+      "widget_empty": "لا توجد رسائل في هذا القسم حتى الآن.<br>كن أول من يشارك بيانات سيارته!",
+      "widget_ph_name": "اسمك / لقبك",
+      "widget_ph_car": "نوع وموديل السيارة",
+      "widget_ph_msg": "اكتب سؤالك، نتيجة الفحص أو رموز الأعطال...",
+      "widget_hint_passive": "🛡️ وضع القراءة السلبية الآمن",
+      "widget_hint_ai": "🤖 الذكاء الاصطناعي يجيب فوراً",
+      "chat_badge_ai": "🤖 تشخيص الذكاء الاصطناعي",
+      "chat_badge_admin": "👑 المطور",
+      "chat_badge_car": "🚗 سيارة",
+
             "nav_verified": "🚘 السيارات المختبرة",
             "nav_testers": "👥 نادي المختبرين",
             "verified_badge": "🚘 حالة تصحيح البروتوكولات",
@@ -1809,7 +2286,10 @@
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 13px; padding: 30px 10px;">В этой ветке пока нет сообщений.<br>Напишите первым о вашей марке авто!</div>';
+        const curLang = localStorage.getItem('obd2_lang') || 'ru';
+        const d = translations[curLang] || translations.ru;
+        const emptyMsg = d.widget_empty || 'В этой ветке пока нет сообщений.<br>Напишите первым о вашей марке авто!';
+        container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 13px; padding: 30px 10px;">${emptyMsg}</div>`;
         return;
       }
 
@@ -1829,18 +2309,23 @@
           }
         }
 
+        const curLang = localStorage.getItem('obd2_lang') || 'ru';
+        const d = translations[curLang] || translations.ru;
         let bgStyle = 'background: #172033; border: 1px solid rgba(51, 65, 85, 0.7);';
         let authorColor = '#38bdf8';
-        let badgeHtml = '';
+        const carWord = d.chat_badge_car || '🚗 Авто';
+        let badgeHtml = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">${carWord}: ${escapeHtml(msg.car || 'OBD2')}</span>`;
 
         if (isAi) {
           bgStyle = 'background: linear-gradient(145deg, #1e1b4b 0%, #172554 100%); border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);';
           authorColor = '#c4b5fd';
-          badgeHtml = '<span style="background: rgba(139, 92, 246, 0.3); color: #ddd6fe; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">🤖 AI Диагност</span>';
+          const aiWord = d.chat_badge_ai || '🤖 AI Диагност';
+          badgeHtml = `<span style="background: rgba(139, 92, 246, 0.3); color: #ddd6fe; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">${aiWord}</span>`;
         } else if (isAdmin) {
           bgStyle = 'background: linear-gradient(145deg, #064e3b 0%, #0f172a 100%); border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);';
           authorColor = '#34d399';
-          badgeHtml = '<span style="background: rgba(16, 185, 129, 0.3); color: #a7f3d0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">👑 Разработчик</span>';
+          const admWord = d.chat_badge_admin || '👑 Разработчик';
+          badgeHtml = `<span style="background: rgba(16, 185, 129, 0.3); color: #a7f3d0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">${admWord}</span>`;
         } else {
           badgeHtml = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">🚗 ${escapeChatHtml(msg.car || 'Авто')}</span>`;
         }
@@ -1947,7 +2432,7 @@
   <!-- Floating Tester Chat Button -->
   <button id="floatingChatBtn" onclick="toggleTesterChat()" style="position: fixed; bottom: 22px; right: 22px; z-index: 998; background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px 18px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.6), 0 0 15px rgba(59, 130, 246, 0.4); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
     <span style="font-size: 18px;">💬</span>
-    <span>Чат тестеров & AI</span>
+    <span data-i18n="widget_float_btn">Чат тестеров & AI</span>
     <span style="background: #10b981; color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 800; text-transform: uppercase;">online</span>
   </button>
 
@@ -1961,10 +2446,10 @@
           🤖
         </div>
         <div>
-          <div style="font-size: 13.5px; font-weight: 700; color: #fff;">
+          <div data-i18n="widget_title" style="font-size: 13.5px; font-weight: 700; color: #fff;">
             Чат тестеров & AI Диагност
           </div>
-          <div style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
+          <div data-i18n="widget_sub" style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
             <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
             Публичный обмен опытом • Ответы ИИ
           </div>
@@ -1978,41 +2463,41 @@
 
     <!-- Alert banner about PRO for logs -->
     <div style="background: rgba(139, 92, 246, 0.15); border-bottom: 1px solid rgba(139, 92, 246, 0.25); padding: 7px 12px; font-size: 11px; color: #ddd6fe; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-      <span>🎁 <b>Вечный PRO за лог:</b> <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">autoneuro24@gmail.com</a></span>
-      <a href="/testers" target="_blank" style="color: #c4b5fd; text-decoration: underline; font-weight: 700; white-space: nowrap;">Хаб по маркам ↗</a>
+      <span data-i18n-html="widget_banner">🎁 <b>Вечный PRO за лог:</b> <a href="mailto:autoneuro24@gmail.com" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">autoneuro24@gmail.com</a></span>
+      <a href="/testers" target="_blank" data-i18n="widget_hub_link" style="color: #c4b5fd; text-decoration: underline; font-weight: 700; white-space: nowrap;">Хаб по маркам ↗</a>
     </div>
 
     <!-- Brand filter row -->
     <div style="display: flex; gap: 5px; overflow-x: auto; padding: 6px 10px; background: #0c1424; border-bottom: 1px solid rgba(51, 65, 85, 0.5); scrollbar-width: none;">
-      <button onclick="filterWidgetChat('all', this)" class="widget-pill" style="background: rgba(6, 182, 212, 0.2); color: #fff; border: 1px solid var(--accent); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🌐 Все</button>
-      <button onclick="filterWidgetChat('peugeot', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🦁 Peugeot</button>
-      <button onclick="filterWidgetChat('vaz', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🏎️ ВАЗ</button>
-      <button onclick="filterWidgetChat('toyota', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇯🇵 Toyota</button>
-      <button onclick="filterWidgetChat('renault', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇫🇷 Renault</button>
-      <button onclick="filterWidgetChat('vag', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇩🇪 VAG</button>
-      <button onclick="filterWidgetChat('kia', this)" class="widget-pill" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇰🇷 Kia/Hyu</button>
+      <button onclick="filterWidgetChat('all', this)" class="widget-pill" data-i18n="widget_pill_all" style="background: rgba(6, 182, 212, 0.2); color: #fff; border: 1px solid var(--accent); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🌐 Все</button>
+      <button onclick="filterWidgetChat('peugeot', this)" class="widget-pill" data-i18n="widget_pill_peugeot" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🦁 Peugeot</button>
+      <button onclick="filterWidgetChat('vaz', this)" class="widget-pill" data-i18n="widget_pill_vaz" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🏎️ ВАЗ</button>
+      <button onclick="filterWidgetChat('toyota', this)" class="widget-pill" data-i18n="widget_pill_toyota" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇯🇵 Toyota</button>
+      <button onclick="filterWidgetChat('renault', this)" class="widget-pill" data-i18n="widget_pill_renault" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇫🇷 Renault</button>
+      <button onclick="filterWidgetChat('vag', this)" class="widget-pill" data-i18n="widget_pill_vag" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇩🇪 VAG</button>
+      <button onclick="filterWidgetChat('kia', this)" class="widget-pill" data-i18n="widget_pill_kia" style="background: #172033; color: #94a3b8; border: 1px solid #334155; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">🇰🇷 Kia/Hyu</button>
     </div>
 
     <!-- Messages Container -->
     <div id="chatMessagesList" style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 9px; background: #070d19;">
-      <div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Загрузка сообщений...</div>
+      <div data-i18n="widget_loading" style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Загрузка сообщений...</div>
     </div>
 
     <!-- New Message Form -->
     <div style="background: #0f172a; border-top: 1px solid rgba(51, 65, 85, 0.6); padding: 10px 12px;">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-        <input type="text" id="chatInputName" placeholder="Ваше имя (напр. Сергей)" maxlength="40" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
-        <input type="text" id="chatInputCar" placeholder="Авто (напр. ВАЗ Калина)" maxlength="50" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
+        <input type="text" id="chatInputName" placeholder="Ваше имя (напр. Сергей)" data-i18n-placeholder="widget_ph_name" maxlength="40" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
+        <input type="text" id="chatInputCar" placeholder="Авто (напр. ВАЗ Калина)" data-i18n-placeholder="widget_ph_car" maxlength="50" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none;">
       </div>
       <div style="display: flex; gap: 6px; align-items: flex-end;">
-        <textarea id="chatInputText" placeholder="Задайте вопрос, опишите подключение или коды ошибок..." rows="2" maxlength="1000" style="flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 7px 10px; font-size: 12px; color: #fff; resize: none; outline: none; font-family: inherit;" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitChatMessage();}"></textarea>
+        <textarea id="chatInputText" placeholder="Задайте вопрос, опишите подключение или коды ошибок..." data-i18n-placeholder="widget_ph_msg" rows="2" maxlength="1000" style="flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 7px 10px; font-size: 12px; color: #fff; resize: none; outline: none; font-family: inherit;" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); submitChatMessage();}"></textarea>
         <button id="chatBtnSend" onclick="submitChatMessage()" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff; border: none; padding: 0 14px; height: 46px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" title="Отправить сообщение">
           🚀
         </button>
       </div>
       <div style="margin-top: 5px; font-size: 10px; color: #64748b; display: flex; justify-content: space-between;">
-        <span>🛡️ Пассивный режим чтения</span>
-        <span>🤖 AI-диагност отвечает сразу</span>
+        <span data-i18n="widget_hint_passive">🛡️ Пассивный режим чтения</span>
+        <span data-i18n="widget_hint_ai">🤖 AI-диагност отвечает сразу</span>
       </div>
     </div>
 

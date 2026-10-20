@@ -276,6 +276,11 @@
       font-weight: 700;
       margin-bottom: 8px;
     }
+        .badge-ready {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
     .badge-tuning {
       background: rgba(245, 158, 11, 0.15);
       color: #fbbf24;
@@ -716,7 +721,7 @@
 
         <!-- Лента сообщений -->
         <div class="chat-messages" id="chatMessagesList">
-          <div style="text-align: center; color: var(--muted); font-size: 13px; padding: 40px 0;">
+          <div data-i18n="chat_loading" style="text-align: center; color: var(--muted); font-size: 13px; padding: 40px 0;">
             Загрузка сообщений сообщества...
           </div>
         </div>
@@ -865,6 +870,12 @@
 
     const TESTERS_TRANSLATIONS = {
       ru: {
+        chat_empty_text: "В ветке <b>{brand}</b> пока нет сообщений.<br>Станьте первым, кто напишет вопрос или отзыв по этой марке!",
+        chat_badge_ai: "🤖 AI Диагност",
+        chat_badge_admin: "👑 Разработчик",
+        chat_badge_car: "🚗 Авто",
+        chat_loading: "Загрузка сообщений сообщества...",
+
         sn_gift_badge: "🎁 Двойной супер-бонус активным тестерам",
         sn_gift_title: "В подарок: Вечный PRO для приложения SmartNotes AI!",
         sn_gift_sub: "Каждый тестер, приславший серию логов по своему автомобилю, бесплатно получает пожизненную лицензию PRO сразу на два приложения: автосканер <b>OBD2 SCAN AI</b> и персональный ИИ-органайзер <b>SmartNotes AI</b>.",
@@ -883,9 +894,9 @@
         brand_all_desc: "Здесь показаны сообщения и вопросы по всем маркам. Нажмите на вкладку конкретной марки сверху, чтобы открыть ветку именно вашего автомобиля.",
         brand_all_status: "🟡 В активной отладке",
         brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "Для блока Bosch ME7.4.4 читается 19 параметров двигателя! Проводится проверка приборки и здоровья. Нужна серия тестов на холодную/горячую/в движении.",
-        brand_peugeot_status: "🟡 В активной отладке разработчиком",
-        brand_vaz_title: "🏎️ LADA (ВАЗ) — Январь, Итэлма, Bosch, CAN",
+        brand_peugeot_desc: "Peugeot 307 (1.6 NFU, ME7.4.4 + АКПП AL4) настроен и протестирован! Читает 19 параметров двигателя, давление АКПП и здоровье. Ищем тестеров для остальных моделей: ❌ 206, ❌ 207, ❌ 308, ❌ 406/407, ❌ Partner, ❌ Citroën C3/C4.",
+                brand_peugeot_status: "🟢 НАСТРОЕНО (307)",
+                brand_vaz_title: "🏎️ LADA (ВАЗ) — Январь, Итэлма, Bosch, CAN",
         brand_vaz_desc: "Требуется проверка подключения к ЭБУ Январь 5.1/7.2, Bosch M7.9.7, Итэлма M73/M74 и чтение шины CAN на Granta/Vesta. Проведите серию тестов и пришлите логи!",
         brand_vaz_status: "🔴 СРОЧНО НУЖНЫ ТЕСТЕРЫ",
         brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
@@ -941,6 +952,12 @@
         sidebar_help_desc: "Напишите разработчику напрямую на почту"
       },
       en: {
+        chat_empty_text: "No messages in <b>{brand}</b> yet.<br>Be the first to ask a question or share findings for this brand!",
+        chat_badge_ai: "🤖 AI Diagnostics",
+        chat_badge_admin: "👑 Developer",
+        chat_badge_car: "🚗 Car",
+        chat_loading: "Loading community messages...",
+
         sn_gift_badge: "🎁 Double Super-Bonus for Active Testers",
         sn_gift_title: "Second Gift: Lifetime PRO for SmartNotes AI App!",
         sn_gift_sub: "Every tester who submits a diagnostic log series gets lifetime PRO licenses for two apps for free: the <b>OBD2 SCAN AI</b> scanner and <b>SmartNotes AI</b> private organizer.",
@@ -959,9 +976,9 @@
         brand_all_desc: "Showing diagnostic messages and questions for all car brands. Click a brand tab above to open the dedicated thread for your vehicle.",
         brand_all_status: "🟡 In Active Debugging",
         brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "Bosch ME7.4.4 ECU already streams 19 engine parameters! Live dashboard and health monitors are being tested across cold, warm, and driving cycles.",
-        brand_peugeot_status: "🟡 In Active Debugging",
-        brand_vaz_title: "🏎️ LADA (VAZ) — January, Itelma, Bosch, CAN",
+        brand_peugeot_desc: "Peugeot 307 (1.6 NFU, ME7.4.4 + AL4 AT) is fully calibrated and verified! Reads 19 engine parameters, transmission pressure and health. Testers needed for remaining models: ❌ 206, ❌ 207, ❌ 308, ❌ 406/407, ❌ Partner, ❌ Citroën C3/C4.",
+                brand_peugeot_status: "🟢 CONFIGURED (307)",
+                brand_vaz_title: "🏎️ LADA (VAZ) — January, Itelma, Bosch, CAN",
         brand_vaz_desc: "Testing connection to January 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 and CAN bus on Granta/Vesta. Run test series and send logs for lifetime PRO!",
         brand_vaz_status: "🔴 TESTERS URGENTLY NEEDED",
         brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
@@ -1017,6 +1034,12 @@
         sidebar_help_desc: "Write directly to developer email"
       },
       de: {
+        chat_empty_text: "Noch keine Beiträge in <b>{brand}</b>.<br>Seien Sie der Erste, der eine Frage oder Erfahrung zu dieser Marke teilt!",
+        chat_badge_ai: "🤖 KI-Diagnose",
+        chat_badge_admin: "👑 Entwickler",
+        chat_badge_car: "🚗 Auto",
+        chat_loading: "Community-Nachrichten werden geladen...",
+
         sn_gift_badge: "🎁 Doppelter Super-Bonus für aktive Tester",
         sn_gift_title: "Zweites Geschenk: Lebenslanges PRO für SmartNotes AI!",
         sn_gift_sub: "Jeder Tester, der Diagnose-Logs sendet, erhält lebenslange PRO-Lizenzen für zwei Apps: den <b>OBD2 SCAN AI</b> Scanner und den <b>SmartNotes AI</b> Organizer.",
@@ -1035,9 +1058,9 @@
         brand_all_desc: "Hier werden Beiträge und Fragen zu allen Marken angezeigt. Klicken Sie oben auf eine Marke, um den spezifischen Bereich für Ihr Auto zu öffnen.",
         brand_all_status: "🟡 In aktiver Optimierung",
         brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "Bosch ME7.4.4 liest bereits 19 Motorparameter! Testreihen bei Kaltstart, warmem Motor und Fahrt laufen.",
-        brand_peugeot_status: "🟡 In aktiver Optimierung",
-        brand_vaz_title: "🏎️ LADA (VAZ) — Januar, Itelma, Bosch, CAN",
+        brand_peugeot_desc: "Peugeot 307 (1.6 NFU, ME7.4.4 + AL4 Getriebe) ist vollständig kalibriert! Liest 19 Motorparameter, Getriebedruck und Zustand. Tester für weitere Modelle gesucht: ❌ 206, ❌ 207, ❌ 308, ❌ 406/407, ❌ Partner, ❌ Citroën C3/C4.",
+                brand_peugeot_status: "🟢 KONFIGURIERT (307)",
+                brand_vaz_title: "🏎️ LADA (VAZ) — Januar, Itelma, Bosch, CAN",
         brand_vaz_desc: "Prüfung der Verbindung zu Januar 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 und CAN-Bus bei Granta/Vesta erforderlich.",
         brand_vaz_status: "🔴 TESTER DRINGEND GESUCHT",
         brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
@@ -1093,6 +1116,12 @@
         sidebar_help_desc: "Schreiben Sie dem Entwickler direkt per E-Mail"
       },
       fr: {
+        chat_empty_text: "Aucun message dans <b>{brand}</b> pour le moment.<br>Soyez le premier à poser une question ou partager vos tests !",
+        chat_badge_ai: "🤖 Diagnostic IA",
+        chat_badge_admin: "👑 Développeur",
+        chat_badge_car: "🚗 Voiture",
+        chat_loading: "Chargement des messages...",
+
         sn_gift_badge: "🎁 Double Super-Bonus pour les Testeurs Actifs",
         sn_gift_title: "Deuxième Cadeau : PRO à Vie pour l'Application SmartNotes AI !",
         sn_gift_sub: "Chaque testeur envoyant ses logs reçoit deux licences PRO à vie gratuites : le scanner <b>OBD2 SCAN AI</b> et le bloc-notes privé <b>SmartNotes AI</b>.",
@@ -1111,9 +1140,9 @@
         brand_all_desc: "Retrouvez les échanges sur tous les véhicules. Cliquez sur une marque ci-dessus pour ouvrir le fil spécifique à votre voiture.",
         brand_all_status: "🟡 En cours d'optimisation",
         brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "Le calculateur Bosch ME7.4.4 lit déjà 19 paramètres moteur ! Des tests à froid, à chaud et sur route sont en cours.",
-        brand_peugeot_status: "🟡 En cours d'optimisation",
-        brand_vaz_title: "🏎️ LADA (VAZ) — Janvier, Itelma, Bosch, CAN",
+        brand_peugeot_desc: "Peugeot 307 (1.6 NFU, ME7.4.4 + BVA AL4) est entièrement calibrée ! Lit 19 paramètres moteur, pression BVA et santé. Testeurs recherchés pour les autres modèles : ❌ 206, ❌ 207, ❌ 308, ❌ 406/407, ❌ Partner, ❌ Citroën C3/C4.",
+                brand_peugeot_status: "🟢 CONFIGURÉ (307)",
+                brand_vaz_title: "🏎️ LADA (VAZ) — Janvier, Itelma, Bosch, CAN",
         brand_vaz_desc: "Tests de connexion calculateurs Janvier 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 et CAN Granta/Vesta.",
         brand_vaz_status: "🔴 TESTEURS URGEMMENT RECHERCHÉS",
         brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
@@ -1169,6 +1198,12 @@
         sidebar_help_desc: "Contactez directement le développeur par e-mail"
       },
       es: {
+        chat_empty_text: "Todavía no hay mensajes en <b>{brand}</b>.<br>¡Sé el primero en hacer una pregunta o compartir tu experiencia!",
+        chat_badge_ai: "🤖 Diagnóstico IA",
+        chat_badge_admin: "👑 Desarrollador",
+        chat_badge_car: "🚗 Coche",
+        chat_loading: "Cargando mensajes...",
+
         sn_gift_badge: "🎁 Doble Super-Bono para Testers Activos",
         sn_gift_title: "Segundo Regalo: ¡PRO de por vida para SmartNotes AI!",
         sn_gift_sub: "Cada tester que envíe registros de diagnóstico recibe gratis licencias PRO de por vida para dos apps: <b>OBD2 SCAN AI</b> y <b>SmartNotes AI</b>.",
@@ -1187,9 +1222,9 @@
         brand_all_desc: "Mostrando consultas y pruebas para todas las marcas. Haz clic en una marca arriba para abrir el canal de tu vehículo.",
         brand_all_status: "🟡 En depuración activa",
         brand_peugeot_title: "🦁 Peugeot & Citroen (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "¡La centralita Bosch ME7.4.4 ya lee 19 parámetros del motor! Se realizan pruebas en frío, caliente y en marcha.",
-        brand_peugeot_status: "🟡 En depuración activa",
-        brand_vaz_title: "🏎️ LADA (VAZ) — Enero, Itelma, Bosch, CAN",
+        brand_peugeot_desc: "¡Peugeot 307 (1.6 NFU, ME7.4.4 + Cambio AL4) está completamente calibrado y probado! Lee 19 parámetros del motor, presión AL4 y salud. Buscamos probadores para el resto: ❌ 206, ❌ 207, ❌ 308, ❌ 406/407, ❌ Partner, ❌ Citroën C3/C4.",
+                brand_peugeot_status: "🟢 CONFIGURADO (307)",
+                brand_vaz_title: "🏎️ LADA (VAZ) — Enero, Itelma, Bosch, CAN",
         brand_vaz_desc: "Se requiere probar conexión a Enero 5.1/7.2, Bosch M7.9.7, Itelma M73/M74 y CAN Granta/Vesta.",
         brand_vaz_status: "🔴 SE BUSCAN TESTERS URGENTE",
         brand_toyota_title: "🇯🇵 Toyota & Lexus (Corolla, Camry, RAV4, Prius)",
@@ -1245,6 +1280,12 @@
         sidebar_help_desc: "Escribe directamente al desarrollador"
       },
       ar: {
+        chat_empty_text: "لا توجد رسائل في قسم <b>{brand}</b> حتى الآن.<br>كن أول من يطرح سؤالاً أو يشارك تجربة هذه الماركة!",
+        chat_badge_ai: "🤖 تشخيص الذكاء الاصطناعي",
+        chat_badge_admin: "👑 المطور",
+        chat_badge_car: "🚗 سيارة",
+        chat_loading: "جاري تحميل رسائل المجتمع...",
+
         sn_gift_badge: "🎁 مكافأة مضاعفة حصرية للمختبرين النشطين",
         sn_gift_title: "الهدية الثانية: ترخيص PRO دائم لتطبيق SmartNotes AI!",
         sn_gift_sub: "كل مختبر يرسل سجلات فحص لسيارته يحصل مجاناً على ترخيصين PRO دائمين: ماسح السيارات <b>OBD2 SCAN AI</b> والمفكرة الذكية <b>SmartNotes AI</b>.",
@@ -1263,9 +1304,9 @@
         brand_all_desc: "عرض الأسئلة والمشاركات لجميع ماركات السيارات. اضغط على أي ماركة أعلاه لفتح القسم المخصص لسيارتك.",
         brand_all_status: "🟡 قيد الاختبار النشط",
         brand_peugeot_title: "🦁 بيجو وستروين (ME7.4.4, AL4, KWP2000)",
-        brand_peugeot_desc: "وحدة التحكم Bosch ME7.4.4 تقرأ بالفعل 19 مؤشراً للمحرك! الاختبارات مستمرة في مختلف ظروف القيادة.",
-        brand_peugeot_status: "🟡 قيد الاختبار النشط",
-        brand_vaz_title: "🏎️ لادا (VAZ) — يناير، إيتيلما، بوش، CAN",
+        brand_peugeot_desc: "تمت معايرة واختبار بيجو 307 (1.6 NFU, ME7.4.4 + AL4) بنجاح! يقرأ 19 مؤشراً للمحرك وضغط القير والحالة الصحية. نبحث عن مختبرين لبقية الموديلات: ❌ 206، ❌ 207، ❌ 308، ❌ 406/407، ❌ بارتنر، ❌ ستروين C3/C4.",
+                brand_peugeot_status: "🟢 تم الضبط (307)",
+                brand_vaz_title: "🏎️ لادا (VAZ) — يناير، إيتيلما، بوش، CAN",
         brand_vaz_desc: "مطلوب اختبار الاتصال بوحدات التحكم يناير 5.1/7.2، بوش M7.9.7، إيتيلما وقراءة ناقل CAN.",
         brand_vaz_status: "🔴 مطلوب مختبرين بشكل عاجل",
         brand_toyota_title: "🇯🇵 تويوتا ولكزس (كورولا، كامري، RAV4، بريوس)",
@@ -1434,7 +1475,7 @@
       if (descElem) descElem.innerText = desc;
       if (badgeElem) {
         badgeElem.innerText = status;
-        badgeElem.className = 'brand-badge ' + meta.badgeClass;
+        badgeElem.className = 'brand-badge ' + (currentSelectedBrand === 'peugeot' ? 'badge-ready' : meta.badgeClass);
       }
       if (chatTitleElem) {
         chatTitleElem.innerText = currentSelectedBrand === 'all' 
@@ -1506,10 +1547,12 @@
       }
 
       if (filtered.length === 0) {
+        const dict = TESTERS_TRANSLATIONS[currentLang] || TESTERS_TRANSLATIONS.ru;
+        const rawTmpl = dict.chat_empty_text || 'В ветке <b>{brand}</b> пока нет сообщений.<br>Станьте первым, кто напишет вопрос или отзыв по этой марке!';
+        const emptyHtml = rawTmpl.replace('{brand}', escapeHtml(meta.title));
         container.innerHTML = `
           <div style="text-align: center; color: var(--muted); font-size: 13.5px; padding: 40px 10px;">
-            В ветке <b>${escapeHtml(meta.title)}</b> пока нет сообщений.<br>
-            Станьте первым, кто напишет вопрос или отзыв по этой марке!
+            ${emptyHtml}
           </div>
         `;
         return;
@@ -1526,18 +1569,22 @@
           } catch (e) {}
         }
 
+        const dict = TESTERS_TRANSLATIONS[currentLang] || TESTERS_TRANSLATIONS.ru;
         let cardClass = 'msg-card msg-user';
         let authorColor = '#38bdf8';
-        let badgeHtml = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">🚗 ${escapeHtml(msg.car || 'Авто')}</span>`;
+        const carWord = dict.chat_badge_car || '🚗 Авто';
+        let badgeHtml = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">${carWord}: ${escapeHtml(msg.car || 'OBD2')}</span>`;
 
         if (isAi) {
           cardClass = 'msg-card msg-ai';
           authorColor = '#c4b5fd';
-          badgeHtml = '<span style="background: rgba(139, 92, 246, 0.3); color: #ddd6fe; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">🤖 AI Диагност</span>';
+          const aiWord = dict.chat_badge_ai || '🤖 AI Диагност';
+          badgeHtml = `<span style="background: rgba(139, 92, 246, 0.3); color: #ddd6fe; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">${aiWord}</span>`;
         } else if (isAdmin) {
           cardClass = 'msg-card msg-admin';
           authorColor = '#34d399';
-          badgeHtml = '<span style="background: rgba(16, 185, 129, 0.3); color: #a7f3d0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">👑 Разработчик</span>';
+          const admWord = dict.chat_badge_admin || '👑 Разработчик';
+          badgeHtml = `<span style="background: rgba(16, 185, 129, 0.3); color: #a7f3d0; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px;">${admWord}</span>`;
         }
 
         return `
