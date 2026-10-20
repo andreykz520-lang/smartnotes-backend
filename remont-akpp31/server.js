@@ -358,7 +358,7 @@ function serveStatic(res, filePath, pathname = '') {
     headers['Vary'] = 'Accept';
   }
 
-  if (filePath.includes('/_next/') || filePath.includes('/images/')) {
+  if (filePath.includes('/images/')) {
     headers['Cache-Control'] = 'public, max-age=86400';
   } else {
     headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate';
