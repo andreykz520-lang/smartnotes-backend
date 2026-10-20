@@ -162,12 +162,16 @@ const handleObd2 = (req, res) => {
     } else if (pathname === '/terms' || pathname === '/oferta') {
       filePath = path.join(__dirname, 'public', 'terms.html');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'terms.html');
+    } else if (pathname === '/peugeot-307-health-check' || pathname === '/peugeot307') {
+      filePath = path.join(__dirname, 'public', 'peugeot-307-health-check.html');
+      if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'peugeot-307-health-check.html');
     } else if (pathname === '/refund' || pathname === '/payment-terms' || pathname === '/returns') {
       filePath = path.join(__dirname, 'public', 'refund.html');
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, 'refund.html');
     } else {
       filePath = path.join(__dirname, 'public', pathname);
       if (!fs.existsSync(filePath)) filePath = path.join(__dirname, pathname);
+      if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) filePath = filePath + '.html';
     }
 
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {

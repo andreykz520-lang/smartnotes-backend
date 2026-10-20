@@ -42,6 +42,7 @@
     { "source": "/buy", "destination": "/buy.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/testers", "destination": "/testers.html" },
+    { "source": "/peugeot-307-health-check", "destination": "/peugeot-307-health-check.html" },
     { "source": "/club", "destination": "/testers.html" }
   ],
   "headers": [
