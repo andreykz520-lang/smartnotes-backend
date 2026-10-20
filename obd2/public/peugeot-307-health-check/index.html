@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Реальный тест проверки здоровья двигателя Peugeot 307 и вердикт ИИ — OBD2 SCAN AI</title>
+  <meta name="description" content="Реальный тест автодиагностики Peugeot 307 1.6 NFU (Bosch ME 7.4.4, АКПП AL4/DP0) через приложение OBD2 SCAN AI. Анализ параметров в реальном времени и экспертное заключение искусственного интеллекта.">
+  <link rel="canonical" href="https://obd2scanai.ru/peugeot-307-health-check">
+  <link rel="icon" type="image/png" href="/api/img?name=app_icon.png">
+  <link rel="apple-touch-icon" href="/api/img?name=app_icon.png">
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #131c31;
+      --card-inner: #1a2540;
+      --border: #233152;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --purple: #8b5cf6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 0 16px 60px;
+    }
+    .header-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, var(--purple), var(--accent));
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .btn-back {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { background: var(--card-inner); border-color: var(--accent); }
+    .container {
+      max-width: 900px;
+      margin: 30px auto 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+    }
+    @media (max-width: 640px) {
+      .container { padding: 24px 18px; }
+    }
+    .post-tag {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .video-card {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .video-btn {
+      background: #ef4444;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+    .video-btn:hover { background: #dc2626; }
+    .info-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    pre {
+      background: #080d1a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 18px;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      line-height: 1.55;
+      margin: 18px 0;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin: 32px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 20px 0 8px;
+    }
+    .badge-ok {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .badge-err {
+      display: inline-block;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .norm-list, .plan-list {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0;
+    }
+    .norm-list li, .plan-list li {
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      background: var(--card-inner);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .plan-list li { border-left: 3px solid var(--accent); }
+    .author-note {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(56, 189, 248, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 36px;
+    }
+    .author-note h3 { margin-top: 0; color: #c4b5fd; }
+  </style>
+</head>
+<body>
+
+  <!-- Навигация -->
+  <header class="header-nav">
+    <a href="/" class="logo-link">
+      <span>🚗 OBD2 SCAN AI</span>
+      <span class="logo-badge">Форум & Блог</span>
+    </a>
+    <div style="display: flex; gap: 10px;">
+      <a href="/testers" class="btn-back">💬 Чат тестеров</a>
+      <a href="/" class="btn-back">← На главную</a>
+    </div>
+  </header>
+
+  <!-- Тело статьи -->
+  <article class="container">
+    <span class="post-tag">🦁 Peugeot / Citroën — Практика диагностики</span>
+    <h1>Реальный тест проверки здоровья двигателя: Peugeot 307 (Bosch ME 7.4.4) и заключение ИИ</h1>
+    
+    <div class="meta-bar">
+      <span>👤 Автор: Разработчик OBD2 SCAN AI</span>
+      <span>🚘 Автомобиль: Peugeot 307 1.6 NFU (2002 г.в., АКПП AL4/DP0)</span>
+      <span>⚙️ ЭБУ: Bosch ME 7.4.4 (KWP2000, 8210F1)</span>
+    </div>
+
+    <p style="font-size: 15px; color: #cbd5e1; margin-bottom: 16px;">
+      Приветствую всех, кто заглянул сюда! Закончил настройку расширенных параметров на <b>Peugeot 307 2002 г.в.</b> (двигатель NFU 1.6 л, АКПП AL4 / DP0).
+    </p>
+
+    <!-- Видео блок -->
+    <div class="video-card">
+      <div>
+        <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">🎬 Видеозапись работы приложения на Peugeot 307</div>
+        <div style="font-size: 12.5px; color: #cbd5e1;">Посмотрите, как приложение считывает расширенные блоки ME744 вживую.</div>
+      </div>
+      <a href="https://www.youtube.com/watch?v=nhMeW5Ia0d4" target="_blank" rel="noopener noreferrer" class="video-btn">
+        ▶️ Смотреть на YouTube
+      </a>
+    </div>
+
+    <div class="info-box">
+      💡 <b>Важная деталь по первому подключению:</b> Не обращайте внимания, что при самом первом подключении инициализация и опрос идут чуть дольше обычного. После того как профиль автомобиля создан и сохранён, все последующие подключения происходят мгновенно!
+    </div>
+
+    <p style="font-size: 15px; color: #cbd5e1; margin-bottom: 16px;">
+      И барабанная дробь — то, ради чего я и создавал это приложение, свершилось! Я сделал полную <b>проверку здоровья двигателя</b>. Правда, я был за рулем и не смог включить запись экрана, чтобы показать вам этот процесс, но я сохранил все данные из приложения и заключение встроенного искусственного интеллекта.
+    </p>
+
+    <h2>📊 Исходный отчет проверки здоровья двигателя</h2>
+    <pre>
+ОТЧЕТ ПРОВЕРКИ ЗДОРОВЬЯ: ДВИГАТЕЛЬ
+
+1. Коды неисправностей (DTC):
+   ✓ Ошибок не обнаружено
+
+2. Показания датчиков в реальном времени:
+   • ME744 Injector 1: 4,25 мс
+   • ME744 Injector 2: 4,25 мс
+   • ME744 Injector 3: 4,25 мс
+   • ME744 Injector 4: 4,25 мс
+   • ME744 Основные параметры: 840 об/мин
+   • ME744 Обороты двигателя: 840 об/мин
+   • ME744 Напряжение батареи: 13,97 В
+   • ME744 Длительность импульса форсунки: 4,25 мс
+   • ME744 Отсечка топлива: Нет
+   • ME744 Положение дроссельной заслонки: 2 %
+   • ME744 Напряжение датчика дросселя: 0,62 В
+   • ME744 Температура ОЖ: 86,3 °C
+   • ME744 Температура воздуха на впуске: 21,0 °C
+   • ME744 Давление во впускном коллекторе: 470 мбар
+   • ME744 Положение регулятора ХХ: 0
+   • ME744 Клапан продувки адсорбера: Акт
+   • ME744 Крутящий момент: 28,5 Нм
+   • ME744 Угол опережения зажигания: 6,8°
+   • ME744 Длит. катушки заж. 1,4 цил.: 15,75 мс
+   • ME744 Длит. катушки заж. 2,3 цил.: 15,75 мс
+   • ME744 Датчик кислорода (до кат.): 0,7700 В
+   • ME744 Датчик кислорода (после кат.): 0,8228 В
+   • ME744 Состояние регулировки смеси: Закр
+   • ME744 Состояние эл.клапана бака: Неакт
+   • ME744 Скорость вентилятора: 10,2 %
+    </pre>
+
+    <h2>🤖 Заключение и вердикт ИИ (AI Анализ)</h2>
+    <div style="background: var(--card-inner); border-left: 4px solid var(--purple); padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 24px;">
+      <p style="font-style: italic; color: #cbd5e1;">
+        «Перед вами данные диагностики блока управления <b>Bosch ME 7.4.4</b> (характерно для автомобилей концерна PSA: Peugeot / Citroën, двигатели 1.6 TU5JP4 или 1.4 TU3JP). Ошибок в памяти блока нет, двигатель работает на холостом ходу и прогрет до рабочей температуры (86.3 °C). Однако в реальных параметрах есть <b>серьезные отклонения от заводских норм</b>.»
+      </p>
+    </div>
+
+    <div style="margin-bottom: 24px;">
+      <span class="badge-ok">🟢 Что в норме:</span>
+      <ul class="norm-list">
+        <li>⚡ <b>Электропитание:</b> Напряжение сети <b>13.97 В</b> — генератор работает отлично, зарядка в норме.</li>
+        <li>🔄 <b>Обороты холостого хода:</b> <b>840 об/мин</b> — стабильны, соответствуют целевым для мотора TU5JP4.</li>
+        <li>🌡️ <b>Температура:</b> ОЖ <b>86.3 °C</b>, воздух на впуске <b>21.0 °C</b> — термостат работает, мотор в рабочем режиме.</li>
+        <li>📐 <b>Положение дросселя:</b> Заслонка открыта на 2% (0.62 В) — норма для закрытого состояния на ХХ.</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 24px;">
+      <span class="badge-err">🔴 Главные проблемы (Отклонения от нормы):</span>
+      
+      <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 14px; margin-top: 10px;">
+        <h3 style="color: #f87171;">1. Давление во впускном коллекторе: 470 мбар (Критично)</h3>
+        <p style="font-size: 13.5px; color: #cbd5e1;">
+          <b>Норма для этого мотора на ХХ: 300 – 360 мбар.</b><br>
+          Во впускном коллекторе слишком слабое разрежение (давление завышено на 30–40%). Двигатель либо получает неучтенный воздух, либо ему тяжело вращаться. Блок управления считает, что машина едет под нагрузкой, а не стоит на месте.
+        </p>
+      </div>
+
+      <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 14px; margin-top: 10px;">
+        <h3 style="color: #f87171;">2. Время впрыска форсунок: 4.25 мс (Критично)</h3>
+        <p style="font-size: 13.5px; color: #cbd5e1;">
+          <b>Норма на прогретом ХХ: 2.4 – 3.2 мс.</b><br>
+          Форсунки льют слишком много топлива. Это прямое следствие завышенного давления (п. 1): видя высокое давление, компьютер ошибочно думает, что мотор под нагрузкой, и увеличивает подачу топлива. Отсюда <b>повышенный расход бензина</b>.
+        </p>
+      </div>
+
+      <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 14px; margin-top: 10px;">
+        <h3 style="color: #f87171;">3. Показания кислородных датчиков (0.77 – 0.82 В)</h3>
+        <p style="font-size: 13.5px; color: #cbd5e1;">
+          Напряжение «зависло» в верхней зоне (богатая смесь). Обычно первый датчик должен быстро колебаться от 0.1 до 0.9 В («синусоида»). Здесь смесь стабильно переобогащена.
+        </p>
+      </div>
+
+      <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 14px; margin-top: 10px;">
+        <h3 style="color: #f87171;">4. Клапан продувки адсорбера: Активен («Акт»)</h3>
+        <p style="font-size: 13.5px; color: #cbd5e1;">
+          На холостом ходу этот клапан должен быть закрыт или срабатывать кратковременно. Если он завис в открытом положении, пары бензина из бака вместе с лишним воздухом непрерывно сосут во впускной коллектор.
+        </p>
+      </div>
+    </div>
+
+    <h2>🔍 Возможные причины неисправности (от простого к сложному):</h2>
+    <ul class="norm-list">
+      <li><b>1. Неучтенный подсос воздуха (наиболее вероятно):</b> через уплотнительные кольца коллектора, дроссель, вакуумный усилитель тормозов или через заклинивший клапан адсорбера.</li>
+      <li><b>2. Грязный или неисправный датчик давления (MAP-сенсор):</b> закидан парами масла из картера. Из-за этого завышает 470 мбар вместо реальных 330 мбар.</li>
+      <li><b>3. Сбитые метки ГРМ (на 1 зуб):</b> для моторов TU5JP4 это «классическая» болезнь при неаккуратной замене ремня ГРМ. Смещение фаз всего на 1 зуб сразу даёт во впуске 450–480 мбар при полном отсутствии ошибок в блоке!</li>
+      <li><b>4. Забитый катализатор:</b> затруднённый выпуск также ведёт к росту давления во впускном тракте.</li>
+    </ul>
+
+    <h2>🛠 Рекомендации и план действий для сервиса:</h2>
+    <ul class="plan-list">
+      <li><b>1. Проверить клапан адсорбера:</b> Снять трубку продувки адсорбера с впускного коллектора и заглушить штуцер на коллекторе. Если давление упадет до ~330 мбар, а форсунки до ~2.8 мс — виноват клапан (под замену).</li>
+      <li><b>2. Проверить впуск дымогенератором:</b> Опрессовать впускной тракт дымом на предмет подсосов воздуха в обход дросселя.</li>
+      <li><b>3. Обслужить MAP-датчик:</b> Снять датчик абсолютного давления, аккуратно промыть чувствительный элемент очистителем ДМРВ/карбюратора от масляного налёта.</li>
+      <li><b>4. Проверить метки ГРМ:</b> Если подсосов нет, а датчик чист — обязательно выставить двигатель по заводским сервисным фиксаторам (пинам) и проверить совпадение меток коленвала и распредвалов.</li>
+    </ul>
+
+    <!-- Отзыв автора -->
+    <div class="author-note">
+      <h3>📝 Мой личный отзыв</h3>
+      <p style="font-size: 14.5px; color: #e2e8f0; line-height: 1.6;">
+        Расход топлива у меня действительно увеличенный, на этом авто я стал ездить недавно. Теперь благодаря подсказке ИИ есть чёткий план: проверю клапан адсорбера, MAP-сенсор и подсосы воздуха. В следующий раз сделаю аналогичную проверку здоровья АКПП AL4 (так как коробка подпинывает и иногда чудит) и обязательно постараюсь снять видео экрана приложения!
+      </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 36px;">
+      <a href="/testers" style="background: linear-gradient(135deg, var(--purple), var(--accent)); color: #fff; padding: 14px 28px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 8px;">
+        💬 Обсудить в Клубе тестеров / Задать вопрос
+      </a>
+    </div>
+
+  </article>
+
+</body>
+</html>
