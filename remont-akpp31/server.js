@@ -573,14 +573,44 @@ module.exports = async function handleRemontAkpp(req, res) {
   if (pathname === '/.well-known/agent-skills/index.json') {
     return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'agent-skills', 'index.json'), pathname);
   }
+  if (pathname === '/.well-known/agent-card.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'agent-card.json'), pathname);
+  }
+  if (pathname === '/.well-known/poppy.json') {
+    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'poppy.json'), pathname);
+  }
   if (pathname === '/.well-known/oauth-authorization-server') {
     return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'oauth-authorization-server'), pathname);
   }
   if (pathname === '/.well-known/oauth-protected-resource') {
-    return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'oauth-protected-resource'), pathname);
+    const proto = req.headers['x-forwarded-proto'] || 'https';
+    const currentHost = (req.headers['x-forwarded-host'] || req.headers.host || 'remont-akpp31.ru').split(':')[0];
+    const baseUrl = `${proto}://${currentHost}`;
+    const payload = {
+      resource: baseUrl,
+      resource_name: "СТО Ремонт АКПП Белгород",
+      authorization_servers: [baseUrl],
+      scopes_supported: ["lead:create", "services:read"],
+      bearer_methods_supported: ["header"],
+      resource_documentation: `${baseUrl}/llms.txt`
+    };
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+      'Link': LINK_HEADERS
+    });
+    return res.end(JSON.stringify(payload, null, 2));
   }
   if (pathname === '/.well-known/openid-configuration') {
     return serveStatic(res, path.join(PUBLIC_DIR, '.well-known', 'openid-configuration'), pathname);
+  }
+  if (pathname.startsWith('/.well-known/')) {
+    const directPath = path.join(PUBLIC_DIR, pathname);
+    if (fs.existsSync(directPath) && !fs.statSync(directPath).isDirectory()) {
+      return serveStatic(res, directPath, pathname);
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ error: 'Not found' }));
   }
 
   // API Трекинг
@@ -829,11 +859,17 @@ module.exports = async function handleRemontAkpp(req, res) {
   }
 
   // Главная страница HTML с Link header
-  const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
-  res.writeHead(200, {
-    'Content-Type': 'text/html; charset=utf-8',
-    'Link': LINK_HEADERS,
-    'Vary': 'Accept'
-  });
-  return res.end(indexHtml);
+  if (pathname === '/' || pathname === '/index.html' || pathname === '') {
+    const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Link': LINK_HEADERS,
+      'Vary': 'Accept'
+    });
+    return res.end(indexHtml);
+  }
+
+  // 404 для неизвестных маршрутов (не спа-фоллбек)
+  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+  return res.end('Not Found');
 };

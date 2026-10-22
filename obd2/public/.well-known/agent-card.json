@@ -1,0 +1,35 @@
+{
+  "capabilities": {
+    "pushNotifications": false,
+    "streaming": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "description": "ИИ автосканер и диагностика кодов ошибок OBD-2",
+  "name": "OBD2 SCAN AI",
+  "skills": [
+    {
+      "description": "Компьютерная диагностика кодов неисправностей OBD-2 / DTC",
+      "id": "obd2-diagnostics",
+      "name": "Диагностика OBD2",
+      "tags": [
+        "obd2",
+        "diagnostics",
+        "dtc",
+        "auto-repair"
+      ]
+    }
+  ],
+  "supportedInterfaces": [
+    {
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0",
+      "url": "https://obd2scanai.ru/api/a2a"
+    }
+  ],
+  "version": "1.0.0"
+}

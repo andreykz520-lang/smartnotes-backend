@@ -1,0 +1,34 @@
+{
+  "capabilities": {
+    "pushNotifications": false,
+    "streaming": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "description": "Автотехцентр по ремонту АКПП, CVT, DSG и двигателей в Белгороде",
+  "name": "СТО Ремонт АКПП Белгород",
+  "skills": [
+    {
+      "description": "Консультация и запись на ремонт АКПП, CVT, DSG и двигателей в Белгороде",
+      "id": "auto-repair-consultation",
+      "name": "Консультация СТО",
+      "tags": [
+        "auto-repair",
+        "transmission",
+        "belgorod"
+      ]
+    }
+  ],
+  "supportedInterfaces": [
+    {
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0",
+      "url": "https://remont-akpp31.ru/api/a2a"
+    }
+  ],
+  "version": "1.0.0"
+}
