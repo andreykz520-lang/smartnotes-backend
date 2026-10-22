@@ -53,4 +53,4 @@ Disallow: /api/
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
 # Sitemap
-Sitemap: https://remont-akpp31.obd2scanai.ru/sitemap.xml
+Sitemap: https://remont-akpp31.ru/sitemap.xml

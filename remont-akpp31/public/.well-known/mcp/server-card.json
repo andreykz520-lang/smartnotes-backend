@@ -6,7 +6,7 @@
   },
   "transport": {
     "type": "sse",
-    "endpoint": "https://remont-akpp31.obd2scanai.ru/api/mcp"
+    "endpoint": "https://remont-akpp31.ru/api/mcp"
   },
   "capabilities": {
     "tools": {

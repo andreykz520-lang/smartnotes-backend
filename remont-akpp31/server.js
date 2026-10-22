@@ -47,7 +47,7 @@ async function sendLeadEmail(lead) {
 
   const textBody = `Новая заявка на ремонт СТО АКПП Белгород:\n\nНОМЕР ТЕЛЕФОНА (ДЛЯ ЗВОНКА И КОПИРОВАНИЯ):\n${lead.phone}\n${cleanPhone}\n\nАвтомобиль: ${lead.carBrand || 'Не указан'}\nПричина: ${lead.reason || 'Ремонт АКПП'}\nГород: ${lead.city || 'Белгород'}\nСимптомы: ${lead.details || '—'}\nВремя: ${lead.createdAt}`;
 
-  const callUrl = `https://remont-akpp31.obd2scanai.ru/call?phone=${encodeURIComponent(cleanPhone)}`;
+  const callUrl = `https://remont-akpp31.ru/call?phone=${encodeURIComponent(cleanPhone)}`;
 
   const mailOptions = {
     from: '"СТО АКПП Белгород" <andrey.chemarev@yandex.ru>',
@@ -57,7 +57,7 @@ async function sendLeadEmail(lead) {
     html: `
       <div style="font-family: Arial, sans-serif; background-color: #0b0e14; color: #ffffff; padding: 22px; border-radius: 14px; max-width: 550px; border: 2px solid #ff5e14; box-sizing: border-box;">
         <h2 style="color: #ff5e14; margin-top: 0; margin-bottom: 6px; font-size: 22px;">🚗 Новая заявка на ремонт!</h2>
-        <p style="font-size: 13px; color: #9ca3af; margin-top: 0; margin-bottom: 18px;">Поступила через сайт remont-akpp31.obd2scanai.ru</p>
+        <p style="font-size: 13px; color: #9ca3af; margin-top: 0; margin-bottom: 18px;">Поступила через сайт remont-akpp31.ru</p>
 
         <!-- Основная карточка с деталями заявки -->
         <div style="background-color: #161922; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #262b36;">
@@ -369,6 +369,16 @@ function serveStatic(res, filePath, pathname = '') {
 }
 
 module.exports = async function handleRemontAkpp(req, res) {
+  // 301 Redirect from old subdomain to new domain
+  const host = (req.headers.host || '').toLowerCase();
+  if (host.includes('remont-akpp31.ru')) {
+    res.writeHead(301, {
+      'Location': 'https://remont-akpp31.ru' + req.url,
+      'Connection': 'close'
+    });
+    return res.end();
+  }
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -632,7 +642,7 @@ module.exports = async function handleRemontAkpp(req, res) {
             reason: body.reason || 'Ремонт АКПП',
             details: body.details || '',
             city: geo.city || '',
-            source: 'remont-akpp31.obd2scanai.ru'
+            source: 'remont-akpp31.ru'
           });
         } catch (leadErr) {
           console.error('[addLead Error]:', leadErr);
@@ -643,7 +653,7 @@ module.exports = async function handleRemontAkpp(req, res) {
             reason: body.reason || 'Ремонт АКПП',
             details: body.details || '',
             city: geo.city || '',
-            source: 'remont-akpp31.obd2scanai.ru',
+            source: 'remont-akpp31.ru',
             createdAt: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
           };
         }

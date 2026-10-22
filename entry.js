@@ -21,7 +21,7 @@ app.prepare().then(() => {
     const host = (req.headers.host || '').toLowerCase();
     
     // 0. Ремонт АКПП Белгород: remont-akpp31.obd2scanai.ru
-    if (host.includes('remont-akpp') || host.includes('remontakpp')) {
+    if (host.includes('remont-akpp') || host.includes('remontakpp') || host.includes('akpp31')) {
       return handleRemontAkpp(req, res);
     }
 

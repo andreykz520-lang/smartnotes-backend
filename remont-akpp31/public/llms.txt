@@ -19,11 +19,11 @@
 - Акция: Компьютерная диагностика в подарок при ремонте + PRO-версия приложения SmartNotes AI в подарок!
 
 ## AI Discovery & Machine-Readable Endpoints
-- Сайт: https://remont-akpp31.obd2scanai.ru/
-- Robots: https://remont-akpp31.obd2scanai.ru/robots.txt
-- Sitemap: https://remont-akpp31.obd2scanai.ru/sitemap.xml
-- API Catalog: https://remont-akpp31.obd2scanai.ru/.well-known/api-catalog
-- AI Catalog: https://remont-akpp31.obd2scanai.ru/.well-known/ai-catalog.json
-- MCP Server Card: https://remont-akpp31.obd2scanai.ru/.well-known/mcp/server-card.json
-- Agent Skills: https://remont-akpp31.obd2scanai.ru/.well-known/agent-skills/index.json
-- Agent Registration: https://remont-akpp31.obd2scanai.ru/auth.md
+- Сайт: https://remont-akpp31.ru/
+- Robots: https://remont-akpp31.ru/robots.txt
+- Sitemap: https://remont-akpp31.ru/sitemap.xml
+- API Catalog: https://remont-akpp31.ru/.well-known/api-catalog
+- AI Catalog: https://remont-akpp31.ru/.well-known/ai-catalog.json
+- MCP Server Card: https://remont-akpp31.ru/.well-known/mcp/server-card.json
+- Agent Skills: https://remont-akpp31.ru/.well-known/agent-skills/index.json
+- Agent Registration: https://remont-akpp31.ru/auth.md

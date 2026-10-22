@@ -2,14 +2,14 @@
   "specVersion": "1.0",
   "host": {
     "name": "СТО Ремонт АКПП, DSG и CVT Белгород",
-    "url": "https://remont-akpp31.obd2scanai.ru"
+    "url": "https://remont-akpp31.ru"
   },
   "entries": [
     {
-      "identifier": "urn:air:remont-akpp31.obd2scanai.ru:app:remontakpp",
+      "identifier": "urn:air:remont-akpp31.ru:app:remontakpp",
       "displayName": "СТО Ремонт АКПП Белгород",
       "type": "text/markdown",
-      "url": "https://remont-akpp31.obd2scanai.ru/llms.txt",
+      "url": "https://remont-akpp31.ru/llms.txt",
       "representativeQueries": [
         "ремонт акпп белгород",
         "ремонт вариатора серафимовича 75",
@@ -19,10 +19,10 @@
       ]
     },
     {
-      "identifier": "urn:air:remont-akpp31.obd2scanai.ru:mcp:server",
+      "identifier": "urn:air:remont-akpp31.ru:mcp:server",
       "displayName": "Ремонт АКПП Белгород MCP Server",
       "type": "application/json",
-      "url": "https://remont-akpp31.obd2scanai.ru/.well-known/mcp/server-card.json",
+      "url": "https://remont-akpp31.ru/.well-known/mcp/server-card.json",
       "representativeQueries": [
         "Transmission repair booking Belgorod",
         "Auto repair consultation MCP",
