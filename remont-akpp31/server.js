@@ -115,12 +115,12 @@ function ensureDataFiles() {
     // Проверка и самовосстановление STATS_FILE
     try {
       if (!fs.existsSync(STATS_FILE) || !fs.readFileSync(STATS_FILE, 'utf-8').trim()) {
-        fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] }, null, 2), 'utf-8');
+        fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, daily: {}, visits: [] }, null, 2), 'utf-8');
       } else {
         JSON.parse(fs.readFileSync(STATS_FILE, 'utf-8'));
       }
     } catch (e) {
-      fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] }, null, 2), 'utf-8');
+      fs.writeFileSync(STATS_FILE, JSON.stringify({ totalVisits: 0, phoneClicks: 0, formSubmits: 0, daily: {}, visits: [] }, null, 2), 'utf-8');
     }
 
     // Проверка и самовосстановление LEADS_FILE
@@ -180,12 +180,36 @@ function getStats() {
     ensureDataFiles();
     if (fs.existsSync(STATS_FILE)) {
       const raw = fs.readFileSync(STATS_FILE, 'utf-8').trim();
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const stats = JSON.parse(raw);
+        if (!stats.totalVisits) stats.totalVisits = 0;
+        if (!stats.phoneClicks) stats.phoneClicks = 0;
+        if (!stats.formSubmits) stats.formSubmits = 0;
+        if (!Array.isArray(stats.visits)) stats.visits = [];
+        if (!stats.daily || typeof stats.daily !== 'object') stats.daily = {};
+
+        const todayKey = new Date().toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+        const todayData = stats.daily[todayKey] || { visits: 0, phoneClicks: 0, formSubmits: 0 };
+
+        // Fallback: если daily еще пустой, посчитаем визиты за сегодня прямо из массива visits
+        const todayVisitsCount = todayData.visits || stats.visits.filter(v => {
+          if (!v.timestamp) return false;
+          const vDate = v.date || new Date(v.timestamp).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+          return vDate === todayKey;
+        }).length;
+
+        return {
+          ...stats,
+          todayVisits: todayVisitsCount,
+          todayPhoneClicks: todayData.phoneClicks || 0,
+          todayFormSubmits: todayData.formSubmits || 0
+        };
+      }
     }
   } catch (e) {
     console.error('[Stats Read Error]:', e);
   }
-  return { totalVisits: 0, phoneClicks: 0, formSubmits: 0, visits: [] };
+  return { totalVisits: 0, todayVisits: 0, phoneClicks: 0, todayPhoneClicks: 0, formSubmits: 0, todayFormSubmits: 0, daily: {}, visits: [] };
 }
 
 let inMemoryLeads = [];
@@ -250,9 +274,23 @@ async function recordVisit(userAgent, referer, ip) {
     ensureDataFiles();
     const geo = await resolveIpGeo(ip);
     const stats = getStats();
-    stats.totalVisits += 1;
+    stats.totalVisits = (stats.totalVisits || 0) + 1;
+
+    const now = new Date();
+    const dateKey = now.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+    const timeKey = now.toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' });
+
+    if (!stats.daily) stats.daily = {};
+    if (!stats.daily[dateKey]) {
+      stats.daily[dateKey] = { visits: 0, phoneClicks: 0, formSubmits: 0 };
+    }
+    stats.daily[dateKey].visits = (stats.daily[dateKey].visits || 0) + 1;
+
+    if (!Array.isArray(stats.visits)) stats.visits = [];
     stats.visits.unshift({
-      timestamp: new Date().toISOString(),
+      timestamp: now.toISOString(),
+      date: dateKey,
+      time: timeKey,
       userAgent: userAgent || 'Unknown',
       referer: referer || 'Прямой заход',
       ip: ip || '127.0.0.1',
@@ -261,8 +299,9 @@ async function recordVisit(userAgent, referer, ip) {
       countryCode: geo.countryCode || '',
       org: geo.org || ''
     });
-    if (stats.visits.length > 200) {
-      stats.visits = stats.visits.slice(0, 200);
+
+    if (stats.visits.length > 500) {
+      stats.visits = stats.visits.slice(0, 500);
     }
     fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
   } catch (e) {
@@ -274,7 +313,16 @@ function recordPhoneClick() {
   try {
     ensureDataFiles();
     const stats = getStats();
-    stats.phoneClicks += 1;
+    stats.phoneClicks = (stats.phoneClicks || 0) + 1;
+
+    const now = new Date();
+    const dateKey = now.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+    if (!stats.daily) stats.daily = {};
+    if (!stats.daily[dateKey]) {
+      stats.daily[dateKey] = { visits: 0, phoneClicks: 0, formSubmits: 0 };
+    }
+    stats.daily[dateKey].phoneClicks = (stats.daily[dateKey].phoneClicks || 0) + 1;
+
     fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
     return stats.phoneClicks;
   } catch (e) {
@@ -305,6 +353,15 @@ function addLead(data) {
   try {
     const stats = getStats();
     stats.formSubmits = (stats.formSubmits || 0) + 1;
+
+    const now = new Date();
+    const dateKey = now.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+    if (!stats.daily) stats.daily = {};
+    if (!stats.daily[dateKey]) {
+      stats.daily[dateKey] = { visits: 0, phoneClicks: 0, formSubmits: 0 };
+    }
+    stats.daily[dateKey].formSubmits = (stats.daily[dateKey].formSubmits || 0) + 1;
+
     fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
   } catch (err) {}
 

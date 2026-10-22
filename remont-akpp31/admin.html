@@ -122,23 +122,41 @@
     <main class="max-w-5xl mx-auto px-4 pt-6 space-y-6">
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-3 gap-3 sm:gap-5">
-        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center">
-          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Просмотры</div>
-          <div id="statVisits" class="text-2xl sm:text-3xl font-black text-white">0</div>
-          <div class="text-[10px] text-gray-500 mt-0.5">посетители</div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center shadow-lg">
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">👁️ Просмотры сайта</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statVisits" class="text-2xl sm:text-3xl font-black text-white">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayVisits" class="font-black text-white">0</span>
+          </div>
         </div>
 
-        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-emerald-500/30">
-          <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-1">📞 Звонки</div>
-          <div id="statCalls" class="text-2xl sm:text-3xl font-black text-emerald-400">0</div>
-          <div class="text-[10px] text-gray-500 mt-0.5">нажали номер</div>
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-emerald-500/30 shadow-lg">
+          <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-1">📞 Нажатия номера</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statCalls" class="text-2xl sm:text-3xl font-black text-emerald-400">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayCalls" class="font-black text-white">0</span>
+          </div>
         </div>
 
-        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-[#FF5E14]/30">
-          <div class="text-[11px] font-bold text-[#FF5E14] uppercase tracking-wider mb-1">📥 Заявки</div>
-          <div id="statLeads" class="text-2xl sm:text-3xl font-black text-[#FF5E14]">0</div>
-          <div class="text-[10px] text-gray-500 mt-0.5">с формы</div>
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-[#FF5E14]/30 shadow-lg">
+          <div class="text-[11px] font-bold text-[#FF5E14] uppercase tracking-wider mb-1">📥 Заявки с формы</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statLeads" class="text-2xl sm:text-3xl font-black text-[#FF5E14]">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-[#FF5E14]/15 text-[#FF5E14] border border-[#FF5E14]/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayLeads" class="font-black text-white">0</span>
+          </div>
         </div>
       </div>
 
@@ -165,12 +183,19 @@
         </div>
       </section>
 
-      <!-- Visitor Log with City & Geo -->
+      <!-- Visitor Log with Daily Breakdown -->
       <section class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 sm:p-6 shadow-xl">
-        <h2 class="text-base sm:text-lg font-black text-white mb-4 flex items-center space-x-2">
-          <span>🌍 Посетители и Геолокация (Откуда заходят)</span>
-        </h2>
-        <div id="visitorsList" class="space-y-2 max-h-96 overflow-y-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <h2 class="text-base sm:text-lg font-black text-white flex items-center space-x-2">
+            <span>🌍 Кто заходил (ежедневная статистика)</span>
+            <span id="visitorsCountBadge" class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-0.5 rounded-full font-bold border border-blue-500/30">0</span>
+          </h2>
+          <div class="flex items-center space-x-2 text-xs">
+            <button type="button" onclick="setVisitorFilter('all')" id="filterBtnAll" class="px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors">Все дни</button>
+            <button type="button" onclick="setVisitorFilter('today')" id="filterBtnToday" class="px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors">Только сегодня</button>
+          </div>
+        </div>
+        <div id="visitorsList" class="space-y-4 max-h-[550px] overflow-y-auto pr-1">
           <div class="text-center py-6 text-gray-500 text-xs">Загрузка посетителей...</div>
         </div>
       </section>
@@ -179,6 +204,138 @@
   </div>
 
   <script>
+    let cachedStats = null;
+    let currentVisitorFilter = 'all';
+
+    function setVisitorFilter(filter) {
+      currentVisitorFilter = filter;
+      const btnAll = document.getElementById('filterBtnAll');
+      const btnToday = document.getElementById('filterBtnToday');
+      if (btnAll && btnToday) {
+        if (filter === 'all') {
+          btnAll.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
+          btnToday.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
+        } else {
+          btnToday.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
+          btnAll.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
+        }
+      }
+      renderVisitors();
+    }
+
+    function renderVisitors() {
+      const stats = cachedStats;
+      const visContainer = document.getElementById('visitorsList');
+      if (!visContainer) return;
+      if (!stats || !stats.visits || stats.visits.length === 0) {
+        visContainer.innerHTML = '<div class="text-center py-6 text-gray-500 text-xs">Нет истории переходов</div>';
+        return;
+      }
+
+      const todayStr = new Date().toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+      const yesterdayDate = new Date();
+      yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+      const yesterdayStr = yesterdayDate.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+
+      // Группировка визитов по датам
+      const groups = {};
+      stats.visits.forEach(v => {
+        const dateStr = v.date || (v.timestamp ? new Date(v.timestamp).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' }) : todayStr);
+        if (currentVisitorFilter === 'today' && dateStr !== todayStr) return;
+        if (!groups[dateStr]) groups[dateStr] = [];
+        groups[dateStr].push(v);
+      });
+
+      const dates = Object.keys(groups);
+      if (dates.length === 0) {
+        visContainer.innerHTML = '<div class="text-center py-6 text-gray-500 text-xs">За выбранный период посетителей пока нет</div>';
+        return;
+      }
+
+      let html = '';
+      dates.forEach(dateStr => {
+        const list = groups[dateStr];
+        let dayTitle = dateStr;
+        let dayBadgeClass = 'bg-gray-700/40 text-gray-300 border-gray-600/40';
+        if (dateStr === todayStr) {
+          dayTitle = '🟢 СЕГОДНЯ • ' + dateStr;
+          dayBadgeClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+        } else if (dateStr === yesterdayStr) {
+          dayTitle = '⚪ ВЧЕРА • ' + dateStr;
+          dayBadgeClass = 'bg-blue-500/15 text-blue-400 border-blue-500/30';
+        }
+
+        html += `
+          <div class="bg-[#0F1115] border border-[#262B36] rounded-xl overflow-hidden shadow-md">
+            <div class="px-4 py-2.5 bg-[#161922] border-b border-[#262B36] flex items-center justify-between">
+              <span class="text-xs font-black uppercase tracking-wider ${dayBadgeClass} px-2.5 py-0.5 rounded-full border">
+                ${dayTitle}
+              </span>
+              <span class="text-xs font-bold text-gray-400">
+                Заходов: <span class="text-white font-black">${list.length}</span>
+              </span>
+            </div>
+            <div class="p-2.5 space-y-2">
+        `;
+
+        list.forEach(v => {
+          const cityInfo = v.city ? `г. ${v.city}` : 'РФ / Регион';
+          const flag = v.countryCode === 'RU' ? '🇷🇺' : (v.countryCode ? v.countryCode : '🌐');
+          const timeStr = v.time || (v.timestamp ? new Date(v.timestamp).toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }) : '—');
+          
+          const isMobile = /Android|iPhone|iPad|Mobile/i.test(v.userAgent || '');
+          const deviceIcon = isMobile ? '📱 Смартфон' : '💻 Компьютер';
+
+          let sourceLabel = '⚡ Прямой заход';
+          let sourceClass = 'text-gray-400';
+          const ref = v.referer || '';
+          if (/yandex\./i.test(ref)) {
+            sourceLabel = '🔍 Яндекс Поиск';
+            sourceClass = 'text-red-400 font-bold';
+          } else if (/google\./i.test(ref)) {
+            sourceLabel = '🔍 Google Поиск';
+            sourceClass = 'text-blue-400 font-bold';
+          } else if (/vk\.com|t\.me|telegram|ok\.ru/i.test(ref)) {
+            sourceLabel = '💬 Соцсеть / Мессенджер';
+            sourceClass = 'text-sky-400 font-bold';
+          } else if (ref && ref !== 'Прямой заход') {
+            sourceLabel = '🔗 ' + ref.replace(/^https?:\/\//, '').split('/')[0];
+            sourceClass = 'text-amber-400';
+          }
+
+          html += `
+            <div class="p-3 bg-[#161922]/70 border border-[#262B36]/60 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2 hover:border-[#FF5E14]/40 transition-colors">
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <span class="text-base">${flag}</span>
+                  <span class="font-black text-white text-sm">${cityInfo}</span>
+                  ${v.org ? `<span class="text-gray-400 text-[11px] bg-black/40 px-2 py-0.5 rounded border border-gray-800">${v.org}</span>` : ''}
+                </div>
+                <div class="flex items-center space-x-3 text-[11px] text-gray-400">
+                  <span class="${sourceClass}">${sourceLabel}</span>
+                  <span>•</span>
+                  <span>${deviceIcon}</span>
+                  ${v.ip && v.ip !== '127.0.0.1' ? `<span class="text-gray-600 font-mono">(${v.ip})</span>` : ''}
+                </div>
+              </div>
+
+              <div class="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center flex-shrink-0">
+                <div class="text-sm font-black text-emerald-400 font-mono">${timeStr}</div>
+                <div class="text-[10px] text-gray-500">время захода</div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      visContainer.innerHTML = html;
+    }
+
     let savedPass = localStorage.getItem('akpp_admin_pass') || '';
     let soundEnabled = true;
     let audioUnlocked = false;
@@ -494,9 +651,14 @@
       }
 
       document.getElementById('statVisits').innerText = stats.totalVisits || 0;
+      document.getElementById('statTodayVisits').innerText = stats.todayVisits || 0;
       document.getElementById('statCalls').innerText = stats.phoneClicks || 0;
+      document.getElementById('statTodayCalls').innerText = stats.todayPhoneClicks || 0;
       document.getElementById('statLeads').innerText = leads.length || 0;
+      document.getElementById('statTodayLeads').innerText = stats.todayFormSubmits || 0;
       document.getElementById('leadsBadge').innerText = leads.length || 0;
+      document.getElementById('visitorsCountBadge').innerText = (stats.visits ? stats.visits.length : 0);
+      cachedStats = stats;
 
       // Проверка на новые события для звукового сигнала
       const latestLead = leads && leads[0];
@@ -546,30 +708,8 @@
         `).join('');
       }
 
-      // Отрисовка визитов с городами
-      const visContainer = document.getElementById('visitorsList');
-      if (!stats.visits || stats.visits.length === 0) {
-        visContainer.innerHTML = '<div class="text-center py-4 text-gray-500 text-xs">Нет истории переходов</div>';
-      } else {
-        visContainer.innerHTML = stats.visits.slice(0, 50).map(v => {
-          const cityInfo = v.city ? `г. ${v.city}` : 'РФ / Локация';
-          const flag = v.countryCode === 'RU' ? '🇷🇺' : (v.countryCode ? v.countryCode : '🌐');
-          return `
-            <div class="p-3 bg-[#0F1115] border border-[#262B36] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1.5">
-              <div class="flex items-center space-x-2">
-                <span class="text-sm">${flag}</span>
-                <span class="font-bold text-white">${cityInfo}</span>
-                <span class="text-gray-400 text-[11px]">${v.org || ''}</span>
-              </div>
-              <div class="text-[11px] text-gray-500 flex items-center space-x-2">
-                <span>${v.referer || 'Прямой заход'}</span>
-                <span>•</span>
-                <span>${new Date(v.timestamp).toLocaleTimeString('ru-RU')}</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
+      // Отрисовка визитов по дням
+      renderVisitors();
     }
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
