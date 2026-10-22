@@ -190,9 +190,15 @@
             <span>🌍 Кто заходил (ежедневная статистика)</span>
             <span id="visitorsCountBadge" class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-0.5 rounded-full font-bold border border-blue-500/30">0</span>
           </h2>
-          <div class="flex items-center space-x-2 text-xs">
-            <button type="button" onclick="setVisitorFilter('all')" id="filterBtnAll" class="px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors">Все дни</button>
-            <button type="button" onclick="setVisitorFilter('today')" id="filterBtnToday" class="px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors">Только сегодня</button>
+          <div class="flex flex-wrap items-center gap-1.5 text-xs">
+            <!-- Дни -->
+            <button type="button" onclick="setVisitorPeriod('all')" id="periodBtnAll" class="px-2.5 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors">Все дни</button>
+            <button type="button" onclick="setVisitorPeriod('today')" id="periodBtnToday" class="px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors">Сегодня</button>
+            <div class="w-[1px] h-4 bg-[#262B36] mx-1 hidden sm:block"></div>
+            <!-- Категории: Клиенты vs Боты -->
+            <button type="button" onclick="setVisitorCategory('all')" id="catBtnAll" class="px-2.5 py-1.5 rounded-lg font-bold bg-gray-700/60 text-white transition-colors">Все типы</button>
+            <button type="button" onclick="setVisitorCategory('human')" id="catBtnHuman" class="px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-emerald-400 hover:text-white border border-emerald-500/30 transition-colors">👤 Только люди</button>
+            <button type="button" onclick="setVisitorCategory('bot')" id="catBtnBot" class="px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-purple-400 hover:text-white border border-purple-500/30 transition-colors">🤖 Боты / VPN</button>
           </div>
         </div>
         <div id="visitorsList" class="space-y-4 max-h-[550px] overflow-y-auto pr-1">
@@ -205,22 +211,142 @@
 
   <script>
     let cachedStats = null;
-    let currentVisitorFilter = 'all';
+    let visitorPeriod = 'all';     // 'all' | 'today'
+    let visitorCategory = 'all';   // 'all' | 'human' | 'bot'
 
-    function setVisitorFilter(filter) {
-      currentVisitorFilter = filter;
-      const btnAll = document.getElementById('filterBtnAll');
-      const btnToday = document.getElementById('filterBtnToday');
+    function setVisitorPeriod(period) {
+      visitorPeriod = period;
+      const btnAll = document.getElementById('periodBtnAll');
+      const btnToday = document.getElementById('periodBtnToday');
       if (btnAll && btnToday) {
-        if (filter === 'all') {
-          btnAll.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
-          btnToday.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
+        if (period === 'all') {
+          btnAll.className = 'px-2.5 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
+          btnToday.className = 'px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
         } else {
-          btnToday.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
-          btnAll.className = 'px-3 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
+          btnToday.className = 'px-2.5 py-1.5 rounded-lg font-bold bg-[#FF5E14] text-white transition-colors';
+          btnAll.className = 'px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
         }
       }
       renderVisitors();
+    }
+
+    function setVisitorCategory(cat) {
+      visitorCategory = cat;
+      const btnAll = document.getElementById('catBtnAll');
+      const btnHuman = document.getElementById('catBtnHuman');
+      const btnBot = document.getElementById('catBtnBot');
+      if (btnAll && btnHuman && btnBot) {
+        btnAll.className = cat === 'all' ? 'px-2.5 py-1.5 rounded-lg font-bold bg-gray-700/80 text-white transition-colors' : 'px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-gray-400 hover:text-white border border-[#262B36] transition-colors';
+        btnHuman.className = cat === 'human' ? 'px-2.5 py-1.5 rounded-lg font-bold bg-emerald-600 text-white transition-colors' : 'px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-emerald-400 hover:text-white border border-emerald-500/30 transition-colors';
+        btnBot.className = cat === 'bot' ? 'px-2.5 py-1.5 rounded-lg font-bold bg-purple-600 text-white transition-colors' : 'px-2.5 py-1.5 rounded-lg font-bold bg-[#0F1115] text-purple-400 hover:text-white border border-purple-500/30 transition-colors';
+      }
+      renderVisitors();
+    }
+
+    // Умный анализатор: кто именно заходил
+    function analyzeVisitor(v) {
+      const ua = (v.userAgent || '').trim();
+      const org = (v.org || '').toLowerCase();
+      const uaLower = ua.toLowerCase();
+
+      // 1. Поисковые индексаторы
+      if (uaLower.includes('yandexbot') || uaLower.includes('yandeximages') || uaLower.includes('yandexmobilebot')) {
+        return {
+          category: 'bot',
+          badge: '🔍 Яндекс Робот',
+          badgeClass: 'bg-red-500/15 text-red-400 border-red-500/30',
+          device: 'Поисковый робот Яндекса',
+          desc: 'Индексация страниц для поиска Яндекса'
+        };
+      }
+      if (uaLower.includes('googlebot') || uaLower.includes('google-inspectiontool') || uaLower.includes('adsbot-google')) {
+        return {
+          category: 'bot',
+          badge: '🔍 Google Бот',
+          badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+          device: 'Поисковый робот Google',
+          desc: 'Индексация страниц для Google Поиска'
+        };
+      }
+      if (uaLower.includes('telegrambot') || uaLower.includes('whatsapp') || uaLower.includes('vkshare') || uaLower.includes('facebookexternalhit')) {
+        return {
+          category: 'bot',
+          badge: '💬 Превью в мессенджере',
+          badgeClass: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
+          device: 'Робот мессенджера',
+          desc: 'Генерация превью при отправке ссылки в чат'
+        };
+      }
+
+      // 2. AI сканеры и автотесты
+      if (
+        uaLower.includes('headless') || uaLower.includes('isitagentready') ||
+        uaLower.includes('gptbot') || uaLower.includes('claudebot') || uaLower.includes('chatgpt') ||
+        uaLower.includes('perplexity') || uaLower.includes('python') || uaLower.includes('curl') || uaLower.includes('wget')
+      ) {
+        return {
+          category: 'bot',
+          badge: '🤖 AI-Сканер / Робот',
+          badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+          device: 'Облачный AI-сканер протоколов',
+          desc: 'Автоматическая проверка readiness и API'
+        };
+      }
+
+      // 3. Серверные дата-центры / VPN / Хостинги
+      const isHostingOrg = (
+        org.includes('cloudflare') || org.includes('hetzner') || org.includes('amazon') ||
+        org.includes('digitalocean') || org.includes('ovh') || org.includes('google llc') ||
+        org.includes('microsoft') || org.includes('azure') || org.includes('selectel') ||
+        org.includes('hosting') || org.includes('vps') || org.includes('datacenter') || org.includes('server')
+      );
+
+      // Определение устройства пользователя
+      let deviceName = 'Компьютер';
+      let deviceIcon = '💻';
+      if (/iPhone/i.test(ua)) {
+        deviceName = 'Apple iPhone';
+        deviceIcon = '📱';
+      } else if (/iPad/i.test(ua)) {
+        deviceName = 'Apple iPad';
+        deviceIcon = '📱';
+      } else if (/Android/i.test(ua)) {
+        deviceIcon = '📱';
+        const m = ua.match(/;\s*([^;]+?)\s*Build\//i) || ua.match(/Android[^;]+;\s*([^;)]+)/i);
+        deviceName = (m && m[1]) ? m[1].replace(/_/g, ' ') : 'Android Смартфон';
+      } else if (/Macintosh|Mac OS/i.test(ua)) {
+        deviceName = 'MacBook / Mac OS';
+        deviceIcon = '💻';
+      } else if (/Windows/i.test(ua)) {
+        deviceName = 'Windows PC';
+        deviceIcon = '💻';
+      }
+
+      let browserName = 'Браузер';
+      if (/YaBrowser/i.test(ua)) browserName = 'Яндекс.Браузер';
+      else if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) browserName = 'Chrome';
+      else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browserName = 'Safari';
+      else if (/Firefox/i.test(ua)) browserName = 'Firefox';
+      else if (/Edg/i.test(ua)) browserName = 'Edge';
+
+      if (isHostingOrg) {
+        return {
+          category: 'bot',
+          badge: '🛡️ VPN / Сервер',
+          badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+          device: `${deviceIcon} ${deviceName} • ${browserName}`,
+          desc: 'Заход через зарубежный VPN или облачный сервер'
+        };
+      }
+
+      // 4. Обычный живой посетитель
+      return {
+        category: 'human',
+        badge: '👤 Живой клиент',
+        badgeClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 font-black',
+        device: `${deviceIcon} ${deviceName} • ${browserName}`,
+        desc: 'Реальный посетитель'
+      };
     }
 
     function renderVisitors() {
@@ -237,13 +363,18 @@
       yesterdayDate.setDate(yesterdayDate.getDate() - 1);
       const yesterdayStr = yesterdayDate.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
 
-      // Группировка визитов по датам
+      // Фильтрация и группировка визитов по датам
       const groups = {};
       stats.visits.forEach(v => {
         const dateStr = v.date || (v.timestamp ? new Date(v.timestamp).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' }) : todayStr);
-        if (currentVisitorFilter === 'today' && dateStr !== todayStr) return;
+        if (visitorPeriod === 'today' && dateStr !== todayStr) return;
+
+        const info = analyzeVisitor(v);
+        if (visitorCategory === 'human' && info.category !== 'human') return;
+        if (visitorCategory === 'bot' && info.category !== 'bot') return;
+
         if (!groups[dateStr]) groups[dateStr] = [];
-        groups[dateStr].push(v);
+        groups[dateStr].push({ ...v, _info: info });
       });
 
       const dates = Object.keys(groups);
@@ -278,14 +409,12 @@
             <div class="p-2.5 space-y-2">
         `;
 
-        list.forEach(v => {
-          const cityInfo = v.city ? `г. ${v.city}` : 'РФ / Регион';
-          const flag = v.countryCode === 'RU' ? '🇷🇺' : (v.countryCode ? v.countryCode : '🌐');
+        list.forEach((v, idx) => {
+          const info = v._info || analyzeVisitor(v);
+          const cityInfo = v.city ? `г. ${v.city}` : (v.country || 'Локация');
+          const flag = v.countryCode === 'RU' ? '🇷🇺' : (v.countryCode === 'TR' ? '🇹🇷' : (v.countryCode === 'KZ' ? '🇰🇿' : (v.countryCode === 'US' ? '🇺🇸' : (v.countryCode === 'DE' ? '🇩🇪' : (v.countryCode ? v.countryCode : '🌐')))));
           const timeStr = v.time || (v.timestamp ? new Date(v.timestamp).toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' }) : '—');
           
-          const isMobile = /Android|iPhone|iPad|Mobile/i.test(v.userAgent || '');
-          const deviceIcon = isMobile ? '📱 Смартфон' : '💻 Компьютер';
-
           let sourceLabel = '⚡ Прямой заход';
           let sourceClass = 'text-gray-400';
           const ref = v.referer || '';
@@ -296,32 +425,55 @@
             sourceLabel = '🔍 Google Поиск';
             sourceClass = 'text-blue-400 font-bold';
           } else if (/vk\.com|t\.me|telegram|ok\.ru/i.test(ref)) {
-            sourceLabel = '💬 Соцсеть / Мессенджер';
+            sourceLabel = '💬 Мессенджер / Соцсеть';
             sourceClass = 'text-sky-400 font-bold';
           } else if (ref && ref !== 'Прямой заход') {
             sourceLabel = '🔗 ' + ref.replace(/^https?:\/\//, '').split('/')[0];
             sourceClass = 'text-amber-400';
           }
 
+          const cardId = 'vis_detail_' + Math.random().toString(36).substring(2, 9);
+
           html += `
-            <div class="p-3 bg-[#161922]/70 border border-[#262B36]/60 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2 hover:border-[#FF5E14]/40 transition-colors">
-              <div class="space-y-1">
-                <div class="flex items-center space-x-2">
-                  <span class="text-base">${flag}</span>
-                  <span class="font-black text-white text-sm">${cityInfo}</span>
-                  ${v.org ? `<span class="text-gray-400 text-[11px] bg-black/40 px-2 py-0.5 rounded border border-gray-800">${v.org}</span>` : ''}
+            <div class="p-3.5 bg-[#161922]/80 border border-[#262B36] rounded-xl flex flex-col gap-2 hover:border-[#FF5E14]/40 transition-colors">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <!-- Кто это: Бейдж типа и локация -->
+                <div class="space-y-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full border ${info.badgeClass}">
+                      ${info.badge}
+                    </span>
+                    <span class="text-base">${flag}</span>
+                    <span class="font-black text-white text-sm">${cityInfo}</span>
+                    ${v.country ? `<span class="text-[11px] text-gray-500">(${v.country})</span>` : ''}
+                  </div>
+                  <div class="text-xs text-gray-300 font-medium flex items-center space-x-1.5 pt-0.5">
+                    <span>${info.device}</span>
+                  </div>
                 </div>
-                <div class="flex items-center space-x-3 text-[11px] text-gray-400">
-                  <span class="${sourceClass}">${sourceLabel}</span>
-                  <span>•</span>
-                  <span>${deviceIcon}</span>
-                  ${v.ip && v.ip !== '127.0.0.1' ? `<span class="text-gray-600 font-mono">(${v.ip})</span>` : ''}
+
+                <!-- Время и источник -->
+                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center flex-shrink-0 pt-1 sm:pt-0">
+                  <div class="text-sm font-black text-emerald-400 font-mono">${timeStr}</div>
+                  <div class="text-[11px] ${sourceClass}">${sourceLabel}</div>
                 </div>
               </div>
 
-              <div class="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center flex-shrink-0">
-                <div class="text-sm font-black text-emerald-400 font-mono">${timeStr}</div>
-                <div class="text-[10px] text-gray-500">время захода</div>
+              <!-- Провайдер сети и кнопка деталей -->
+              <div class="pt-2 border-t border-[#262B36]/60 flex flex-wrap items-center justify-between text-[11px] text-gray-400 gap-1.5">
+                <div class="flex items-center space-x-1.5 truncate max-w-full">
+                  <span class="text-gray-500">Провайдер:</span>
+                  <span class="text-gray-300 font-semibold truncate">${v.org || 'Не определен'}</span>
+                  ${v.ip && v.ip !== '127.0.0.1' ? `<span class="text-gray-600 font-mono">(${v.ip})</span>` : ''}
+                </div>
+                <button type="button" onclick="document.getElementById('${cardId}').classList.toggle('hidden')" class="text-gray-500 hover:text-gray-300 text-[10px] underline ml-auto">
+                  инфо о браузере
+                </button>
+              </div>
+
+              <!-- Выпадающие детали User-Agent -->
+              <div id="${cardId}" class="hidden p-2 bg-[#0B0E14] border border-[#262B36] rounded text-[10px] font-mono text-gray-400 break-all">
+                ${v.userAgent || 'User-Agent не передан'}
               </div>
             </div>
           `;
