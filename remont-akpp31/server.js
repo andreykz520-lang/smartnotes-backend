@@ -371,7 +371,7 @@ function serveStatic(res, filePath, pathname = '') {
 module.exports = async function handleRemontAkpp(req, res) {
   // 301 Redirect from old subdomain to new domain
   const host = (req.headers.host || '').toLowerCase();
-  if (host.includes('remont-akpp31.ru')) {
+  if (host.includes('remont-akpp31.obd2scanai.ru')) {
     res.writeHead(301, {
       'Location': 'https://remont-akpp31.ru' + req.url,
       'Connection': 'close'
