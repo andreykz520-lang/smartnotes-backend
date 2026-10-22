@@ -582,9 +582,9 @@ module.exports = async function handleRemontAkpp(req, res) {
   if (pathname === '/robots.txt') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'robots.txt'), pathname);
   }
-  if (pathname === '/yandex_653a98d29361e4a4.html') {
+  if (pathname === '/yandex_1156d04f197c8786.html' || pathname === '/yandex_653a98d29361e4a4.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 653a98d29361e4a4</body></html>');
+    return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 1156d04f197c8786</body></html>');
   }
   if (pathname === '/sitemap.xml') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'sitemap.xml'), pathname);
