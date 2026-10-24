@@ -84,7 +84,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
           messages.push({ role: "user", content: "Привет" });
         }
 
-        const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const isVercel = process.env.VERCEL === '1';
+        const openRouterUrl = isVercel
+          ? "https://openrouter.ai/api/v1/chat/completions"
+          : "https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/v1/chat/completions";
+
+        const openRouterRes = await fetch(openRouterUrl, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${OPENROUTER_FALLBACK_KEY}`,

@@ -25,15 +25,10 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
     }
 
-    // Если используется ключ из .env (ключ разработчика), принудительно ставим актуальную Flash модель из переменной окружения
-    // Это защищает баланс от утечек и позволяет менять модель снаружи (в Vercel/env) без пересборки приложения
-    const isUsingDevKey = !authHeader || authHeader === "null" || authHeader === "undefined" || authHeader.toLowerCase() === "bearer";
-    const serverDefaultModel = process.env.OPENROUTER_DEFAULT_MODEL || 'google/gemini-3.8-flash';
+    const serverDefaultModel = process.env.OPENROUTER_DEFAULT_MODEL || 'google/gemini-2.5-flash';
     
     if (body) {
-      if (isUsingDevKey) {
-        body.model = serverDefaultModel;
-      } else if (!body.model) {
+      if (!body.model) {
         body.model = serverDefaultModel;
       }
       if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
@@ -41,7 +36,10 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       }
     }
 
-    const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
+    const isVercel = process.env.VERCEL === '1';
+    const openRouterUrl = isVercel
+      ? `https://openrouter.ai/api/${pathString}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       method: "POST",
@@ -79,7 +77,10 @@ export async function GET(req: NextRequest, { params }: { params?: Promise<{ pat
       apiKey = process.env.OPENROUTER_API_KEY || "";
     }
 
-    const openRouterUrl = `https://openrouter.ai/api/${pathString}`;
+    const isVercel = process.env.VERCEL === '1';
+    const openRouterUrl = isVercel
+      ? `https://openrouter.ai/api/${pathString}`
+      : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
     const response = await fetch(openRouterUrl, {
       headers: {
