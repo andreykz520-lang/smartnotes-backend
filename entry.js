@@ -7,6 +7,7 @@ const handleAutomechanic = require('./automechanic/server.js');
 const handleRemontAkpp = require('./remont-akpp31/server.js');
 const handleKontent = require('./kontent/server.js');
 const handlePsihosomatika = require('./psihosomatika/server.js');
+const handleAlyansMebel = require('./alyansmebel31/server.js');
 const { recordSmartNotesVisitor } = require('./smartnotes-tracker.js');
 
 const dev = false;
@@ -19,6 +20,11 @@ console.log(`[Multi-Site] Initializing SmartNotes, OBD2ScanAI, AutoMechanic, Rem
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
     const host = (req.headers.host || '').toLowerCase();
+    
+    // Альянс Мебель Белгород: alyansmebel31.ru
+    if (host.includes('alyansmebel31') || host.includes('alyans-mebel') || host.includes('mebel-blagodatnaya')) {
+      return handleAlyansMebel(req, res);
+    }
     
     // 0. Ремонт АКПП Белгород: remont-akpp31.obd2scanai.ru
     if (host.includes('remont-akpp') || host.includes('remontakpp') || host.includes('akpp31')) {
