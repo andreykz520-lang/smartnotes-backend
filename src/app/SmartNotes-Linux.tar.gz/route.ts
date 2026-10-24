@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  return NextResponse.redirect(
+    "https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/smartnotesapp-1.0.5.tar.gz",
+    302
+  );
+}
