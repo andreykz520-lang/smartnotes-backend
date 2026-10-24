@@ -35,9 +35,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (savedLang && translations[savedLang]) {
       setLanguageState(savedLang);
     } else {
-      const browserLang = navigator.language.split('-')[0] as Language;
+      const browserLang = (typeof navigator !== 'undefined' ? navigator.language : '').split('-')[0].toLowerCase() as Language;
       if (translations[browserLang]) {
         setLanguageState(browserLang);
+      } else {
+        setLanguageState('en');
       }
     }
   }, []);
