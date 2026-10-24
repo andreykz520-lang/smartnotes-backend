@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from './context/LanguageContext';
+import LanguageVoteMap from './components/LanguageVoteMap';
 
 export default function Home() {
   const { t, language, setLanguage } = useLanguage();
@@ -92,6 +93,10 @@ export default function Home() {
             <a href="#features" className="hover:text-white transition-colors">{t('features')}</a>
             <a href="#screenshots" className="hover:text-white transition-colors">{t('screenshots_nav')}</a>
             <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
+            <a href="#languages-vote" className="hover:text-purple-300 transition-colors flex items-center gap-1.5 text-purple-300">
+              <span>🌍</span>
+              <span>{isRu ? 'Голосование' : 'Languages'}</span>
+            </a>
             <a href="#faq" className="hover:text-white transition-colors">{t('faq_nav')}</a>
             <Link href="/guide" className="hover:text-purple-300 transition-colors font-semibold text-purple-400 flex items-center gap-1.5">
               📖 {t('guide_nav')}
@@ -731,6 +736,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* LANGUAGE VOTING MAP SECTION */}
+      <LanguageVoteMap />
+
       {/* FAQ SECTION */}
       <section id="faq" className="py-24 relative bg-[#0A0A0A] border-t border-white/10">
         <div className="max-w-4xl mx-auto px-6">
@@ -804,6 +812,10 @@ export default function Home() {
             <a href="#features" className="hover:text-white transition-colors">{t('features')}</a>
             <a href="#screenshots" className="hover:text-white transition-colors">{t('screenshots_nav')}</a>
             <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
+            <a href="#languages-vote" className="hover:text-purple-300 transition-colors flex items-center gap-1.5 text-purple-300">
+              <span>🌍</span>
+              <span>{isRu ? 'Голосование' : 'Languages'}</span>
+            </a>
             <a href="#faq" className="hover:text-white transition-colors">{t('faq_nav')}</a>
             <Link href="/guide" className="hover:text-purple-400 transition-colors font-medium text-purple-300">📖 {isRu ? 'Инструкция пользователя' : 'User Guide'}</Link>
             <Link href="/privacy" className="hover:text-purple-400 transition-colors">Политика конфиденциальности</Link>

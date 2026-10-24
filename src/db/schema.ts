@@ -70,6 +70,16 @@ export const payments = pgTable("payments", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// 6. ТАБЛИЦА ГОЛОСОВАНИЯ ЗА ЯЗЫКИ МИРА
+export const languageVotes = pgTable("language_votes", {
+  id: serial("id").primaryKey(),
+  languageCode: text("language_code").notNull(),
+  languageName: text("language_name").notNull(),
+  countryFlag: text("country_flag").notNull(),
+  voterHash: text("voter_hash").unique().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // СВЯЗИ
 export const usersRelations = relations(users, ({ many }) => ({
   devices: many(devices),
