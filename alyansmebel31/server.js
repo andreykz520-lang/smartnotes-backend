@@ -82,6 +82,12 @@ module.exports = function handleAlyansMebel(req, res) {
     return serveFile(res, ico, 'image/jpeg');
   }
 
+  // Yandex Webmaster Verification
+  if (pathname === '/yandex_309df6e0d8c54e60.html') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 309df6e0d8c54e60</body></html>');
+  }
+
   // 2. robots.txt
   if (pathname === '/robots.txt') {
     return serveFile(res, path.join(__dirname, 'robots.txt'), 'text/plain; charset=utf-8');
