@@ -262,3 +262,19 @@ function initPhoneMasking() {
     });
   });
 }
+
+/* ==========================================================================
+   Phone Click Analytics Tracker
+   ========================================================================== */
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="tel:"]');
+  if (link) {
+    try {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/click-phone');
+      } else {
+        fetch('/api/click-phone', { method: 'POST', keepalive: true }).catch(() => {});
+      }
+    } catch (err) {}
+  }
+});

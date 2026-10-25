@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Альянс Мебель • Панель Заявок</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#d97706" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/images/building.jpg" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+  <script src="/sounds.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#f59e0b',
+              amber: '#d97706',
+              dark: '#0B0E14',
+              card: '#161922',
+              border: '#262B36'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0B0E14; color: #F3F4F6; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .glow-amber { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .pulse-live { animation: pulse-ring 2s infinite; }
+  </style>
+</head>
+<body class="min-h-screen pb-12">
+
+  <!-- Audio Alert Element -->
+  <audio id="alertSound" preload="auto" playsinline></audio>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="fixed inset-0 bg-[#0B0E14] z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-[#161922] border border-[#262B36] rounded-2xl p-6 sm:p-8 shadow-2xl text-center">
+      <div class="w-14 h-14 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-500/30 text-2xl">
+        🛋️
+      </div>
+      <h1 class="text-xl font-black text-white mb-1">Альянс Мебель</h1>
+      <p class="text-xs text-gray-400 mb-6">Панель управления заявками (ул. Благодатная, 80)</p>
+      
+      <div id="loginError" class="hidden mb-4 p-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-400 text-xs text-left"></div>
+
+      <form id="loginForm" class="space-y-4">
+        <input type="password" id="passwordInput" required placeholder="Введите пароль" class="w-full bg-[#0F1115] border border-[#262B36] rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 text-center tracking-widest text-lg" />
+        <button type="submit" id="loginBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/25 glow-amber transition-all">
+          Войти в панель
+        </button>
+      </form>
+      <p class="text-[11px] text-gray-500 mt-4">Пароль по умолчанию: <code class="text-amber-400">admin2026</code></p>
+    </div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="mainDashboard" class="hidden">
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-40 bg-[#161922]/90 backdrop-blur-md border-b border-[#262B36] px-4 py-3.5">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-black font-black text-base shadow-md">
+            🛋️
+          </div>
+          <div>
+            <div class="text-sm font-black text-white leading-tight">Альянс Мебель</div>
+            <div class="text-[10px] text-gray-400 flex items-center">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 pulse-live"></span>
+              <span>Мониторинг заявок в реальном времени</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <!-- Ringtone selector -->
+          <div class="relative">
+            <select id="ringtoneSelect" onchange="changeRingtone(this.value)" class="bg-[#0F1115] border border-[#262B36] text-white text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-amber-500">
+              <option value="bell">🔔 Колокольчик</option>
+              <option value="modern_chime">✨ Мелодичный чим</option>
+              <option value="urgent_radar">🚨 Радар (Громкий)</option>
+              <option value="car_horn">🚗 Звуковой сигнал</option>
+              <option value="custom" id="customRingtoneOpt">📁 Своя мелодия</option>
+              <option value="upload">⬆️ Загрузить файл MP3/WAV...</option>
+            </select>
+            <input type="file" id="customAudioInput" accept="audio/*" class="hidden" onchange="handleCustomAudio(event)" />
+          </div>
+
+          <button id="testSoundBtn" onclick="testSound()" title="Прослушать мелодию" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs">
+            ▶️
+          </button>
+
+          <button id="soundToggleBtn" onclick="toggleSound()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+            <span id="soundIcon">🔊</span>
+          </button>
+
+          <!-- PWA Install Button -->
+          <button id="pwaInstallBtn" onclick="installPWA()" title="Установить приложение" class="hidden p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold">
+            📱 Скачать
+          </button>
+
+          <button onclick="logout()" title="Выйти" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 text-xs">
+            🚪
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 pt-6 space-y-6">
+
+      <!-- Audio Unlock Banner -->
+      <div id="audioUnlockBanner" class="p-3 bg-amber-500/15 border border-amber-500/30 rounded-xl text-amber-300 text-xs flex items-center justify-between">
+        <span>⚠️ Браузер блокирует авто-звук. Нажмите «Включить звук», чтобы слышать новые заявки:</span>
+        <button onclick="unlockAudio()" class="px-3 py-1 bg-amber-500 text-black font-bold text-xs rounded-lg hover:bg-amber-400">Включить</button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center shadow-lg">
+          <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">👁️ Просмотры сайта</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statVisits" class="text-2xl sm:text-3xl font-black text-white">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayVisits" class="font-black text-white">0</span>
+          </div>
+        </div>
+
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-emerald-500/30 shadow-lg">
+          <div class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-1">📞 Клики по телефону</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statCalls" class="text-2xl sm:text-3xl font-black text-emerald-400">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayCalls" class="font-black text-white">0</span>
+          </div>
+        </div>
+
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 text-center border-amber-500/30 shadow-lg">
+          <div class="text-[11px] font-bold text-amber-400 uppercase tracking-wider mb-1">🛋️ Заявки на консультацию</div>
+          <div class="flex items-baseline justify-center space-x-1.5">
+            <span id="statLeads" class="text-2xl sm:text-3xl font-black text-amber-400">0</span>
+            <span class="text-xs text-gray-500 font-bold">всего</span>
+          </div>
+          <div class="mt-2.5 inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+            <span>📅 Сегодня:</span>
+            <span id="statTodayLeads" class="font-black text-white">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Notification Status Banner -->
+      <div class="bg-[#161922] border border-[#262B36] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div class="flex items-center space-x-2 text-gray-300">
+          <span class="text-lg">📧</span>
+          <span>Оповещения отправляются на почту: <strong class="text-amber-400">Inkort3@mail.ru</strong></span>
+        </div>
+        <button onclick="testEmailNotification()" id="testEmailBtn" class="px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-[#262B36] text-white font-bold rounded-xl transition-all">
+          ✉️ Проверить отправку письма
+        </button>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="flex space-x-2 border-b border-[#262B36] pb-2">
+        <button onclick="switchTab('leads')" id="tabBtnLeads" class="px-4 py-2 text-sm font-bold rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center space-x-1.5">
+          <span>📋 Заявки</span>
+          <span id="leadsBadge" class="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500 text-black font-black">0</span>
+        </button>
+        <button onclick="switchTab('visitors')" id="tabBtnVisitors" class="px-4 py-2 text-sm font-bold rounded-xl text-gray-400 hover:text-white flex items-center space-x-1.5">
+          <span>🌐 Посетители сайта</span>
+          <span id="visitorsCountBadge" class="px-1.5 py-0.5 rounded-full text-[10px] bg-white/10 text-gray-300 font-bold">0</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Leads Section -->
+      <section id="tabLeads" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+            <span>Список поступивших заявок</span>
+          </h2>
+          <span class="text-xs text-gray-400">Обновляется автоматически каждые 4 сек.</span>
+        </div>
+
+        <div id="leadsList" class="space-y-3">
+          <div class="p-8 text-center text-gray-500 text-sm bg-[#161922] rounded-2xl border border-[#262B36]">
+            Загрузка заявок...
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Visitors Section -->
+      <section id="tabVisitors" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white">Последние визиты на сайт</h2>
+          <span class="text-xs text-gray-400">До 200 последних сессий</span>
+        </div>
+
+        <div class="bg-[#161922] border border-[#262B36] rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#0F1115] text-gray-400 uppercase border-b border-[#262B36]">
+                <tr>
+                  <th class="p-3">Время</th>
+                  <th class="p-3">Город / Страна</th>
+                  <th class="p-3">IP адрес</th>
+                  <th class="p-3">Провайдер / Устройство</th>
+                </tr>
+              </thead>
+              <tbody id="visitorsTableBody" class="divide-y divide-[#262B36] text-gray-300">
+                <tr><td colspan="4" class="p-4 text-center text-gray-500">Загрузка визитов...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- IndexedDB Permanent Sound Storage Helper -->
+  <script>
+    const SoundDB = {
+      dbName: 'AlyansMebelSoundDB',
+      storeName: 'soundStore',
+      
+      open: function() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(this.dbName, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+              db.createObjectStore(this.storeName);
+            }
+          };
+          req.onsuccess = (e) => resolve(e.target.result);
+          req.onerror = (e) => reject(e.target.error);
+        });
+      },
+
+      set: async function(key, val) {
+        try {
+          const db = await this.open();
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction(this.storeName, 'readwrite');
+            tx.objectStore(this.storeName).put(val, key);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = (e) => reject(e.target.error);
+          });
+        } catch (e) {
+          console.warn('IndexedDB set error:', e);
+          return false;
+        }
+      },
+
+      get: async function(key) {
+        try {
+          const db = await this.open();
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction(this.storeName, 'readonly');
+            const req = tx.objectStore(this.storeName).get(key);
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+          });
+        } catch (e) {
+          console.warn('IndexedDB get error:', e);
+          return null;
+        }
+      }
+    };
+  </script>
+
+  <!-- Main Admin Script -->
+  <script>
+    let savedPass = localStorage.getItem('alyans_admin_pass') || '';
+    let soundEnabled = true;
+    let audioUnlocked = false;
+    let knownLeadIds = new Set();
+    let pollInterval = null;
+    let deferredPrompt = null;
+    let customAudioBlobUrl = null;
+    let currentRingtone = localStorage.getItem('alyans_ringtone') || 'bell';
+
+    const alertAudio = document.getElementById('alertSound');
+
+    // Init Audio Context
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtxClass) audioCtx = new AudioCtxClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      return audioCtx;
+    }
+
+    function unlockAudio() {
+      if (audioUnlocked) return;
+      audioUnlocked = true;
+      initAudio();
+      const banner = document.getElementById('audioUnlockBanner');
+      if (banner) banner.style.display = 'none';
+      if (alertAudio) {
+        alertAudio.play().then(() => alertAudio.pause()).catch(() => {});
+      }
+    }
+
+    window.addEventListener('click', () => {
+      if (!audioUnlocked) unlockAudio();
+    }, { once: true });
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundToggleBtn');
+      const icon = document.getElementById('soundIcon');
+      if (soundEnabled) {
+        btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
+        icon.innerText = "🔊";
+        unlockAudio();
+      } else {
+        btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors flex items-center space-x-1 bg-red-500/15 text-red-400 border-red-500/30";
+        icon.innerText = "🔇";
+      }
+    }
+
+    // Synthesized Sound Fallback (Web Audio API)
+    function playSynthesizedSound() {
+      const ctx = initAudio();
+      if (!ctx) return;
+      try {
+        const now = ctx.currentTime;
+        // Chime: 587Hz -> 880Hz
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now);
+        osc1.frequency.exponentialRampToValueAtTime(880, now + 0.3);
+        gain1.gain.setValueAtTime(0.4, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.6);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(880, now + 0.2);
+        osc2.frequency.exponentialRampToValueAtTime(1174.66, now + 0.5);
+        gain2.gain.setValueAtTime(0.3, now + 0.2);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.2);
+        osc2.stop(now + 0.8);
+      } catch (e) {
+        console.warn('Synthesizer error:', e);
+      }
+    }
+
+    async function loadCustomSoundFromDB() {
+      try {
+        const savedBlob = await SoundDB.get('customAlert');
+        if (savedBlob) {
+          if (customAudioBlobUrl) URL.revokeObjectURL(customAudioBlobUrl);
+          customAudioBlobUrl = URL.createObjectURL(savedBlob);
+          const opt = document.getElementById('customRingtoneOpt');
+          if (opt) opt.innerText = '📁 Своя мелодия (сохранена)';
+        }
+      } catch (e) {
+        console.warn('Failed to load custom sound from IndexedDB:', e);
+      }
+    }
+
+    function setupAudioSource() {
+      if (!alertAudio) return;
+      if (!alertAudio.paused && alertAudio.currentTime > 0) return;
+
+      let targetSrc = '';
+      if (currentRingtone === 'custom') {
+        targetSrc = customAudioBlobUrl || '/custom-alert.mp3';
+      } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[currentRingtone]) {
+        targetSrc = window.EMBEDDED_SOUNDS[currentRingtone];
+      } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
+        targetSrc = window.EMBEDDED_SOUNDS.bell;
+      }
+
+      if (targetSrc) {
+        let isSame = false;
+        try {
+          isSame = (alertAudio.src === targetSrc) || (new URL(targetSrc, window.location.href).href === alertAudio.src);
+        } catch (e) {
+          isSame = (alertAudio.src === targetSrc);
+        }
+        if (!isSame) {
+          alertAudio.src = targetSrc;
+        }
+      }
+    }
+
+    function syncRingtoneUI() {
+      const sel = document.getElementById('ringtoneSelect');
+      if (sel) {
+        sel.value = currentRingtone;
+        const customOpt = document.getElementById('customRingtoneOpt');
+        if (customOpt) {
+          if (customAudioBlobUrl) {
+            customOpt.innerText = '📁 Своя мелодия (сохранена навсегда)';
+          } else {
+            customOpt.innerText = '📁 Своя мелодия';
+          }
+        }
+      }
+      setupAudioSource();
+    }
+
+    function changeRingtone(val) {
+      if (val === 'upload') {
+        document.getElementById('customAudioInput').click();
+        return;
+      }
+      if (val === 'custom' && !customAudioBlobUrl) {
+        document.getElementById('customAudioInput').click();
+        return;
+      }
+      currentRingtone = val;
+      localStorage.setItem('alyans_ringtone', val);
+      syncRingtoneUI();
+
+      if (savedPass) {
+        fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: savedPass, ringtone: val })
+        }).catch(() => {});
+      }
+      testSound();
+    }
+
+    async function handleCustomAudio(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) {
+        syncRingtoneUI();
+        return;
+      }
+
+      const customOpt = document.getElementById('customRingtoneOpt');
+      const sel = document.getElementById('ringtoneSelect');
+      if (customOpt) customOpt.innerText = '⏳ Сохранение в память...';
+      if (sel) sel.value = 'custom';
+
+      try {
+        // 1. Сохраняем в IndexedDB навсегда (никаких ограничений localStorage)
+        await SoundDB.set('customAlert', file);
+        if (customAudioBlobUrl) URL.revokeObjectURL(customAudioBlobUrl);
+        customAudioBlobUrl = URL.createObjectURL(file);
+
+        currentRingtone = 'custom';
+        localStorage.setItem('alyans_ringtone', 'custom');
+        syncRingtoneUI();
+
+        // 2. Отправляем копию на сервер
+        const reader = new FileReader();
+        reader.onload = async function(evt) {
+          try {
+            await fetch('/api/admin/upload-sound', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                password: savedPass,
+                audioData: evt.target.result,
+                fileName: file.name
+              })
+            });
+          } catch (err) {}
+        };
+        reader.readAsDataURL(file);
+
+        testSound();
+      } catch (err) {
+        console.error('Error saving audio:', err);
+        alert('Не удалось сохранить аудио: ' + err.message);
+      }
+    }
+
+    function playAlertRingtone() {
+      if (!soundEnabled) return;
+      setupAudioSource();
+      if (alertAudio && alertAudio.src) {
+        alertAudio.volume = 1.0;
+        alertAudio.currentTime = 0;
+        alertAudio.play().catch(e => {
+          console.warn('Audio tag blocked, using Web Audio synthesizer:', e);
+          playSynthesizedSound();
+        });
+      } else {
+        playSynthesizedSound();
+      }
+    }
+
+    function testSound() {
+      if (alertAudio && !alertAudio.paused && alertAudio.currentTime > 0) {
+        alertAudio.pause();
+        alertAudio.currentTime = 0;
+      }
+      if (!soundEnabled) toggleSound();
+      unlockAudio();
+      playAlertRingtone();
+    }
+
+    // Dashboard Data Fetching
+    async function fetchDashboardData() {
+      if (!savedPass) return;
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: savedPass })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderDashboard(data.stats, data.leads, data.settings);
+        } else if (res.status === 401) {
+          logout();
+        }
+      } catch (e) {
+        console.warn('Fetch dashboard error:', e);
+      }
+    }
+
+    function renderDashboard(stats, leads, settings) {
+      document.getElementById('statVisits').innerText = stats.totalVisits || 0;
+      document.getElementById('statTodayVisits').innerText = stats.todayVisits || 0;
+      document.getElementById('statCalls').innerText = stats.phoneClicks || 0;
+      document.getElementById('statTodayCalls').innerText = stats.todayPhoneClicks || 0;
+      document.getElementById('statLeads').innerText = (leads || []).length;
+      document.getElementById('statTodayLeads').innerText = stats.todayFormSubmits || 0;
+      document.getElementById('leadsBadge').innerText = (leads || []).length;
+      document.getElementById('visitorsCountBadge').innerText = (stats.visits || []).length;
+
+      // Проверка на новые заявки для звука
+      if (leads && leads.length > 0) {
+        let hasNewLead = false;
+        leads.forEach(lead => {
+          if (!knownLeadIds.has(lead.id)) {
+            hasNewLead = true;
+            knownLeadIds.add(lead.id);
+          }
+        });
+
+        // Если это не первая загрузка и появилась новая заявка - звеним!
+        if (hasNewLead && knownLeadIds.size > leads.length) {
+          playAlertRingtone();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]);
+        }
+      }
+
+      renderLeadsList(leads || []);
+      renderVisitorsList(stats.visits || []);
+    }
+
+    function renderLeadsList(leads) {
+      const container = document.getElementById('leadsList');
+      if (!leads || leads.length === 0) {
+        container.innerHTML = `
+          <div class="p-10 text-center bg-[#161922] rounded-2xl border border-[#262B36]">
+            <div class="text-3xl mb-2">🛋️</div>
+            <div class="text-white font-bold mb-1">Пока нет заявок</div>
+            <div class="text-xs text-gray-500">Как только клиент оставит заявку на сайте, она мгновенно появится здесь со звуковым оповещением.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = leads.map(lead => {
+        const cleanPhone = (lead.phone || '').replace(/[^0-9+]/g, '');
+        return `
+          <div class="bg-[#161922] border border-[#262B36] hover:border-amber-500/40 rounded-2xl p-4 sm:p-5 transition-all shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center space-x-2">
+                <span class="text-base font-black text-white">${lead.name || 'Клиент'}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  ${lead.source === 'quiz' ? 'Квиз-подбор' : (lead.category || 'Консультация')}
+                </span>
+                <span class="text-[11px] text-gray-500">• ${lead.createdAt || ''}</span>
+              </div>
+              <div class="text-lg font-black text-amber-400 tracking-wide font-mono">
+                <a href="tel:${cleanPhone}" class="hover:underline">${lead.phone}</a>
+              </div>
+              ${lead.comment ? `<div class="text-xs text-gray-300 bg-[#0F1115] p-2.5 rounded-xl border border-[#262B36]">${lead.comment}</div>` : ''}
+            </div>
+
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+              <a href="tel:${cleanPhone}" class="flex-1 sm:flex-none inline-flex items-center justify-center space-x-1.5 px-4 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all">
+                <span>📞</span>
+                <span>Позвонить</span>
+              </a>
+              <button onclick="deleteLead('${lead.id}')" title="Удалить заявку" class="p-3 bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-gray-500 rounded-xl border border-[#262B36] transition-all">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderVisitorsList(visits) {
+      const tbody = document.getElementById('visitorsTableBody');
+      if (!visits || visits.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">Пока нет записей визитов</td></tr>';
+        return;
+      }
+      tbody.innerHTML = visits.slice(0, 100).map(v => `
+        <tr class="hover:bg-white/5">
+          <td class="p-3 text-gray-400 whitespace-nowrap">${v.time || ''}</td>
+          <td class="p-3 font-semibold text-white">${v.country || ''} ${v.city ? '• ' + v.city : ''}</td>
+          <td class="p-3 font-mono text-gray-400">${v.ip || '—'}</td>
+          <td class="p-3 text-gray-400 truncate max-w-xs">${v.org || 'Пользователь'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteLead(leadId) {
+      if (!confirm('Удалить эту заявку?')) return;
+      try {
+        const res = await fetch('/api/admin/leads/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: savedPass, leadId })
+        });
+        if (res.ok) {
+          fetchDashboardData();
+        }
+      } catch (e) {}
+    }
+
+    async function testEmailNotification() {
+      const btn = document.getElementById('testEmailBtn');
+      btn.disabled = true;
+      btn.innerText = '⏳ Отправка письма...';
+      try {
+        const res = await fetch('/api/admin/test-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: savedPass })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert('✅ Тестовое письмо успешно отправлено на Inkort3@mail.ru!');
+        } else {
+          alert('❌ Ошибка отправки: ' + (data.error || 'Проверьте соединение'));
+        }
+      } catch (e) {
+        alert('❌ Ошибка сети: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '✉️ Проверить отправку письма';
+      }
+    }
+
+    function switchTab(tab) {
+      const leadsTab = document.getElementById('tabLeads');
+      const visitorsTab = document.getElementById('tabVisitors');
+      const btnLeads = document.getElementById('tabBtnLeads');
+      const btnVisitors = document.getElementById('tabBtnVisitors');
+
+      if (tab === 'leads') {
+        leadsTab.classList.remove('hidden');
+        visitorsTab.classList.add('hidden');
+        btnLeads.className = "px-4 py-2 text-sm font-bold rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center space-x-1.5";
+        btnVisitors.className = "px-4 py-2 text-sm font-bold rounded-xl text-gray-400 hover:text-white flex items-center space-x-1.5";
+      } else {
+        visitorsTab.classList.remove('hidden');
+        leadsTab.classList.add('hidden');
+        btnVisitors.className = "px-4 py-2 text-sm font-bold rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center space-x-1.5";
+        btnLeads.className = "px-4 py-2 text-sm font-bold rounded-xl text-gray-400 hover:text-white flex items-center space-x-1.5";
+      }
+    }
+
+    // Login Form Handler
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass = document.getElementById('passwordInput').value.trim();
+      const btn = document.getElementById('loginBtn');
+      const errBox = document.getElementById('loginError');
+
+      btn.disabled = true;
+      btn.innerText = 'Проверка пароля...';
+      errBox.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          savedPass = pass;
+          localStorage.setItem('alyans_admin_pass', pass);
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('mainDashboard').classList.remove('hidden');
+          unlockAudio();
+          renderDashboard(data.stats, data.leads, data.settings);
+          startPolling();
+        } else {
+          errBox.innerText = data.error || 'Неверный пароль';
+          errBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        errBox.innerText = 'Ошибка соединения: ' + err.message;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Войти в панель';
+      }
+    });
+
+    function logout() {
+      savedPass = '';
+      localStorage.removeItem('alyans_admin_pass');
+      if (pollInterval) clearInterval(pollInterval);
+      document.getElementById('mainDashboard').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('passwordInput').value = '';
+    }
+
+    function startPolling() {
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(fetchDashboardData, 4000);
+    }
+
+    // PWA Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('pwaInstallBtn');
+      if (installBtn) installBtn.classList.remove('hidden');
+    });
+
+    function installPWA() {
+      if (!deferredPrompt) {
+        alert('Для установки добавьте страницу на экран "Домой" через меню вашего браузера ("Установить приложение" или "На экран Домой").');
+        return;
+      }
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          const installBtn = document.getElementById('pwaInstallBtn');
+          if (installBtn) installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    // Initial check on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadCustomSoundFromDB();
+      syncRingtoneUI();
+
+      if (savedPass) {
+        try {
+          const res = await fetch('/api/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: savedPass })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            renderDashboard(data.stats, data.leads, data.settings);
+            startPolling();
+          } else {
+            logout();
+          }
+        } catch (e) {
+          logout();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
