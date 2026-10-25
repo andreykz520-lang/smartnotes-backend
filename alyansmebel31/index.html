@@ -8,6 +8,8 @@
   <link rel="canonical" href="https://alyansmebel31.ru/">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
   <link rel="authorizing-agent" href="/auth.md">
+  <link rel="oauth-authorization-server" href="/.well-known/oauth-authorization-server">
+  <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource">
   <link rel="service-doc" href="/llms.txt">
   <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog">
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="Markdown for Agents">
@@ -507,11 +509,11 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="quizName">Ваше имя:</label>
-                  <input type="text" id="quizName" class="form-input" placeholder="Например, Елена" required>
+                  <input type="text" id="quizName" toolparamdescription="Имя клиента для расчета стоимости" class="form-input" placeholder="Например, Елена" required>
                 </div>
                 <div class="form-group">
                   <label for="quizPhone">Ваш телефон:</label>
-                  <input type="tel" id="quizPhone" class="form-input" placeholder="+7 (___) ___-__-__" required>
+                  <input type="tel" id="quizPhone" toolparamdescription="Номер телефона клиента для расчета стоимости" class="form-input" placeholder="+7 (___) ___-__-__" required>
                 </div>
               </div>
               <div class="form-group">
@@ -774,15 +776,15 @@
         <input type="hidden" id="modalSubject" value="Заказ консультации">
         <div class="form-group">
           <label for="leadName">Ваше имя:</label>
-          <input type="text" id="leadName" class="form-input" placeholder="Иван" required>
+          <input type="text" id="leadName" toolparamdescription="Имя клиента" class="form-input" placeholder="Иван" required>
         </div>
         <div class="form-group">
           <label for="leadPhone">Номер телефона:</label>
-          <input type="tel" id="leadPhone" class="form-input" placeholder="+7 (___) ___-__-__" required>
+          <input type="tel" id="leadPhone" toolparamdescription="Номер телефона клиента для связи" class="form-input" placeholder="+7 (___) ___-__-__" required>
         </div>
         <div class="form-group">
           <label for="leadComment">Что вас интересует (необязательно):</label>
-          <input type="text" id="leadComment" class="form-input" placeholder="Например: угловой диван или спальня">
+          <input type="text" id="leadComment" toolparamdescription="Интересующая мебель или пожелания" class="form-input" placeholder="Например: угловой диван или спальня">
         </div>
         <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
         <p class="form-disclaimer">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
@@ -796,34 +798,71 @@
     </div>
   </div>
 
+  <!-- WebMCP Declarative Form for AI Agents -->
+  <form action="/api/lead" method="POST" toolname="bookConsultation" tooldescription="Записаться на консультацию или расчет стоимости мебели из массива Пинскдрев в салоне Альянс Мебель Белгород" style="display:none;" aria-hidden="true">
+    <input type="text" name="name" toolparamdescription="Имя клиента" placeholder="Ваше имя">
+    <input type="tel" name="phone" toolparamdescription="Номер телефона клиента для связи" placeholder="+7 (___) ___-__-__" required>
+    <input type="text" name="category" toolparamdescription="Интересующая категория мебели (диваны, спальни, массив дуба)" placeholder="Категория">
+    <input type="text" name="comment" toolparamdescription="Пожелания или комментарий клиента" placeholder="Комментарий">
+    <button type="submit">Записаться на консультацию</button>
+  </form>
+
   <script src="js/main.js"></script>
+  <!-- WebMCP Imperative API (https://webmachinelearning.github.io/webmcp/) -->
   <script>
-  if (typeof document !== 'undefined' && 'modelContext' in document && typeof document.modelContext?.registerTool === 'function') {
-    try {
-      document.modelContext.registerTool({
-        name: "bookConsultation",
-        description: "Записаться на консультацию или расчет стоимости мебели из массива Пинскдрев в салоне Альянс Мебель Белгород (ул. Благодатная, 80)",
-        inputSchema: {
-          type: "object",
-          properties: {
-            phone: { type: "string", description: "Номер телефона клиента" },
-            name: { type: "string", description: "Имя клиента" },
-            category: { type: "string", description: "Интересующая категория мебели (диваны, спальни, дуб и т.д.)" },
-            comment: { type: "string", description: "Пожелания или комментарий" }
+    (function() {
+      if (typeof document === 'undefined') return;
+      if (!document.modelContext) {
+        document.modelContext = {
+          tools: new Map(),
+          registerTool: function(tool, options) {
+            this.tools.set(tool.name, tool);
+            if (options && options.signal) {
+              options.signal.addEventListener('abort', () => this.unregisterTool(tool.name));
+            }
+            return Promise.resolve({ toolId: tool.name });
           },
-          required: ["phone"]
-        },
-        execute: async (args) => {
-          const res = await fetch("/api/lead", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(args)
-          });
-          return await res.json();
+          unregisterTool: function(name) {
+            this.tools.delete(name);
+          }
+        };
+      }
+      if (typeof navigator !== 'undefined' && !navigator.modelContext) {
+        navigator.modelContext = {
+          provideContext: function(ctx) { return Promise.resolve(ctx); }
+        };
+      }
+      if (typeof document.modelContext.registerTool === 'function') {
+        try {
+          var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+          var options = controller ? { signal: controller.signal } : {};
+          document.modelContext.registerTool({
+            name: "bookConsultation",
+            description: "Записаться на консультацию или расчет стоимости мебели из массива Пинскдрев в салоне Альянс Мебель Белгород (ул. Благодатная, 80)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                name: { type: "string", description: "Имя клиента" },
+                phone: { type: "string", description: "Номер телефона клиента" },
+                category: { type: "string", description: "Интересующая категория мебели (диваны, спальни, дуб и т.д.)" },
+                comment: { type: "string", description: "Пожелания или комментарий" }
+              },
+              required: ["phone"]
+            },
+            execute: async function(args) {
+              var res = await fetch("/api/lead", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(args)
+              });
+              return await res.json();
+            }
+          }, options);
+        } catch (e) {
+          console.warn('WebMCP registration error:', e);
         }
-      });
-    } catch (e) {}
-  }
+      }
+    })();
   </script>
 </body>
 </html>

@@ -51,6 +51,9 @@
         "bearer"
       ],
       "claim_uri": "https://alyansmebel31.ru/api/agent/claim"
-    }
+    },
+    "events_supported": [
+      "https://schemas.workos.com/events/agent/auth/identity/assertion/revoked"
+    ]
   }
 }

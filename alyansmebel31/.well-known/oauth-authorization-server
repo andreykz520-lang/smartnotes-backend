@@ -27,6 +27,33 @@
     "identity_endpoint": "https://alyansmebel31.ru/api/agent/identity",
     "claim_endpoint": "https://alyansmebel31.ru/api/agent/claim",
     "claim_uri": "https://alyansmebel31.ru/api/agent/claim",
-    "events_endpoint": "https://alyansmebel31.ru/api/agent/event"
+    "events_endpoint": "https://alyansmebel31.ru/api/agent/event",
+    "identity_types_supported": [
+      "anonymous",
+      "identity_assertion",
+      "service_auth"
+    ],
+    "credential_types_supported": [
+      "bearer"
+    ],
+    "anonymous": {
+      "credential_types_supported": [
+        "bearer"
+      ],
+      "claim_uri": "https://alyansmebel31.ru/api/agent/claim"
+    },
+    "identity_assertion": {
+      "assertion_types_supported": [
+        "urn:ietf:params:oauth:token-type:id-jag",
+        "verified_email"
+      ],
+      "credential_types_supported": [
+        "bearer"
+      ],
+      "claim_uri": "https://alyansmebel31.ru/api/agent/claim"
+    },
+    "events_supported": [
+      "https://schemas.workos.com/events/agent/auth/identity/assertion/revoked"
+    ]
   }
 }
