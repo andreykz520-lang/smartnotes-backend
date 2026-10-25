@@ -488,6 +488,53 @@
       visContainer.innerHTML = html;
     }
 
+    // Permanent IndexedDB Audio Storage (вечное хранение файла без сбросов)
+    const SoundDB = {
+      dbName: 'AkppSoundDB',
+      storeName: 'soundStore',
+      open: function() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(this.dbName, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+              db.createObjectStore(this.storeName);
+            }
+          };
+          req.onsuccess = (e) => resolve(e.target.result);
+          req.onerror = (e) => reject(e.target.error);
+        });
+      },
+      set: async function(key, val) {
+        try {
+          const db = await this.open();
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction(this.storeName, 'readwrite');
+            tx.objectStore(this.storeName).put(val, key);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = (e) => reject(e.target.error);
+          });
+        } catch (e) {
+          console.warn('SoundDB set error:', e);
+          return false;
+        }
+      },
+      get: async function(key) {
+        try {
+          const db = await this.open();
+          return new Promise((resolve, reject) => {
+            const tx = db.transaction(this.storeName, 'readonly');
+            const req = tx.objectStore(this.storeName).get(key);
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+          });
+        } catch (e) {
+          console.warn('SoundDB get error:', e);
+          return null;
+        }
+      }
+    };
+
     let savedPass = localStorage.getItem('akpp_admin_pass') || '';
     let soundEnabled = true;
     let audioUnlocked = false;
@@ -597,9 +644,24 @@
       }
     }
 
-    let currentRingtone = localStorage.getItem('akpp_ringtone') || 'bell';
+        let currentRingtone = localStorage.getItem('akpp_ringtone') || 'bell';
     let serverCustomSoundUrl = localStorage.getItem('akpp_server_sound_url') || '';
-    const customAudioData = localStorage.getItem('akpp_custom_audio');
+    let customAudioData = localStorage.getItem('akpp_custom_audio') || '';
+    let customAudioBlobUrl = null;
+
+    async function loadCustomSoundFromDB() {
+      try {
+        const savedBlob = await SoundDB.get('customAlert');
+        if (savedBlob) {
+          if (customAudioBlobUrl) URL.revokeObjectURL(customAudioBlobUrl);
+          customAudioBlobUrl = URL.createObjectURL(savedBlob);
+          const opt = document.getElementById('customRingtoneOpt');
+          if (opt) opt.innerText = '📁 Своя мелодия (сохранена навсегда)';
+        }
+      } catch (e) {
+        console.warn('SoundDB load error:', e);
+      }
+    }
 
     function setupAudioSource() {
       if (!alertAudio) return;
@@ -608,7 +670,7 @@
 
       let targetSrc = '';
       if (currentRingtone === 'custom') {
-        targetSrc = serverCustomSoundUrl || customAudioData || '/custom-alert.mp3';
+        targetSrc = customAudioBlobUrl || serverCustomSoundUrl || customAudioData || '/custom-alert.mp3';
       } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS[currentRingtone]) {
         targetSrc = window.EMBEDDED_SOUNDS[currentRingtone];
       } else if (window.EMBEDDED_SOUNDS && window.EMBEDDED_SOUNDS.bell) {
@@ -633,7 +695,7 @@
         sel.value = currentRingtone;
         const customOpt = document.getElementById('customRingtoneOpt');
         if (customOpt) {
-          if (serverCustomSoundUrl || customAudioData) {
+          if (customAudioBlobUrl || serverCustomSoundUrl || customAudioData) {
             customOpt.innerText = '📁 Своя мелодия (активна)';
           } else {
             customOpt.innerText = '📁 Своя мелодия';
@@ -643,8 +705,8 @@
       setupAudioSource();
     }
 
-    // Первичная инициализация
-    syncRingtoneUI();
+    // Первичная инициализация с подгрузкой из IndexedDB
+    loadCustomSoundFromDB().then(() => syncRingtoneUI());
 
     function changeRingtone(val) {
       if (val === 'upload') {
@@ -671,7 +733,7 @@
       testSound();
     }
 
-    function handleCustomAudio(e) {
+    async function handleCustomAudio(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) {
         syncRingtoneUI();
@@ -680,46 +742,46 @@
 
       const customOpt = document.getElementById('customRingtoneOpt');
       const sel = document.getElementById('ringtoneSelect');
-      if (customOpt) customOpt.innerText = '⏳ Сохранение на сервер...';
+      if (customOpt) customOpt.innerText = '⏳ Сохранение в память...';
       if (sel) sel.value = 'custom';
 
-      const reader = new FileReader();
-      reader.onload = async function(evt) {
-        const base64Audio = evt.target.result;
-        try {
-          // Отправка на сервер для вечного сохранения
-          const res = await fetch('/api/admin/upload-sound', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              password: savedPass,
-              audioData: base64Audio,
-              fileName: file.name
-            })
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            serverCustomSoundUrl = data.soundUrl;
-            localStorage.setItem('akpp_server_sound_url', data.soundUrl);
-            currentRingtone = 'custom';
-            localStorage.setItem('akpp_ringtone', 'custom');
-            syncRingtoneUI();
-            testSound();
-          } else {
-            throw new Error(data.error || 'Ошибка загрузки');
-          }
-        } catch (err) {
-          console.warn('Server upload failed, using local fallback:', err);
+      try {
+        // 1. Сохраняем в IndexedDB навсегда без ограничений объема
+        await SoundDB.set('customAlert', file);
+        if (customAudioBlobUrl) URL.revokeObjectURL(customAudioBlobUrl);
+        customAudioBlobUrl = URL.createObjectURL(file);
+
+        currentRingtone = 'custom';
+        localStorage.setItem('akpp_ringtone', 'custom');
+        syncRingtoneUI();
+
+        // 2. Отправляем копию на сервер
+        const reader = new FileReader();
+        reader.onload = async function(evt) {
+          const base64Audio = evt.target.result;
           try {
-            localStorage.setItem('akpp_custom_audio', base64Audio);
+            const res = await fetch('/api/admin/upload-sound', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                password: savedPass,
+                audioData: base64Audio,
+                fileName: file.name
+              })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              serverCustomSoundUrl = data.soundUrl;
+              localStorage.setItem('akpp_server_sound_url', data.soundUrl);
+            }
           } catch (e) {}
-          currentRingtone = 'custom';
-          localStorage.setItem('akpp_ringtone', 'custom');
-          syncRingtoneUI();
-          testSound();
-        }
-      };
-      reader.readAsDataURL(file);
+        };
+        reader.readAsDataURL(file);
+
+        testSound();
+      } catch (err) {
+        console.error('Audio save error:', err);
+      }
     }
 
     function playAlertRingtone() {
@@ -787,7 +849,7 @@
     function renderDashboard(stats, leads, settings) {
       if (settings) {
         let changed = false;
-        if (settings.ringtone && settings.ringtone !== currentRingtone) {
+        if (currentRingtone !== 'custom' && settings.ringtone && settings.ringtone !== 'bell' && !localStorage.getItem('akpp_ringtone')) {
           currentRingtone = settings.ringtone;
           localStorage.setItem('akpp_ringtone', currentRingtone);
           changed = true;
