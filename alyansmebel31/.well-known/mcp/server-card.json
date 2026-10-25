@@ -1,0 +1,43 @@
+{
+  "serverInfo": {
+    "name": "alyansmebel31",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://alyansmebel31.ru/api/mcp"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "getFurnitureCatalog",
+        "description": "Получить каталог и актуальные цены на мебель из массива (дуб, ольха, бук) и диваны фабрики Пинскдрев в Белгороде",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Категория: гостиные, спальни, диваны, столы, кабинеты",
+              "enum": ["all", "living", "bedroom", "sofas", "dining", "hallway"]
+            }
+          },
+          "required": []
+        }
+      },
+      {
+        "name": "consultationRequest",
+        "description": "Записаться на бесплатную консультацию и расчет стоимости мебели с консультантами Игорем и Инной",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "description": "Имя клиента" },
+            "phone": { "type": "string", "description": "Номер телефона клиента" },
+            "furnitureType": { "type": "string", "description": "Интересующий тип мебели" },
+            "comment": { "type": "string", "description": "Комментарий или пожелания" }
+          },
+          "required": ["phone"]
+        }
+      }
+    ]
+  }
+}

@@ -6,6 +6,11 @@
   <title>Салон «Альянс Мебель» в Белгороде | ул. Благодатная, 80 — Белорусская мебель «Пинскдрев»</title>
   <meta name="description" content="Магазин «Альянс Мебель» в Белгороде на ул. Благодатная, 80 (1 этаж, напротив ТЦ Сити Молл) — торговый партнёр компании «Пинскдрев». Мебель из массива дуба, диваны, спальни, гостиные по ценам производителя.">
   <link rel="canonical" href="https://alyansmebel31.ru/">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+  <link rel="authorizing-agent" href="/auth.md">
+  <link rel="service-doc" href="/llms.txt">
+  <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog">
+  <link rel="alternate" type="text/markdown" href="/llms.txt" title="Markdown for Agents">
   
   <!-- Open Graph / Соцсети и мессенджеры -->
   <meta property="og:type" content="website">
@@ -498,7 +503,7 @@
           <!-- Step 3 -->
           <div class="quiz-step" data-step="3">
             <h4 class="step-question">Шаг 3 из 3: Куда прислать каталог с ценами и купон на скидку 5%?</h4>
-            <form id="quizForm" onsubmit="submitQuiz(event)">
+            <form id="quizForm" toolname="bookConsultation" tooldescription="Подбор мебели и расчет стоимости в салоне Альянс Мебель Белгород" onsubmit="submitQuiz(event)">
               <div class="form-row">
                 <div class="form-group">
                   <label for="quizName">Ваше имя:</label>
@@ -765,7 +770,7 @@
         <h3 id="modalTitle">Заказать консультацию</h3>
         <p id="modalDesc">Оставьте номер телефона, и дежурный менеджер (Игорь или Инна) перезвонит вам в течение 10 минут, ответит на вопросы и рассчитает точную стоимость мебели.</p>
       </div>
-      <form id="modalForm" onsubmit="submitModalLead(event)">
+      <form id="modalForm" toolname="bookConsultation" tooldescription="Заказать консультацию или расчет мебели в салоне Альянс Мебель Белгород" onsubmit="submitModalLead(event)">
         <input type="hidden" id="modalSubject" value="Заказ консультации">
         <div class="form-group">
           <label for="leadName">Ваше имя:</label>
@@ -792,5 +797,33 @@
   </div>
 
   <script src="js/main.js"></script>
+  <script>
+  if (typeof document !== 'undefined' && 'modelContext' in document && typeof document.modelContext?.registerTool === 'function') {
+    try {
+      document.modelContext.registerTool({
+        name: "bookConsultation",
+        description: "Записаться на консультацию или расчет стоимости мебели из массива Пинскдрев в салоне Альянс Мебель Белгород (ул. Благодатная, 80)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            phone: { type: "string", description: "Номер телефона клиента" },
+            name: { type: "string", description: "Имя клиента" },
+            category: { type: "string", description: "Интересующая категория мебели (диваны, спальни, дуб и т.д.)" },
+            comment: { type: "string", description: "Пожелания или комментарий" }
+          },
+          required: ["phone"]
+        },
+        execute: async (args) => {
+          const res = await fetch("/api/lead", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(args)
+          });
+          return await res.json();
+        }
+      });
+    } catch (e) {}
+  }
+  </script>
 </body>
 </html>

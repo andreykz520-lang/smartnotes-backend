@@ -95,6 +95,19 @@ window.submitQuiz = function(event) {
   const name = document.getElementById('quizName')?.value || '';
   const phone = document.getElementById('quizPhone')?.value || '';
 
+  // Send lead to server API
+  fetch('/api/lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      phone,
+      category: selectedFurniture,
+      comment: `Стиль: ${selectedStyle}, Связь: ${contactMethod}`,
+      source: 'quiz'
+    })
+  }).catch(err => console.error('Lead error:', err));
+
   // Log lead details in console for demonstration
   console.log('--- Новая заявка с квиза (Благодатная 80) ---', {
     name,
@@ -178,6 +191,19 @@ window.submitModalLead = function(event) {
   const phone = document.getElementById('leadPhone')?.value || '';
   const comment = document.getElementById('leadComment')?.value || '';
   const subject = document.getElementById('modalSubject')?.value || 'Заявка с сайта';
+
+  // Send lead to server API
+  fetch('/api/lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      phone,
+      comment,
+      category: subject,
+      source: 'modal'
+    })
+  }).catch(err => console.error('Lead error:', err));
 
   console.log('--- Новая заявка на консультацию ---', {
     subject,

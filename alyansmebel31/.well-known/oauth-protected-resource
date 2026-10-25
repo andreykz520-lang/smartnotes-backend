@@ -1,0 +1,15 @@
+{
+  "resource": "https://alyansmebel31.ru",
+  "resource_name": "Альянс Мебель Белгород",
+  "authorization_servers": [
+    "https://alyansmebel31.ru"
+  ],
+  "scopes_supported": [
+    "lead:create",
+    "catalog:read"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://alyansmebel31.ru/llms.txt"
+}

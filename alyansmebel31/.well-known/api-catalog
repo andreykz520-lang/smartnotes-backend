@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://alyansmebel31.ru/api",
+      "service-desc": [
+        {
+          "href": "https://alyansmebel31.ru/api/openapi.json",
+          "type": "application/vnd.oai.openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://alyansmebel31.ru/llms.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://alyansmebel31.ru/api/health",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

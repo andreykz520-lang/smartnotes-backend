@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/agent-skills-discovery-rfc/main/schema/v0.2.0.json",
+  "skills": [
+    {
+      "name": "furniture-catalog-and-booking",
+      "type": "tools",
+      "description": "Поиск мебели из массива Пинскдрев в Белгороде и запись на расчет к консультантам",
+      "url": "https://alyansmebel31.ru/llms.txt"
+    }
+  ]
+}

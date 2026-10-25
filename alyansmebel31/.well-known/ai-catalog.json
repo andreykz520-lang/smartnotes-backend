@@ -1,0 +1,33 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "Альянс Мебель Белгород",
+    "url": "https://alyansmebel31.ru"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:alyansmebel31.ru:app:catalog",
+      "displayName": "Альянс Мебель — Мебель Пинскдрев из массива в Белгороде",
+      "type": "text/markdown",
+      "url": "https://alyansmebel31.ru/llms.txt",
+      "representativeQueries": [
+        "Мебель из массива дуба Белгород",
+        "Салон Пинскдрев Белгород Благодатная 80",
+        "Купить диван из массива Пинскдрев",
+        "Спальни и гостиные из массива дерева Белгород",
+        "Цены на мебель Пинскдрев Белгород"
+      ]
+    },
+    {
+      "identifier": "urn:air:alyansmebel31.ru:mcp:server",
+      "displayName": "Альянс Мебель MCP Server",
+      "type": "application/json",
+      "url": "https://alyansmebel31.ru/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "Записаться на консультацию в салон мебели",
+        "Каталог мебели Пинскдрев наличие Белгород",
+        "Рассчитать стоимость мебели из массива"
+      ]
+    }
+  ]
+}
