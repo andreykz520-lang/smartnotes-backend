@@ -299,6 +299,9 @@
     let soundEnabled = true;
     let audioUnlocked = false;
     let knownLeadIds = new Set();
+    let lastLeadsCount = -1;
+    let lastLeadId = null;
+    let lastPhoneClicks = -1;
     let pollInterval = null;
     let deferredPrompt = null;
     let customAudioBlobUrl = null;
@@ -563,22 +566,22 @@
       document.getElementById('leadsBadge').innerText = (leads || []).length;
       document.getElementById('visitorsCountBadge').innerText = (stats.visits || []).length;
 
-      // Проверка на новые заявки для звука
-      if (leads && leads.length > 0) {
-        let hasNewLead = false;
-        leads.forEach(lead => {
-          if (!knownLeadIds.has(lead.id)) {
-            hasNewLead = true;
-            knownLeadIds.add(lead.id);
-          }
-        });
+      // Проверка на новые события для звукового сигнала
+      const latestLead = leads && leads[0];
+      const isNewLead = (lastLeadsCount !== -1 && (leads || []).length > lastLeadsCount) || 
+                        (latestLead && lastLeadId && latestLead.id !== lastLeadId);
 
-        // Если это не первая загрузка и появилась новая заявка - звеним!
-        if (hasNewLead && knownLeadIds.size > leads.length) {
-          playAlertRingtone();
-          if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]);
-        }
+      if (isNewLead) {
+        playAlertRingtone();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]);
       }
+      if (lastPhoneClicks !== -1 && (stats.phoneClicks || 0) > lastPhoneClicks) {
+        playAlertRingtone();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+      lastLeadsCount = (leads || []).length;
+      lastPhoneClicks = stats.phoneClicks || 0;
+      if (latestLead) lastLeadId = latestLead.id;
 
       renderLeadsList(leads || []);
       renderVisitorsList(stats.visits || []);

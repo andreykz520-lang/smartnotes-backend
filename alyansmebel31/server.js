@@ -309,10 +309,11 @@ function serveFile(res, filePath, contentType, extraHeaders = {}) {
   }
 
   const stat = fs.statSync(filePath);
+  const isDynamicAsset = filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css') || filePath.endsWith('.json');
   const headers = {
     'Content-Type': contentType || 'application/octet-stream',
     'Content-Length': stat.size,
-    'Cache-Control': filePath.endsWith('.html') ? 'no-cache, no-store, must-revalidate' : 'public, max-age=86400',
+    'Cache-Control': isDynamicAsset ? 'no-cache, no-store, must-revalidate' : 'public, max-age=86400',
     'Access-Control-Allow-Origin': '*',
     ...extraHeaders
   };
@@ -538,32 +539,64 @@ module.exports = function handleAlyansMebel(req, res) {
     req.on('data', chunk => { bodyStr += chunk; });
     req.on('end', () => {
       try {
-        const data = JSON.parse(bodyStr || '{}');
-        if (!data.phone || data.phone.trim().length < 6) {
-          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-          return res.end(JSON.stringify({ success: false, error: 'Укажите номер телефона' }));
+        let data = {};
+        const trimmed = (bodyStr || '').trim();
+        if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+          data = JSON.parse(trimmed);
+        } else {
+          const params = new URLSearchParams(trimmed);
+          for (const [key, value] of params.entries()) {
+            data[key] = value;
+          }
         }
+
+        const phone = (data.phone || '').trim();
+        if (!phone || phone.length < 6) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ success: false, error: 'Укажите корректный номер телефона' }));
+        }
+
         const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
         const saved = addLead({
-          name: data.name || '',
-          phone: data.phone.trim(),
-          category: data.category || data.furniture || '',
+          name: (data.name || '').trim(),
+          phone: phone,
+          category: data.category || data.furniture || data.subject || 'Консультация по мебели',
           comment: data.comment || data.style || '',
           source: data.source || 'website',
           ip
         });
+
+        console.log('[New Lead Received]:', saved.id, saved.phone, saved.name);
 
         // Отправка email в фоновом режиме (не задерживая ответ клиенту)
         sendLeadEmail(saved).catch(err => {
           console.error('[Lead Mail Error]:', err);
         });
 
+        // Поддержка стандартной отправки HTML-формы без AJAX
+        if (acceptHeader.includes('text/html') && !acceptHeader.includes('application/json')) {
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+          return res.end(`
+            <!DOCTYPE html>
+            <html lang="ru">
+            <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Спасибо за заявку</title></head>
+            <body style="font-family:sans-serif;text-align:center;padding:50px 20px;background:#0d1117;color:#fff;">
+              <h2 style="color:#10b981;font-size:26px;">✓ Заявка успешно принята!</h2>
+              <p style="font-size:16px;color:#d1d5db;">Менеджер салона «Альянс Мебель» (Благодатная, 80) перезвонит вам в течение 10 минут.</p>
+              <a href="/" style="display:inline-block;margin-top:24px;padding:14px 28px;background:#d97706;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;">Вернуться на сайт</a>
+            </body>
+            </html>
+          `);
+        }
+
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({
           success: true,
+          lead: saved,
           message: 'Спасибо! Ваша заявка принята. Игорь или Инна перезвонят вам в ближайшее время.'
         }));
       } catch (err) {
+        console.error('[Lead Processing Error]:', err);
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ success: false, error: 'Ошибка сервера' }));
       }

@@ -535,15 +535,15 @@
           <!-- Step 3 -->
           <div class="quiz-step" data-step="3">
             <h4 class="step-question">Шаг 3 из 3: Куда прислать каталог с ценами и купон на скидку 5%?</h4>
-            <form id="quizForm" toolname="bookConsultation" tooldescription="Подбор мебели и расчет стоимости в салоне Альянс Мебель Белгород" onsubmit="submitQuiz(event)">
+            <form id="quizForm" action="/api/lead" method="POST" toolname="bookConsultation" tooldescription="Подбор мебели и расчет стоимости в салоне Альянс Мебель Белгород" onsubmit="submitQuiz(event)">
               <div class="form-row">
                 <div class="form-group">
                   <label for="quizName">Ваше имя:</label>
-                  <input type="text" id="quizName" toolparamdescription="Имя клиента для расчета стоимости" class="form-input" placeholder="Например, Елена" required>
+                  <input type="text" id="quizName" name="name" toolparamdescription="Имя клиента для расчета стоимости" class="form-input" placeholder="Например, Елена" required>
                 </div>
                 <div class="form-group">
                   <label for="quizPhone">Ваш телефон:</label>
-                  <input type="tel" id="quizPhone" toolparamdescription="Номер телефона клиента для расчета стоимости" class="form-input" placeholder="+7 (___) ___-__-__" required>
+                  <input type="tel" id="quizPhone" name="phone" toolparamdescription="Номер телефона клиента для расчета стоимости" class="form-input" placeholder="+7 (___) ___-__-__" required>
                 </div>
               </div>
               <div class="form-group">
@@ -802,21 +802,21 @@
         <h3 id="modalTitle">Заказать консультацию</h3>
         <p id="modalDesc">Оставьте номер телефона, и дежурный менеджер (Игорь или Инна) перезвонит вам в течение 10 минут, ответит на вопросы и рассчитает точную стоимость мебели.</p>
       </div>
-      <form id="modalForm" toolname="bookConsultation" tooldescription="Заказать консультацию или расчет мебели в салоне Альянс Мебель Белгород" onsubmit="submitModalLead(event)">
-        <input type="hidden" id="modalSubject" value="Заказ консультации">
+      <form id="modalForm" action="/api/lead" method="POST" toolname="bookConsultation" tooldescription="Заказать консультацию или расчет мебели в салоне Альянс Мебель Белгород" onsubmit="submitModalLead(event)">
+        <input type="hidden" id="modalSubject" name="category" value="Заказ консультации">
         <div class="form-group">
           <label for="leadName">Ваше имя:</label>
-          <input type="text" id="leadName" toolparamdescription="Имя клиента" class="form-input" placeholder="Иван" required>
+          <input type="text" id="leadName" name="name" toolparamdescription="Имя клиента" class="form-input" placeholder="Иван" required>
         </div>
         <div class="form-group">
           <label for="leadPhone">Номер телефона:</label>
-          <input type="tel" id="leadPhone" toolparamdescription="Номер телефона клиента для связи" class="form-input" placeholder="+7 (___) ___-__-__" required>
+          <input type="tel" id="leadPhone" name="phone" toolparamdescription="Номер телефона клиента для связи" class="form-input" placeholder="+7 (___) ___-__-__" required>
         </div>
         <div class="form-group">
           <label for="leadComment">Что вас интересует (необязательно):</label>
-          <input type="text" id="leadComment" toolparamdescription="Интересующая мебель или пожелания" class="form-input" placeholder="Например: угловой диван или спальня">
+          <input type="text" id="leadComment" name="comment" toolparamdescription="Интересующая мебель или пожелания" class="form-input" placeholder="Например: угловой диван или спальня">
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+        <button type="submit" id="modalSubmitBtn" class="btn btn-primary btn-block">Отправить заявку</button>
         <p class="form-disclaimer">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
       </form>
       <div id="modalSuccess" class="modal-success-state" style="display: none;">
@@ -837,7 +837,7 @@
     <button type="submit">Записаться на консультацию</button>
   </form>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=20261025_lead_fix"></script>
   <!-- WebMCP Imperative API (https://webmachinelearning.github.io/webmcp/) -->
   <script>
     (function() {

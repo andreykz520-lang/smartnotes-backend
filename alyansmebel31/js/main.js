@@ -86,7 +86,7 @@ function updateQuizProgress(step) {
   }
 }
 
-window.submitQuiz = function(event) {
+window.submitQuiz = async function(event) {
   event.preventDefault();
 
   const selectedFurniture = document.querySelector('input[name="furniture_type"]:checked')?.value || 'Не выбрано';
@@ -95,38 +95,59 @@ window.submitQuiz = function(event) {
   const name = document.getElementById('quizName')?.value || '';
   const phone = document.getElementById('quizPhone')?.value || '';
 
-  // Send lead to server API
-  fetch('/api/lead', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      phone,
-      category: selectedFurniture,
-      comment: `Стиль: ${selectedStyle}, Связь: ${contactMethod}`,
-      source: 'quiz'
-    })
-  }).catch(err => console.error('Lead error:', err));
-
-  // Log lead details in console for demonstration
-  console.log('--- Новая заявка с квиза (Благодатная 80) ---', {
-    name,
-    phone,
-    furniture: selectedFurniture,
-    style: selectedStyle,
-    contactMethod,
-    time: new Date().toLocaleString()
-  });
-
-  // Hide steps and show success
-  document.querySelectorAll('.quiz-step').forEach(s => s.style.display = 'none');
-  const successBox = document.getElementById('quizSuccess');
-  if (successBox) {
-    successBox.style.display = 'block';
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка заявки...';
   }
-  const progressFill = document.getElementById('quizProgress');
-  if (progressFill) {
-    progressFill.style.width = '100%';
+
+  try {
+    const res = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        phone,
+        category: selectedFurniture,
+        comment: `Стиль: ${selectedStyle}, Связь: ${contactMethod}`,
+        source: 'quiz'
+      })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok && data.error) {
+      alert(data.error || 'Ошибка отправки заявки. Попробуйте еще раз или позвоните нам.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+      return;
+    }
+
+    // Hide steps and show success
+    document.querySelectorAll('.quiz-step').forEach(s => s.style.display = 'none');
+    const successBox = document.getElementById('quizSuccess');
+    if (successBox) {
+      successBox.style.display = 'block';
+    }
+    const progressFill = document.getElementById('quizProgress');
+    if (progressFill) {
+      progressFill.style.width = '100%';
+    }
+  } catch (err) {
+    console.error('Lead error:', err);
+    // Show success anyway if server is unreachable but form filled
+    document.querySelectorAll('.quiz-step').forEach(s => s.style.display = 'none');
+    const successBox = document.getElementById('quizSuccess');
+    if (successBox) {
+      successBox.style.display = 'block';
+    }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
   }
 };
 
@@ -184,7 +205,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-window.submitModalLead = function(event) {
+window.submitModalLead = async function(event) {
   event.preventDefault();
 
   const name = document.getElementById('leadName')?.value || '';
@@ -192,32 +213,52 @@ window.submitModalLead = function(event) {
   const comment = document.getElementById('leadComment')?.value || '';
   const subject = document.getElementById('modalSubject')?.value || 'Заявка с сайта';
 
-  // Send lead to server API
-  fetch('/api/lead', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      phone,
-      comment,
-      category: subject,
-      source: 'modal'
-    })
-  }).catch(err => console.error('Lead error:', err));
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка заявки...';
+  }
 
-  console.log('--- Новая заявка на консультацию ---', {
-    subject,
-    name,
-    phone,
-    comment,
-    salon: 'Белгород, ул. Благодатная, 80',
-    time: new Date().toLocaleString()
-  });
+  try {
+    const res = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        phone,
+        comment,
+        category: subject,
+        source: 'modal'
+      })
+    });
 
-  const form = document.getElementById('modalForm');
-  const successState = document.getElementById('modalSuccess');
-  if (form) form.style.display = 'none';
-  if (successState) successState.style.display = 'block';
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok && data.error) {
+      alert(data.error || 'Ошибка отправки заявки. Попробуйте еще раз или позвоните нам.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+      return;
+    }
+
+    const form = document.getElementById('modalForm');
+    const successState = document.getElementById('modalSuccess');
+    if (form) form.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+  } catch (err) {
+    console.error('Lead error:', err);
+    const form = document.getElementById('modalForm');
+    const successState = document.getElementById('modalSuccess');
+    if (form) form.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+  }
 };
 
 /* ==========================================================================
