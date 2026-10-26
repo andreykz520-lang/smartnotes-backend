@@ -47,6 +47,26 @@ const nextConfig: NextConfig = {
         destination: 'https://github.com/andreykz520-lang/smartnotes-app/releases/download/v1.0.4/smartnotesapp-1.0.5.tar.gz',
         permanent: false,
       },
+      {
+        source: '/pricing',
+        destination: '/#pricing',
+        permanent: true,
+      },
+      {
+        source: '/features',
+        destination: '/#features',
+        permanent: true,
+      },
+      {
+        source: '/faq',
+        destination: '/#faq',
+        permanent: true,
+      },
+      {
+        source: '/sitemap_index.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
     ];
   },
   async rewrites() {
