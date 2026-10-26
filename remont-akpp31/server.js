@@ -446,7 +446,8 @@ module.exports = async function handleRemontAkpp(req, res) {
   }
 
   const url = new URL(req.url, 'http://localhost');
-  const pathname = url.pathname;
+  const rawPathname = url.pathname;
+  const pathname = rawPathname.length > 1 && rawPathname.endsWith('/') ? rawPathname.slice(0, -1) : rawPathname;
 
   // Markdown content negotiation (Accept: text/markdown)
   const acceptHeader = (req.headers['accept'] || '').toLowerCase();
@@ -582,11 +583,76 @@ module.exports = async function handleRemontAkpp(req, res) {
   if (pathname === '/robots.txt') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'robots.txt'), pathname);
   }
+
+  // Фавиконы и иконки для браузеров и поисковых ботов (Googlebot, Yandexbot)
+  if (pathname === '/favicon.ico' || pathname === '/favicon.png' || pathname === '/favicon.svg' || pathname.startsWith('/apple-touch-icon')) {
+    let iconFile = 'favicon.ico';
+    let cType = 'image/x-icon';
+    if (pathname.endsWith('.svg')) {
+      iconFile = 'favicon.svg';
+      cType = 'image/svg+xml';
+    } else if (pathname.includes('apple-touch-icon') || pathname.endsWith('.png')) {
+      iconFile = fs.existsSync(path.join(PUBLIC_DIR, 'apple-touch-icon.png')) ? 'apple-touch-icon.png' : 'favicon.png';
+      cType = 'image/png';
+    }
+    const iconPath = path.join(PUBLIC_DIR, iconFile);
+    if (fs.existsSync(iconPath)) {
+      res.writeHead(200, {
+        'Content-Type': cType,
+        'Cache-Control': 'public, max-age=86400',
+        'Content-Length': fs.statSync(iconPath).size
+      });
+      return fs.createReadStream(iconPath).pipe(res);
+    }
+  }
+
+  // SEO: 301 Редиректы с типовых адресов и разделов на главную (устранение 404 в Google Search Console)
+  if (pathname === '/index' || pathname === '/main' || pathname === '/home' || pathname === '/index.php' || pathname === '/default.htm') {
+    res.writeHead(301, { 'Location': '/', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/services', '/service', '/uslugi', '/usluga', '/catalog', '/katalog'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#services', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/price', '/prices', '/tseny', '/stoimost', '/prajs', '/prays', '/tariffs', '/stoimost-remonta'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#services', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/contacts', '/contact', '/kontakty', '/kontakti', '/adress', '/adres', '/telefon', '/gde-nahodimsya'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#contact', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/cases', '/portfolio', '/raboty', '/primer-rabot', '/galereya', '/gallery', '/foto', '/photos'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#cases', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/symptoms', '/neispravnosti', '/priznaki', '/polomki', '/oshibki', '/dtc'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#symptoms', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/about', '/about-us', '/o-nas', '/kompaniya', '/o-kompanii', '/avtoservis', '/sto'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#about', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/reviews', '/otzyvy', '/otzivi', '/otzyv', '/feedback'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#reviews', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/diagnostika', '/diagnostik', '/diagnostics', '/besplatnaya-diagnostika'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#contact', 'Connection': 'close' });
+    return res.end();
+  }
+  if (['/remont-akpp', '/remont-dsg', '/remont-variatora', '/remont-cvt', '/remont-korobki', '/zamena-masla', '/zamena-akpp', '/zamena-dvigatelya', '/remont-dvigatelya', '/kapitalnyj-remont'].includes(pathname)) {
+    res.writeHead(301, { 'Location': '/#services', 'Connection': 'close' });
+    return res.end();
+  }
+
   if (pathname === '/yandex_1156d04f197c8786.html' || pathname === '/yandex_653a98d29361e4a4.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return res.end('<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>Verification: 1156d04f197c8786</body></html>');
   }
-  if (pathname === '/sitemap.xml') {
+  if (pathname === '/sitemap.xml' || pathname === '/sitemap_index.xml' || pathname === '/sitemap-index.xml') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'sitemap.xml'), pathname);
   }
   if (pathname === '/llms.txt') {
@@ -598,7 +664,7 @@ module.exports = async function handleRemontAkpp(req, res) {
   if (pathname === '/sounds.js') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'sounds.js'), pathname);
   }
-  if (pathname === '/manifest.json') {
+  if (pathname === '/manifest.json' || pathname === '/site.webmanifest') {
     return serveStatic(res, path.join(PUBLIC_DIR, 'manifest.json'), pathname);
   }
   if (pathname === '/custom-alert.mp3' || pathname.startsWith('/custom-alert.')) {
@@ -905,11 +971,12 @@ module.exports = async function handleRemontAkpp(req, res) {
     }
   }
 
-  // Админка HTML
+  // Админка HTML с запретом индексации поисковиками
   if (pathname === '/admin') {
     const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
     res.writeHead(200, {
       'Content-Type': 'text/html; charset=utf-8',
+      'X-Robots-Tag': 'noindex, nofollow, noarchive',
       'Cache-Control': 'no-cache, no-store, must-revalidate'
     });
     return res.end(adminHtml);
@@ -926,7 +993,17 @@ module.exports = async function handleRemontAkpp(req, res) {
     return res.end(indexHtml);
   }
 
-  // 404 для неизвестных маршрутов (не спа-фоллбек)
-  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+  // Если запрошена неизвестная текстовая страница или ссылка (без расширения или .html/.php) —
+  // выполняем постоянный 301 редирект на главную страницу, чтобы в Google Search Console не возникали ошибки 404
+  if (!path.extname(pathname) || pathname.endsWith('.html') || pathname.endsWith('.php')) {
+    res.writeHead(301, {
+      'Location': '/',
+      'Connection': 'close'
+    });
+    return res.end();
+  }
+
+  // Дружелюбная 404 страница для поисковых ботов и пользователей
+  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow' });
   return res.end('Not Found');
 };
