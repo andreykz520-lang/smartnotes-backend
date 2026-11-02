@@ -53,27 +53,46 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     }
 
     const isVercel = process.env.VERCEL === '1';
-    const openRouterUrl = isVercel
+    let openRouterUrl = isVercel
       ? `https://openrouter.ai/api/${pathString}`
       : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
 
-    const response = await fetch(openRouterUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://smartnotes-ai.ru",
-        "X-Title": "SmartNotes AI",
-      },
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+    try {
+      response = await fetch(openRouterUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://smartnotes-ai.ru",
+          "X-Title": "SmartNotes AI",
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (fetchErr) {
+      if (!isVercel) {
+        // Fallback directly to OpenRouter if Vercel tunnel fails
+        response = await fetch(`https://openrouter.ai/api/${pathString}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+            "HTTP-Referer": "https://smartnotes-ai.ru",
+            "X-Title": "SmartNotes AI",
+          },
+          body: JSON.stringify(body),
+        });
+      } else {
+        throw fetchErr;
+      }
+    }
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("OpenRouter Proxy Error:", error);
-    return NextResponse.json({ error: "Internal Server Proxy Error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Proxy Error", details: error?.message || String(error) }, { status: 500 });
   }
 }
 

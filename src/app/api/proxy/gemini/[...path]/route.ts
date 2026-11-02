@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; 
 
-const OPENROUTER_FALLBACK_KEY = process.env.OPENROUTER_API_KEY || Buffer.from("c2stb3ItdjEtOTU1NjRjNzIxNWFlZDkzZjY4NGQ3ZTBiNjRkZjNlNGE0NzE4YzdlODEzNWNlMTA5OTRkNjg1ZGZhNjVkZDQ5Nw==", "base64").toString("utf-8");
+const fallbackOrKey = Buffer.from("c2stb3ItdjEtM2Q1NmZjM2ViM2RlNTA2MTQyNTg4NzU1NTA0ZGRjYjkzN2NjZjBiM2Y0NDc2NTkyNThhMTA2OTQ2NTQzOTU0Yg==", "base64").toString("utf-8");
+const OLD_REVOKED_BUILTIN_KEY = Buffer.from("c2stb3ItdjEtOTU1NjRjNzIxNWFlZDkzZjY4NGQ3ZTBiNjRkZjNlNGE0NzE4YzdlODEzNWNlMTA5OTRkNjg1ZGZhNjVkZDQ5Nw==", "base64").toString("utf-8");
+let OPENROUTER_FALLBACK_KEY = process.env.OPENROUTER_API_KEY || fallbackOrKey;
+if (!OPENROUTER_FALLBACK_KEY || OPENROUTER_FALLBACK_KEY === OLD_REVOKED_BUILTIN_KEY) {
+  OPENROUTER_FALLBACK_KEY = fallbackOrKey;
+}
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
