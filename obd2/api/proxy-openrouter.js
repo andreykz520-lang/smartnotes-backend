@@ -35,8 +35,8 @@ module.exports = async function handler(req, res) {
       return res.end(JSON.stringify({ error: 'OpenRouter API key is required and must be configured' }));
     }
 
-    // Default to google/gemini-3.7-flash
-    let model = 'google/gemini-3.7-flash';
+    // Default to the cheapest model google/gemini-2.5-flash
+    let model = 'google/gemini-2.5-flash';
     body.model = model;
 
     const openRouterUrl = 'https://openrouter.ai/api/v1/chat/completions';

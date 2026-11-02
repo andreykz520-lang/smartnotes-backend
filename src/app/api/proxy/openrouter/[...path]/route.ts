@@ -17,22 +17,30 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
 
     const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
     let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
-    if (!apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer") {
-      apiKey = process.env.OPENROUTER_API_KEY || Buffer.from("c2stb3ItdjEtOTU1NjRjNzIxNWFlZDkzZjY4NGQ3ZTBiNjRkZjNlNGE0NzE4YzdlODEzNWNlMTA5OTRkNjg1ZGZhNjVkZDQ5Nw==", "base64").toString("utf-8");
+    const serverKey = process.env.OPENROUTER_API_KEY || Buffer.from("c2stb3ItdjEtOTU1NjRjNzIxNWFlZDkzZjY4NGQ3ZTBiNjRkZjNlNGE0NzE4YzdlODEzNWNlMTA5OTRkNjg1ZGZhNjVkZDQ5Nw==", "base64").toString("utf-8");
+    const isUsingServerKey = !apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer" || apiKey === serverKey;
+
+    if (isUsingServerKey) {
+      apiKey = serverKey;
     }
 
     if (!apiKey) {
       return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
     }
 
-    const serverDefaultModel = process.env.OPENROUTER_DEFAULT_MODEL || 'google/gemini-2.5-flash';
+    const CHEAPEST_MODEL = 'google/gemini-2.5-flash';
     
     if (body) {
-      if (!body.model) {
-        body.model = serverDefaultModel;
-      }
-      if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
-        return NextResponse.json({ error: "Model is not supported" }, { status: 403 });
+      // Жесткая защита: при использовании встроенного ключа принудительно используется только самая дешевая модель
+      if (isUsingServerKey) {
+        body.model = CHEAPEST_MODEL;
+      } else {
+        if (!body.model) {
+          body.model = CHEAPEST_MODEL;
+        }
+        if (body.model.toLowerCase().includes('kimi') || body.model.toLowerCase().includes('moonshot')) {
+          return NextResponse.json({ error: "Model Kimi is blocked and not supported" }, { status: 403 });
+        }
       }
     }
 
