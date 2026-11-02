@@ -69,22 +69,13 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
         },
         body: JSON.stringify(body),
       });
-    } catch (fetchErr) {
-      if (!isVercel) {
-        // Fallback directly to OpenRouter if Vercel tunnel fails
-        response = await fetch(`https://openrouter.ai/api/${pathString}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
-            "HTTP-Referer": "https://smartnotes-ai.ru",
-            "X-Title": "SmartNotes AI",
-          },
-          body: JSON.stringify(body),
-        });
-      } else {
-        throw fetchErr;
-      }
+    } catch (fetchErr: any) {
+      console.error("Vercel tunnel fetch error:", fetchErr);
+      return NextResponse.json({
+        error: "Vercel Tunnel Error",
+        message: fetchErr?.message || String(fetchErr),
+        cause: fetchErr?.cause?.message || fetchErr?.cause?.code || String(fetchErr?.cause || "")
+      }, { status: 502 });
     }
 
     const data = await response.json();
