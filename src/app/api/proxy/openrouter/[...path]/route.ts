@@ -18,7 +18,8 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
     let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
     const serverKey = process.env.OPENROUTER_API_KEY || Buffer.from("c2stb3ItdjEtZjkxYWJmODI5YzI1ZWM3OTE2MDQ0MDc3ZTc2MzU4MTc2NmNmMmIyMGUwOTc4OGE3NmJjNWI2ZDc5YWM5YTk5MQ==", "base64").toString("utf-8");
-    const isUsingServerKey = !apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer" || apiKey === serverKey;
+    const OLD_REVOKED_BUILTIN_KEY = Buffer.from("c2stb3ItdjEtOTU1NjRjNzIxNWFlZDkzZjY4NGQ3ZTBiNjRkZjNlNGE0NzE4YzdlODEzNWNlMTA5OTRkNjg1ZGZhNjVkZDQ5Nw==", "base64").toString("utf-8");
+    const isUsingServerKey = !apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer" || apiKey === serverKey || apiKey === OLD_REVOKED_BUILTIN_KEY;
 
     if (isUsingServerKey) {
       apiKey = serverKey;
