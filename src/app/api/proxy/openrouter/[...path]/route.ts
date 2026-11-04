@@ -65,19 +65,35 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       forwardHeaders["Authorization"] = `Bearer ${apiKey}`;
     }
 
-    let response: Response;
-    try {
-      response = await fetch(openRouterUrl, {
-        method: "POST",
-        headers: forwardHeaders,
-        body: JSON.stringify(body),
-      });
-    } catch (fetchErr: any) {
-      console.error("Vercel tunnel fetch error:", fetchErr);
+    let response: Response | null = null;
+    let lastError: any = null;
+
+    for (let attempt = 1; attempt <= 2 && !response; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        response = await fetch(openRouterUrl, {
+          method: "POST",
+          headers: forwardHeaders,
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+      } catch (fetchErr: any) {
+        lastError = fetchErr;
+        console.warn(`Tunnel attempt ${attempt} failed:`, fetchErr?.message);
+        if (attempt < 2) {
+          await new Promise(r => setTimeout(r, 600));
+        }
+      }
+    }
+
+    if (!response) {
+      console.error("All tunnel attempts failed:", lastError);
       return NextResponse.json({
         error: "Vercel Tunnel Error",
-        message: fetchErr?.message || String(fetchErr),
-        cause: fetchErr?.cause?.message || fetchErr?.cause?.code || String(fetchErr?.cause || "")
+        message: lastError?.message || String(lastError),
+        cause: lastError?.cause?.message || lastError?.cause?.code || String(lastError?.cause || "")
       }, { status: 502 });
     }
 
