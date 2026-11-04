@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
 
     const authHeader = req.headers.get("Authorization") || req.headers.get("authorization") || "";
     let apiKey = authHeader.replace(/^Bearer\s*/i, "").trim();
-    const serverKey = process.env.OPENROUTER_API_KEY || "";
+    const serverKey = (process.env.OPENROUTER_API_KEY || "").trim();
     const isUsingServerKey = !apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer" || apiKey === serverKey;
 
     if (isUsingServerKey && serverKey) {
@@ -27,7 +27,10 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     const isVercel = process.env.VERCEL === '1';
 
     if (isVercel && !apiKey) {
-      return NextResponse.json({ error: "OpenRouter API key is required and must be provided in Vercel environment" }, { status: 401 });
+      return NextResponse.json({
+        error: "Missing OPENROUTER_API_KEY in Vercel",
+        envKeys: Object.keys(process.env).filter(k => k.toLowerCase().includes('open') || k.toLowerCase().includes('router') || k.toLowerCase().includes('key'))
+      }, { status: 401 });
     }
 
     const CHEAPEST_MODEL = 'google/gemini-2.5-flash';
