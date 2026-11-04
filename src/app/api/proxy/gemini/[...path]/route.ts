@@ -89,14 +89,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
           ? "https://openrouter.ai/api/v1/chat/completions"
           : "https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/v1/chat/completions";
 
+        const forwardHeaders: Record<string, string> = {
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://smartnotes-ai.ru",
+          "X-Title": "SmartNotes AI",
+        };
+        if (isVercel && OPENROUTER_FALLBACK_KEY) {
+          forwardHeaders["Authorization"] = `Bearer ${OPENROUTER_FALLBACK_KEY}`;
+        }
+
         const openRouterRes = await fetch(openRouterUrl, {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${OPENROUTER_FALLBACK_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://smartnotes-ai.ru",
-            "X-Title": "SmartNotes AI",
-          },
+          headers: forwardHeaders,
           body: JSON.stringify({
             model: "google/gemini-2.5-flash",
             messages,

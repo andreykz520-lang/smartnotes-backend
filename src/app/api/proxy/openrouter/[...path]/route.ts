@@ -20,12 +20,14 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
     const serverKey = process.env.OPENROUTER_API_KEY || "";
     const isUsingServerKey = !apiKey || apiKey === "null" || apiKey === "undefined" || apiKey.toLowerCase() === "bearer" || apiKey === serverKey;
 
-    if (isUsingServerKey) {
+    if (isUsingServerKey && serverKey) {
       apiKey = serverKey;
     }
 
-    if (!apiKey) {
-      return NextResponse.json({ error: "OpenRouter API key is required and must be provided" }, { status: 401 });
+    const isVercel = process.env.VERCEL === '1';
+
+    if (isVercel && !apiKey) {
+      return NextResponse.json({ error: "OpenRouter API key is required and must be provided in Vercel environment" }, { status: 401 });
     }
 
     const CHEAPEST_MODEL = 'google/gemini-2.5-flash';
@@ -44,21 +46,27 @@ export async function POST(req: NextRequest, { params }: { params?: Promise<{ pa
       }
     }
 
-    const isVercel = process.env.VERCEL === '1';
     let openRouterUrl = isVercel
       ? `https://openrouter.ai/api/${pathString}`
       : `https://smartnotes-backend-two.vercel.app/api/proxy/openrouter/${pathString}`;
+
+    const forwardHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://smartnotes-ai.ru",
+      "X-Title": "SmartNotes AI",
+    };
+
+    if (isVercel) {
+      forwardHeaders["Authorization"] = `Bearer ${apiKey}`;
+    } else if (!isUsingServerKey && apiKey) {
+      forwardHeaders["Authorization"] = `Bearer ${apiKey}`;
+    }
 
     let response: Response;
     try {
       response = await fetch(openRouterUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://smartnotes-ai.ru",
-          "X-Title": "SmartNotes AI",
-        },
+        headers: forwardHeaders,
         body: JSON.stringify(body),
       });
     } catch (fetchErr: any) {
