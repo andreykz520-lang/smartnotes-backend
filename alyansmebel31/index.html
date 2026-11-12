@@ -55,6 +55,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/instock.css">
 </head>
 <body>
 
@@ -90,6 +91,7 @@
       </a>
 
       <nav class="main-nav" id="mainNav">
+        <a href="#in-stock" class="nav-link" style="color: #c69b55; font-weight: 700;">В наличии в зале</a>
         <a href="#catalog" class="nav-link">Каталог</a>
         <a href="#why-us" class="nav-link">О салоне</a>
         <a href="#quiz" class="nav-link">Подобрать мебель</a>
@@ -182,6 +184,371 @@
       </div>
     </div>
   </section>
+
+
+  <!-- In-Stock Real Photos Section (Прямо из салона на Благодатной 80) -->
+  <section class="section instock-section" id="in-stock">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="instock-badge">🔥 Экспозиция салона</span>
+        <h2 class="section-title">В наличии в магазине на Благодатной, 80</h2>
+        <p class="section-subtitle">
+          Реальные фотографии мебели, выставленной прямо сейчас в нашем торговом зале. 
+          Вы можете приехать, посидеть, оценить обивку и забрать мебель <strong>уже сегодня</strong> без ожидания доставки с фабрики!
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div class="instock-filters">
+        <button class="instock-filter-btn active" data-stock-filter="all">Вся экспозиция (12)</button>
+        <button class="instock-filter-btn" data-stock-filter="sofas">🛋️ Диваны и мягкая мебель (8)</button>
+        <button class="instock-filter-btn" data-stock-filter="living">🚪 Стенки и ТВ-тумбы (2)</button>
+        <button class="instock-filter-btn" data-stock-filter="dining">🪑 Обеденные столы и стулья (2)</button>
+      </div>
+
+      <!-- Grid -->
+      <div class="instock-grid" id="inStockGrid">
+
+        <!-- Item 1: Модульный велюровый угловой диван -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-01.jpg', 'Модульный угловой диван в графитовом велюре с валиками')">
+            <img src="images/in-stock/stock-01.jpg" alt="Модульный угловой диван графитовый велюр" loading="lazy">
+            <span class="instock-tag">В наличии в зале</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Мягкая мебель • Угловые диваны</div>
+            <h3 class="instock-title">Модульный угловой диван с валиками</h3>
+            <p class="instock-desc">Глубокая комфортная посадка, приятный бархатистый микровелюр цвета графит, рельефная строчка и комплект удобных поясничных валиков.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Износостойкий антивандальный велюр</li>
+              <li><span>✓</span> Просторная оттоманка для отдыха</li>
+              <li><span>✓</span> Удобный механизм трансформации</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии на 1 этаже</span>
+                <span class="instock-price-val">Выставочный образец</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Модульный угловой диван графит (stock-01)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Классический жаккардовый диван + кресло -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-02.jpg', 'Классический комплект: диван «Ирис» и кресло с жаккардовым дамасским узором')">
+            <img src="images/in-stock/stock-02.jpg" alt="Классический диван Ирис и кресло жаккард" loading="lazy">
+            <span class="instock-tag discount">Скидка из зала</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Классика • Жаккард</div>
+            <h3 class="instock-title">Диван «Ирис» + кресло (комплект)</h3>
+            <p class="instock-desc">Роскошный классический гарнитур в благородном жаккарде с дамасскими вензелями. Эргономичные мягкие подлокотники и декоративные подушки.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Фабричный жаккард высокой плотности</li>
+              <li><span>✓</span> Ортопедическое наполнение сидений</li>
+              <li><span>✓</span> Специальная цена на выставочный комплект</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии в зале</span>
+                <span class="instock-price-val">Комплект со скидкой</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Комплект диван Ирис + кресло (stock-02)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: Белый обеденный гарнитур Премьер + стулья Идальго -->
+        <div class="instock-card" data-stock-cat="dining">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-03.jpg', 'Обеденная группа: раздвижной стол «Премьер» (эмаль + золото) и стулья «Идальго» из массива')">
+            <img src="images/in-stock/stock-03.jpg" alt="Обеденный стол Премьер и стулья Идальго белый массив" loading="lazy">
+            <span class="instock-tag">100% Массив</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Обеденные группы • Массив дуба/березы</div>
+            <h3 class="instock-title">Стол «Премьер» + стулья «Идальго»</h3>
+            <p class="instock-desc">Изысканная обеденная группа цвета слоновой кости с деликатной золотой патиной. Массив натурального дерева, жаккардовая обивка стульев.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Раздвижная столешница 1600 (+400) × 900 мм</li>
+              <li><span>✓</span> 100% натуральный массив белорусского дуба</li>
+              <li><span>✓</span> Итальянское лакокрасочное покрытие</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии в Белгороде</span>
+                <span class="instock-price-val">от 81 400 ₽ (стол)</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Обеденный стол Премьер + Идальго (stock-03)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Прямой диван Мелисса -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-04.jpg', 'Прямой диван «Мелисса» со стегаными подушками и механизмом еврокнижка')">
+            <img src="images/in-stock/stock-04.jpg" alt="Прямой диван Мелисса Пинскдрев" loading="lazy">
+            <span class="instock-tag">Хит продаж</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Прямые диваны • Для сна</div>
+            <h3 class="instock-title">Прямой диван «Мелисса»</h3>
+            <p class="instock-desc">Практичный диван для ежедневного сна в двухцветном исполнении (светлый беж + графит). Пышные стеганые подушки и надежный механизм раскладки.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Независимый пружинный блок</li>
+              <li><span>✓</span> Вместительный ящик для белья</li>
+              <li><span>✓</span> Прочная дышащая рогожка / велюр</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии на витрине</span>
+                <span class="instock-price-val">Выставочная цена</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Диван Мелисса (stock-04)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5: Модульная стенка-гостиная с витринами -->
+        <div class="instock-card" data-stock-cat="living">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-05.jpg', 'Модульная стенка для гостиной в стиле лофт / сканди с витринами для посуды')">
+            <img src="images/in-stock/stock-05.jpg" alt="Модульная стенка для гостиной лофт дуб крафт" loading="lazy">
+            <span class="instock-tag">Стиль Лофт / Модерн</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Гостиные • Модульные шкафы</div>
+            <h3 class="instock-title">Модульная стенка с витринами</h3>
+            <p class="instock-desc">Стильная композиция: две остекленные витрины с тонированным стеклом, вместительные комодные секции и верхняя открыто-закрытая антресоль.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Контраст дуб крафт золотой + матовый графит</li>
+              <li><span>✓</span> Стеклянные полки для сервизов и бокалов</li>
+              <li><span>✓</span> Металлическая фурнитура и ножки</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">Собрана в зале</span>
+                <span class="instock-price-val">Готовый комплект</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Модульная стенка с витринами (stock-05)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 6: Прямой диван Элегия с подушками -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-06.jpg', 'Прямой диван «Элегия» в мягком серебристом велюре с контрастным синим кантом')">
+            <img src="images/in-stock/stock-06.jpg" alt="Прямой диван Элегия велюр с синим кантом" loading="lazy">
+            <span class="instock-tag">Стильный дизайн</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Мягкая мебель • Прямой диван</div>
+            <h3 class="instock-title">Диван «Элегия» (серебристый велюр)</h3>
+            <p class="instock-desc">Изящная форма подлокотников с темным акцентным кантом. Три большие комфортные подушки со строчкой «конверт» и две декоративные синие подушки.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Ультрамягкий бархатный микровелюр</li>
+              <li><span>✓</span> Полноценное спальное место 200 × 150 см</li>
+              <li><span>✓</span> Деревянные ножки цвета венге</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии в салоне</span>
+                <span class="instock-price-val">Выставочный образец</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Диван Элегия серебристый (stock-06)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 7: Диван Флора с ботаническим принтом -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-07.jpg', 'Диван «Флора» с ярким акварельным цветочным принтом и зелеными подушками')">
+            <img src="images/in-stock/stock-07.jpg" alt="Диван Флора акварельный принт листья" loading="lazy">
+            <span class="instock-tag discount">Скидка -30%</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Авторская обивка • Прованс / Эко</div>
+            <h3 class="instock-title">Диван «Флора» с акварельным принтом</h3>
+            <p class="instock-desc">Яркий акцент для гостиной или загородного дома. Принт «сочные тропические листья» на белом фоне + глубокие изумрудные подушки.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Плотная водоотталкивающая ткань с принтом</li>
+              <li><span>✓</span> Комплект из 4 декоративных подушек</li>
+              <li><span>✓</span> Белый цоколь из массива дерева</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии 1 шт</span>
+                <span class="instock-price-val">Спеццена из зала</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Диван Флора акварель (stock-07)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 8: Обеденный стол Валенсия + стулья -->
+        <div class="instock-card" data-stock-cat="dining">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-08.jpg', 'Овальный классический обеденный стол «Валенсия» цвета слоновой кости и 4 мягких стула')">
+            <img src="images/in-stock/stock-08.jpg" alt="Обеденный стол Валенсия овальный белый слоновая кость" loading="lazy">
+            <span class="instock-tag discount">Акция 73 200 ₽</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Столовые гарнитуры • Массив дуба</div>
+            <h3 class="instock-title">Овальный стол «Валенсия» + стулья</h3>
+            <p class="instock-desc">Элегантный раздвижной стол на точеных ножках в цвете слоновая кость с серебристым декором. В комплекте мягкие стулья в жаккарде.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Размеры: 1400 (раздвигается до 1800) × 900 мм</li>
+              <li><span>✓</span> Натуральный массив березы и дуба</li>
+              <li><span>✓</span> Старая цена: 97 600 ₽ ➔ Акция: 73 200 ₽</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">Выгода 24 400 ₽</span>
+                <span class="instock-price-val">73 200 ₽ (стол)</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Стол Валенсия классик 73200р (stock-08)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 9: Угловой диван с оттоманкой бежево-оливковый -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-09.jpg', 'Большой угловой диван с пуфом-оттоманкой в тактильном микровелюре')">
+            <img src="images/in-stock/stock-09.jpg" alt="Угловой диван с пуфом микровелюр оливковый беж" loading="lazy">
+            <span class="instock-tag">Семейный комфорт</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Модульные диваны • Большой размер</div>
+            <h3 class="instock-title">Угловой диван с пуфом-банкеткой</h3>
+            <p class="instock-desc">Просторный диван для большой семьи с приставной банкеткой. Мягкие объемные сиденья и комплект акцентных декоративных валиков.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Широкое ровное спальное место</li>
+              <li><span>✓</span> Усиленный пружинный блок Pocket Spring</li>
+              <li><span>✓</span> Износостойкая ткань Easy Clean</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии в зале</span>
+                <span class="instock-price-val">Выставочный образец</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Угловой диван с банкеткой (stock-09)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 10: Изумрудный велюровый диван с сакурой -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-11.jpg', 'Изумрудный велюровый диван с деревянным цоколем и подушками с ветвями сакуры')">
+            <img src="images/in-stock/stock-11.jpg" alt="Изумрудный велюровый диван сакура" loading="lazy">
+            <span class="instock-tag discount">Скидка -45%</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Премиум-диваны • Изумрудный велюр</div>
+            <h3 class="instock-title">Диван в глубоком изумрудном велюре</h3>
+            <p class="instock-desc">Глубокий благородный темно-зеленый оттенок с мягким переливом ворса. Основание из массива натурального дерева и подушки с живописной сакурой.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Нижний подиум из массива дуба</li>
+              <li><span>✓</span> Двуспальная раскладка для сна</li>
+              <li><span>✓</span> Старая цена: 153 200 ₽ ➔ Выставка: 85 400 ₽</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">Выгода 67 800 ₽</span>
+                <span class="instock-price-val">85 400 ₽</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Изумрудный диван 85400р (stock-11)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 11: Прямой диван Митра бирюзовый -->
+        <div class="instock-card" data-stock-cat="sofas">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-12.jpg', 'Диван «Митра» в мятно-бирюзовом шенилле с желтым кантом')">
+            <img src="images/in-stock/stock-12.jpg" alt="Диван Митра бирюзовый с желтым кантом" loading="lazy">
+            <span class="instock-tag">Суперцена 79 400 ₽</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Современный стиль • Мятно-бирюзовый</div>
+            <h3 class="instock-title">Диван «Митра» с ярким кантом</h3>
+            <p class="instock-desc">Компактный стильный диван с лаконичной пиковкой сиденья и контрастным желтым шнуром-кантом. Идеален для молодежной гостиной или студии.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Габариты: 2200 × 1000 мм (спальное место 1950 × 1400)</li>
+              <li><span>✓</span> Механизм трансформации «Тик-так» (пантограф)</li>
+              <li><span>✓</span> Честная фабричная цена без наценок: 79 400 ₽</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии в зале</span>
+                <span class="instock-price-val">79 400 ₽</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Диван Митра 79400р (stock-12)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 12: Белая классическая стенка Верди с витринами -->
+        <div class="instock-card" data-stock-cat="living">
+          <div class="instock-img-box" onclick="openLightbox('images/in-stock/stock-18.jpg', 'Белоснежная гостиная «Верди»: две остекленные витрины и ТВ-тумба из массива')">
+            <img src="images/in-stock/stock-18.jpg" alt="Белая гостиная Верди с витринами массив дуба" loading="lazy">
+            <span class="instock-tag">Белорусский массив</span>
+            <div class="instock-zoom-hint">🔍 Увеличить фото</div>
+          </div>
+          <div class="instock-info">
+            <div class="instock-cat">Гостиные • Белая классика</div>
+            <h3 class="instock-title">Гостиная «Верди»: 2 витрины + ТВ-тумба</h3>
+            <p class="instock-desc">Великолепная белая классика из массива дуба и березы. Высокие шкафы-витрины с фацетным стеклом и длинная комодная тумба под большой телевизор.</p>
+            <ul class="instock-features">
+              <li><span>✓</span> Массив дуба с белоснежной итальянской эмалью</li>
+              <li><span>✓</span> Подсветка полок и винтажная латунная фурнитура</li>
+              <li><span>✓</span> Можно приобрести как гарнитуром, так и по отдельности</li>
+            </ul>
+            <div class="instock-bottom">
+              <div class="instock-price-block">
+                <span class="instock-status">В наличии на 1 этаже</span>
+                <span class="instock-price-val">от 32 600 ₽ (тумба)</span>
+              </div>
+              <button class="instock-btn" onclick="openModal('Бронь из зала: Гостиная Верди белая (stock-18)')">Забронировать</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- In-Stock CTA Box -->
+      <div class="catalog-cta-box" style="margin-top: 50px;">
+        <div class="cta-box-text">
+          <h3>Понравилась мебель из нашего зала?</h3>
+          <p>Позвоните нам или оставьте номер — менеджер забронирует выставочный образец за вами, подскажет точные размеры и согласует доставку по Белгороду в день покупки.</p>
+        </div>
+        <div class="cta-box-actions">
+          <a href="tel:+79092096454" class="btn btn-call-cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            8 (909) 209-64-54
+          </a>
+          <button class="btn btn-primary btn-lg" onclick="openModal('Бронь выставочного образца из зала')">Забронировать образец</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Photo Lightbox Modal -->
+  <div id="photoLightbox" class="lightbox-modal" onclick="closeLightbox(event)">
+    <div class="lightbox-inner" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+      <img id="lightboxImg" class="lightbox-img" src="" alt="">
+      <div id="lightboxCaption" class="lightbox-caption"></div>
+    </div>
+  </div>
 
   <!-- Popular Categories / Catalog Section -->
   <section class="section catalog-section" id="catalog">
@@ -837,7 +1204,7 @@
     <button type="submit">Записаться на консультацию</button>
   </form>
 
-  <script src="js/main.js?v=20261025_lead_fix"></script>
+  <script src="js/main.js?v=20261112_instock"></script>
   <!-- WebMCP Imperative API (https://webmachinelearning.github.io/webmcp/) -->
   <script>
     (function() {

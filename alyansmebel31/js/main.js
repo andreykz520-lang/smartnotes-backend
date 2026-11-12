@@ -319,3 +319,68 @@ document.addEventListener('click', (e) => {
     } catch (err) {}
   }
 });
+
+
+/* ==========================================================================
+   In-Stock Real Photos Filter & Lightbox
+   ========================================================================== */
+function initInStockFilters() {
+  const filterBtns = document.querySelectorAll('.instock-filter-btn');
+  const cards = document.querySelectorAll('.instock-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-stock-filter');
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-stock-cat') || '';
+        if (filter === 'all' || cat.includes(filter)) {
+          card.style.display = 'flex';
+          card.style.animation = 'fadeIn 0.3s ease';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+
+// Lightbox functions
+window.openLightbox = function(imgSrc, caption) {
+  const modal = document.getElementById('photoLightbox');
+  const img = document.getElementById('lightboxImg');
+  const cap = document.getElementById('lightboxCaption');
+  if (modal && img) {
+    img.src = imgSrc;
+    if (cap) cap.textContent = caption || '';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeLightbox = function(event) {
+  if (event && event.target && event.target.id === 'lightboxImg') {
+    return; // Don't close if clicked on image itself
+  }
+  const modal = document.getElementById('photoLightbox');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+};
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+
+// Call on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initInStockFilters);
+} else {
+  initInStockFilters();
+}
